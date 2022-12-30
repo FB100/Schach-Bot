@@ -66,11 +66,11 @@ void printHelp() {
 
 
 bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
-    Piece *tempBoard = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
+    Piece (*tempBoard)[BOARD_SIZE] = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
 
     if (whiteTurn) {
         copyBoard(board, tempBoard);
-        if (!hasLegalMove(board, whiteTurn)) {
+        if (!hasLegalMove(tempBoard, whiteTurn)) {
             if (isKingThreatened(tempBoard, false)) {
                 printf("-----------------------\n");
                 printf("   Weiß hat Gewonnen   \n");
@@ -86,7 +86,7 @@ bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     }
     if (!whiteTurn) {
         copyBoard(board, tempBoard);
-        if (!hasLegalMove(board, whiteTurn)) {
+        if (!hasLegalMove(tempBoard, whiteTurn)) {
             if (isKingThreatened(tempBoard, true)) {
                 printf("------------------------\n");
                 printf("  Schwarz hat Gewonnen  \n");
@@ -109,9 +109,9 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     printf("Make a move:");
     printf("Where do you want to move from?\n");
     char moveFrom[10];
-    if(scanf("%s", moveFrom) >= 10){
+    if (scanf("%s", moveFrom) >= 10) {
         fprintf(stderr, "Invalid input: ");
-        fprintf(stderr, "-%s-\n", moveFrom );
+        fprintf(stderr, "-%s-\n", moveFrom);
         return;
     }
 
@@ -136,9 +136,9 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 
         printf("Where do you want to move to?\n");
         char moveTo[10];
-        if(scanf("%s", moveTo) >= 5){
+        if (scanf("%s", moveTo) >= 5) {
             fprintf(stderr, "Invalid input: ");
-            fprintf(stderr, "-%s-\n", moveFrom );
+            fprintf(stderr, "-%s-\n", moveFrom);
             return;
         }
 

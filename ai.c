@@ -113,6 +113,10 @@ void addBoardToArray(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD
     }
 }
 
+void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
+// TODO am Ende vor der Evaluation über diese Methode nur ruhige Positionen bewerten
+}
+
 void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int castlingRights) {
 
     int index = 0; //Index für moves Array
@@ -465,7 +469,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     //Könnte auch if(!remainingDepth) sein: effektiver, aber anfälliger für bugs
     if (!remainingDepth) {
         evaluation = evaluateBoard(board, round);
-        if(whiteTurn){
+        if (whiteTurn) {
             return evaluation;
         }
         return -evaluation;

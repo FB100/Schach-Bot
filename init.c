@@ -21,7 +21,6 @@ void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     }
     printf("  * * * * * * * * * * * * * *\n");
     printf("    A  B  C  D  E  F  G  H\n");
-
 }
 
 // Funktion, die einen FEN-String in das interne Schachbrett-Format umwandelt

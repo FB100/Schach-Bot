@@ -95,7 +95,7 @@ bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     return false;
 }
 
-bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
+bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 
     int nightMoves[8][2] = {{2,  1},
                             {2,  -1},
@@ -128,8 +128,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                 board[i + direction][j].type = 'Q';
                             }
                             if (!isKingThreatened(board, whiteTurn)) {
-                                board[i + direction][j].type = ' ';
-                                board[i][j] = p;
                                 return true;
                             }
                             board[i + direction][j].type = ' ';
@@ -140,8 +138,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                     board[i][j].type = ' ';
                                     board[i + 2 * direction][j] = p;
                                     if (!isKingThreatened(board, whiteTurn)) {
-                                        board[i + 2 * direction][j].type = ' ';
-                                        board[i][j] = p;
                                         return true;
                                     }
                                     board[i + 2 * direction][j].type = ' ';
@@ -160,8 +156,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                     board[i + direction][j + 1].type = 'Q';
                                 }
                                 if (!isKingThreatened(board, whiteTurn)) {
-                                    board[i + direction][j + 1] = p2;
-                                    board[i][j] = p;
                                     return true;
                                 }
                                 board[i + direction][j + 1] = p2;
@@ -178,8 +172,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                     board[i + direction][j - 1].type = 'Q';
                                 }
                                 if (!isKingThreatened(board, whiteTurn)) {
-                                    board[i + direction][j - 1] = p2;
-                                    board[i][j] = p;
                                     return true;
                                 }
                                 board[i + direction][j - 1] = p2;
@@ -200,8 +192,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                             board[i][j].type = ' ';
                             board[i + di][j + dj] = p;
                             if (!isKingThreatened(board, whiteTurn)) {
-                                board[i + di][j + dj] = p2;
-                                board[i][j] = p;
                                 return true;
                             }
                             board[i + di][j + dj] = p2;
@@ -223,8 +213,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                             board[i][j].type = ' ';
                                             board[ni][nj] = p;
                                             if (!isKingThreatened(board, whiteTurn)) {
-                                                board[ni][nj] = p2;
-                                                board[i][j] = p;
                                                 return true;
                                             }
                                             board[ni][nj] = p2;
@@ -235,8 +223,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                     board[i][j].type = ' ';
                                     board[ni][nj] = p;
                                     if (!isKingThreatened(board, whiteTurn)) {
-                                        board[ni][nj].type = ' ';
-                                        board[i][j] = p;
                                         return true;
                                     }
                                     board[ni][nj].type = ' ';
@@ -259,8 +245,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                         board[i][j].type = ' ';
                                         board[ni][j] = p;
                                         if (!isKingThreatened(board, whiteTurn)) {
-                                            board[ni][j] = p2;
-                                            board[i][j] = p;
                                             return true;
                                         }
                                         board[ni][j] = p2;
@@ -271,8 +255,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                 board[i][j].type = ' ';
                                 board[ni][j] = p;
                                 if (!isKingThreatened(board, whiteTurn)) {
-                                    board[ni][j].type = ' ';
-                                    board[i][j] = p;
                                     return true;
                                 }
                                 board[ni][j].type = ' ';
@@ -289,8 +271,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                         board[i][j].type = ' ';
                                         board[i][nj] = p;
                                         if (!isKingThreatened(board, whiteTurn)) {
-                                            board[i][nj] = p2;
-                                            board[i][j] = p;
                                             return true;
                                         }
                                         board[i][nj] = p2;
@@ -301,8 +281,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                 board[i][j].type = ' ';
                                 board[i][nj] = p;
                                 if (!isKingThreatened(board, whiteTurn)) {
-                                    board[i][nj].type = ' ';
-                                    board[i][j] = p;
                                     return true;
                                 }
                                 board[i][nj].type = ' ';
@@ -328,8 +306,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                             board[i][j].type = ' ';
                                             board[ni][nj] = p;
                                             if (!isKingThreatened(board, whiteTurn)) {
-                                                board[ni][nj] = p2;
-                                                board[i][j] = p;
                                                 return true;
                                             }
                                             board[ni][nj] = p2;
@@ -340,8 +316,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                     board[i][j].type = ' ';
                                     board[ni][nj] = p;
                                     if (!isKingThreatened(board, whiteTurn)) {
-                                        board[ni][nj].type = ' ';
-                                        board[i][j] = p;
                                         return true;
                                     }
                                     board[ni][nj].type = ' ';
@@ -368,8 +342,6 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn){
                                 board[i][j].type = ' ';
                                 board[i + di][j + dj] = p;
                                 if (!isKingThreatened(board, whiteTurn)) {
-                                    board[i + di][j + dj] = p2;
-                                    board[i][j] = p;
                                     return true;
                                 }
                                 board[i + di][j + dj] = p2;
