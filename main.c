@@ -156,14 +156,7 @@ int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
     int remainingDepth = 6;
     int evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
     //TODO Fick game Endings
-    while((whiteTurn && evaluation >= MAX_ALPHPA_BETA) || (!whiteTurn && evaluation <= -MAX_ALPHPA_BETA)){
-        if(remainingDepth <= 1){
-            return evaluation;
-        }
-        remainingDepth--;
-        printf("Depth: %d\n", remainingDepth);
-        evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
-    }
+
     return evaluation;
 }
 

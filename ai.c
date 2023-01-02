@@ -579,6 +579,10 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
         }
         evaluation = -findMovesAndEvaluate(moveArray[i], 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
         if (evaluation >= beta) {
+
+            if (initialCall) {
+                copyBoard(moveArray[i], board);
+            }
             free(moveArray);
             return beta;
         } else if (evaluation > alpha) {
