@@ -4,51 +4,131 @@
 
 int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
     int positionModifier = 0;
-    // Figuren die anfangs das Zentrum belegen wollen
-    for (int i = 2; i < 6; i++) {
-        for (int j = 2; j < 6; j++) {
-            if (board[i][j].type == 'P' || board[i][j].type == 'N') {
-                positionModifier += board[i][j].white ? 10 : -10;
-                positionModifier += (board[i][j].white ? 60 : -60) / round;
-            }
-        }
-    }
-    for (int i = 3; i < 4; i++) {
-        for (int j = 3; j < 4; j++) {
-            if (board[i][j].type == 'P') {
-                positionModifier += (board[i][j].white ? 80 : -80) / round;
-            }
-        }
-    }
-    // Pawns wollen auch mal Queen spielen
+
+    int modifierPawn[64] = {0, 0, 0, 0, 0, 0, 0, 0,
+                            500, 500, 500, 500, 500, 500, 500, 500,
+                            100, 100, 200, 300, 300, 200, 100, 100,
+                            50, 50, 100, 250, 250, 100, 50, 50,
+                            0, 0, 0, 200, 200, 0, 0, 0,
+                            50, -50, -100, 0, 0, -100, -50, 50,
+                            50, 100, 100, -200, -200, 100, 100, 50,
+                            0, 0, 0, 0, 0, 0, 0, 0};
+
+    int modifierKnight[64] = {-500, -400, -300, -300, -300, -300, -400, -500,
+                              -400, -200, 0, 0, 0, 0, -200, -400,
+                              -300, 0, 100, 150, 150, 100, 0, -300,
+                              -300, 50, 150, 200, 200, 150, 50, -300,
+                              -300, 0, 150, 200, 200, 150, 0, -300,
+                              -300, 50, 100, 150, 150, 100, 50, -300,
+                              -400, -200, 0, 50, 50, 0, -200, -400,
+                              -500, -400, -300, -300, -300, -300, -400, -500};
+
+    int modifierBishop[64] = {-200, -100, -100, -100, -100, -100, -100, -200,
+                              -100, 0, 0, 0, 0, 0, 0, -100,
+                              -100, 0, 50, 100, 100, 50, 0, -100,
+                              -100, 50, 50, 100, 100, 50, 50, -100,
+                              -100, 0, 100, 100, 100, 100, 0, -100,
+                              -100, 100, 100, 100, 100, 100, 100, -100,
+                              -100, 50, 0, 0, 0, 0, 50, -100,
+                              -200, -100, -100, -100, -100, -100, -100, -200};
+
+    int modifierRook[64] = {0, 0, 0, 0, 0, 0, 0, 0,
+                            50, 100, 100, 100, 100, 100, 100, 50,
+                            -50, 0, 0, 0, 0, 0, 0, -50,
+                            -50, 0, 0, 0, 0, 0, 0, -50,
+                            -50, 0, 0, 0, 0, 0, 0, -50,
+                            -50, 0, 0, 0, 0, 0, 0, -50,
+                            -50, 0, 0, 0, 0, 0, 0, -50,
+                            0, 0, 0, 50, 50, 0, 0, 0};
+
+    int modifierQueen[64] = {-200, -100, -100, -50, -50, -100, -100, -200,
+                             -100, 0, 0, 0, 0, 0, 0, -100,
+                             -100, 0, 50, 50, 50, 50, 0, -100,
+                             -50, 0, 50, 50, 50, 50, 0, -50,
+                             0, 0, 50, 50, 50, 50, 0, -50,
+                             -100, 50, 50, 50, 50, 50, 0, -100,
+                             -100, 0, 50, 0, 0, 0, 0, -100,
+                             -200, -100, -100, -50, -50, -100, -100, -200};
+
+    int modifierKingMid[64] = {-300, -400, -400, -500, -500, -400, -400, -300,
+                               -300, -400, -400, -500, -500, -400, -400, -300,
+                               -300, -400, -400, -500, -500, -400, -400, -300,
+                               -300, -400, -400, -500, -500, -400, -400, -300,
+                               -200, -300, -300, -400, -400, -300, -300, -200,
+                               -100, -200, -200, -200, -200, -200, -200, -100,
+                               200, 200, 0, 0, 0, 0, 200, 200,
+                               200, 300, 100, 0, 0, 100, 300, 200};
+
+    int modifierKingEnd[64] = {-500, -400, -300, -200, -200, -300, -400, -500,
+                               -300, -200, -100, 0, 0, -100, -200, -300,
+                               -300, -100, 200, 300, 300, 200, -100, -300,
+                               -300, -100, 300, 400, 400, 300, -100, -300,
+                               -300, -100, 300, 400, 400, 300, -100, -300,
+                               -300, -100, 200, 300, 300, 200, -100, -300,
+                               -300, -300, 0, 0, 0, 0, -300, -300,
+                               -500, -300, -300, -300, -300, -300, -300, -500};
+
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if (board[i][j].type == 'P') {
-                positionModifier += (7 - (i * board[i][j].white)) * 20;
+            if (board[i][j].type != ' ') {
+                switch (board[i][j].type) {
+                    case 'P':
+                        if (board[i][j].white) {
+                            positionModifier += modifierPawn[(i * BOARD_SIZE) + j];
+                        } else {
+                            positionModifier -= modifierPawn[(63 - (i * BOARD_SIZE) + j)];
+                        }
+                        break;
+                    case 'N':
+                        if (board[i][j].white) {
+                            positionModifier += modifierKnight[(i * BOARD_SIZE) + j];
+                        } else {
+                            positionModifier -= modifierKnight[(63 - (i * BOARD_SIZE) + j)];
+                        }
+                        break;
+                    case 'B':
+                        if (board[i][j].white) {
+                            positionModifier += modifierBishop[(i * BOARD_SIZE) + j];
+                        } else {
+                            positionModifier -= modifierBishop[(63 - (i * BOARD_SIZE) + j)];
+                        }
+                        break;
+                    case 'R':
+                        if (board[i][j].white) {
+                            positionModifier += modifierRook[(i * BOARD_SIZE) + j];
+                        } else {
+                            positionModifier -= modifierRook[(63 - (i * BOARD_SIZE) + j)];
+                        }
+                        break;
+                    case 'Q':
+                        if (board[i][j].white) {
+                            positionModifier += modifierQueen[(i * BOARD_SIZE) + j];
+                        } else {
+                            positionModifier -= modifierQueen[(63 - (i * BOARD_SIZE) + j)];
+                        }
+                        break;
+
+                    case 'K':
+                        if (round < 30) {
+                            if (board[i][j].white) {
+                                positionModifier += modifierKingMid[(i * BOARD_SIZE) + j];
+                            } else {
+                                positionModifier -= modifierKingMid[(63 - (i * BOARD_SIZE) + j)];
+                            }
+                        } else {
+                            if (board[i][j].white) {
+                                positionModifier += modifierKingEnd[(i * BOARD_SIZE) + j];
+                            } else {
+                                positionModifier -= modifierKingEnd[(63 - (i * BOARD_SIZE) + j)];
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
-    // Development
-    char pieces[8] = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
-    int modifier1;
-    if (round > 2 && round < 17) {
-        modifier1 = 40;
-    } else {
-        modifier1 = 90 / round;
-    }
-    for (int i = 0; i < BOARD_SIZE; i++) {
-        if (board[0][i].type == pieces[i]) {
-            positionModifier += modifier1;
-        }
-        if (board[7][i].type == pieces[i]) {
-            positionModifier -= modifier1;
-        }
-    }
-
-    // König
-
-
-
 
     return positionModifier;
 }
@@ -466,7 +546,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                          int castlingRights, int round) {
     int evaluation;
 
-    //Könnte auch if(!remainingDepth) sein: effektiver, aber anfälliger für bugs
+    // Ende der Rekursion
     if (!remainingDepth) {
         evaluation = evaluateBoard(board, round);
         if (whiteTurn) {
@@ -475,15 +555,24 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
         return -evaluation;
     }
 
+    //
     Piece *maxBoard = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
     if (maxBoard == NULL) {
         fprintf(stderr, "Malloc of maxBoard failed");
     }
     copyBoard(board, maxBoard);
-
-
     Piece (*moveArray)[BOARD_SIZE][BOARD_SIZE] = calloc(BOARD_SIZE * BOARD_SIZE * 100, sizeof(Piece));
     getAllMoves(board, moveArray, whiteTurn, castlingRights);
+
+    // Checkmate or Stalemate
+    if (moveArray[0][0][0].type == 0) {
+        if (isKingThreatened(board, whiteTurn)) {
+            return -MAX_ALPHPA_BETA;
+        } else {
+            return 0;
+        }
+    }
+    // Iterate over all moves and evaluate
     for (int i = 0; i < 100; ++i) {
         if (moveArray[i][0][0].type == 0) {
             break;

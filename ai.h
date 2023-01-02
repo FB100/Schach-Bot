@@ -12,4 +12,8 @@ void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
 int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha, int beta,
                          int castlingRights, int round);
 
+
+
+
+
 #endif //SCHACH_AI_H

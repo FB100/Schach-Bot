@@ -14,7 +14,7 @@
 // --- Definitions ---
 // Größe des Schachbretts
 #define BOARD_SIZE 8
-#define DEBUG false
+#define MAX_ALPHPA_BETA 10000000
 
 // --- Structs ---
 // Struktur für eine Schachfigur
