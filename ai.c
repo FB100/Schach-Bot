@@ -542,6 +542,7 @@ void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
 
 
 // TODO Stellungswiederholung vermeiden, wenn vorne
+// TODO Move ordering
 int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha, int beta,
                          int castlingRights, int round) {
     int evaluation;
@@ -567,8 +568,12 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     // Checkmate or Stalemate
     if (moveArray[0][0][0].type == 0) {
         if (isKingThreatened(board, whiteTurn)) {
+            free(maxBoard);
+            free(moveArray);
             return -MAX_ALPHPA_BETA;
         } else {
+            free(maxBoard);
+            free(moveArray);
             return 0;
         }
     }
@@ -584,6 +589,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 copyBoard(moveArray[i], board);
             }
             free(moveArray);
+            free(maxBoard);
             return beta;
         } else if (evaluation > alpha) {
             alpha = evaluation;

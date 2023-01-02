@@ -67,10 +67,11 @@ void printHelp() {
 
 bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     Piece (*tempBoard)[BOARD_SIZE] = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
-
-    if (whiteTurn) {
+    // TODO remove (just for debug)
+    copyBoard(board, tempBoard);
+    if (!whiteTurn) {
         copyBoard(board, tempBoard);
-        if (!hasLegalMove(tempBoard, whiteTurn)) {
+        if (!hasLegalMove(tempBoard, false)) {
             if (isKingThreatened(tempBoard, false)) {
                 printf("-----------------------\n");
                 printf("   Weiß hat Gewonnen   \n");
@@ -84,9 +85,9 @@ bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
             return (true);
         }
     }
-    if (!whiteTurn) {
+    if (whiteTurn) {
         copyBoard(board, tempBoard);
-        if (!hasLegalMove(tempBoard, whiteTurn)) {
+        if (!hasLegalMove(tempBoard, true)) {
             if (isKingThreatened(tempBoard, true)) {
                 printf("------------------------\n");
                 printf("  Schwarz hat Gewonnen  \n");
