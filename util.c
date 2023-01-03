@@ -95,6 +95,15 @@ bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     return false;
 }
 
+void addBoardToArray(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], int index) {
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            moves[index][i][j].type = board[i][j].type;
+            moves[index][i][j].white = board[i][j].white;
+        }
+    }
+}
+
 bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 
     int nightMoves[8][2] = {{2,  1},

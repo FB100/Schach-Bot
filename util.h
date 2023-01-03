@@ -6,6 +6,8 @@
 
 bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
 
+void addBoardToArray(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], int index);
+
 bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
 
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]);

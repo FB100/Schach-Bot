@@ -1,5 +1,5 @@
-#ifndef SCHACH_AI_H
-#define SCHACH_AI_H
+#ifndef SCHACH_AI_EVALUATION_H
+#define SCHACH_AI_EVALUATION_H
 
 
 #include "headers.h"
@@ -13,7 +13,4 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                          int castlingRights, int round);
 
 
-
-
-
-#endif //SCHACH_AI_H
+#endif //SCHACH_AI_EVALUATION_H
