@@ -24,14 +24,14 @@ int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                               -400, -200, 0, 50, 50, 0, -200, -400,
                               -500, -400, -300, -300, -300, -300, -400, -500};
 
-    int modifierBishop[64] = {-200, -100, -100, -100, -100, -100, -100, -200,
+    int modifierBishop[64] = {-200, -100, -120, -120, -120, -120, -100, -200,
                               -100, 0, 0, 0, 0, 0, 0, -100,
                               -100, 0, 50, 100, 100, 50, 0, -100,
                               -100, 50, 50, 100, 100, 50, 50, -100,
                               -100, 0, 100, 100, 100, 100, 0, -100,
                               -100, 100, 100, 100, 100, 100, 100, -100,
                               -100, 50, 0, 0, 0, 0, 50, -100,
-                              -200, -100, -100, -100, -100, -100, -100, -200};
+                              -200, -100, -120, -120, -120, -120, -100, -200};
 
     int modifierRook[64] = {0, 0, 0, 0, 0, 0, 0, 0,
                             50, 100, 100, 100, 100, 100, 100, 50,
@@ -57,7 +57,7 @@ int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                                -300, -400, -400, -500, -500, -400, -400, -300,
                                -200, -300, -300, -400, -400, -300, -300, -200,
                                -100, -200, -200, -200, -200, -200, -200, -100,
-                               200, 200, 0, 0, 0, 0, 200, 200,
+                               200, 100, 0, 0, 0, 0, 100, 200,
                                200, 300, 100, 0, 0, 100, 300, 200};
 
     int modifierKingEnd[64] = {-500, -400, -300, -200, -200, -300, -400, -500,
@@ -250,6 +250,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     copyBoard(board, tempBoard);
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
+                        if (initialCall) {
+                            copyBoard(maxBoard, board);
+                        }
                         free(moveArray);
                         free(maxBoard);
                         free(tempBoard);
@@ -273,6 +276,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     copyBoard(board, tempBoard);
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
+                        if (initialCall) {
+                            copyBoard(maxBoard, board);
+                        }
                         free(moveArray);
                         free(maxBoard);
                         free(tempBoard);
@@ -297,6 +303,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     copyBoard(board, tempBoard);
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
+                        if (initialCall) {
+                            copyBoard(maxBoard, board);
+                        }
                         free(moveArray);
                         free(maxBoard);
                         free(tempBoard);
@@ -326,6 +335,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     copyBoard(board, tempBoard);
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
+                        if (initialCall) {
+                            copyBoard(maxBoard, board);
+                        }
                         free(moveArray);
                         free(maxBoard);
                         free(tempBoard);

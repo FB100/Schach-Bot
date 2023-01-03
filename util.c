@@ -395,7 +395,7 @@ void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE
 }
 
 // Mergesort für Move-ordering
-void merge(Move arr[], int l, int m, int r) {
+void merge(Move arr[100], int l, int m, int r) {
     int n1 = m - l + 1;
     int n2 = r - m;
     Move L[n1];
@@ -422,7 +422,7 @@ void merge(Move arr[], int l, int m, int r) {
     }
 }
 
-void sortMoves(Move arr[], int l, int r) {
+void sortMoves(Move arr[100], int l, int r) {
     if (l < r) {
         int m = l + (r - l) / 2;
         sortMoves(arr, l, m);

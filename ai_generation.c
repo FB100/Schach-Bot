@@ -354,5 +354,8 @@ void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], boo
             }
         }
     }
-    sortMoves(moves,0, index);
+    if(index > 100){
+        printf("index: %d",index);
+    }
+    sortMoves(moves,0, index - 1);
 }
