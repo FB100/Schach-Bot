@@ -16,6 +16,13 @@
 #define BOARD_SIZE 8
 #define MAX_ALPHPA_BETA 10000000
 
+// Wert der Figuren
+#define PAWN_PRICE 100
+#define KNIGHT_PRICE 305
+#define BISHOP_PRICE 323
+#define ROOK_PRICE 563
+#define QUEEN_PRICE 950
+
 
 // --- Structs ---
 // Struktur für eine Schachfigur

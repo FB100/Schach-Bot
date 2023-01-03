@@ -3,18 +3,18 @@
 
 #include "headers.h"
 
-int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
+int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index);
 
-int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
+int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index);
 
-int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
+int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index);
 
-int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
+int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index);
 
-int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
+int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index);
 
-int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
+int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index);
 
-void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int castlingRights);
+void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int castlingRights);
 
 #endif //SCHACH_AI_GENERATION_H

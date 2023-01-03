@@ -368,6 +368,23 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     return false;
 }
 
+int getPiecePrice(char pieceType){
+    switch (pieceType) {
+        case 'P':
+            return PAWN_PRICE;
+        case 'R':
+            return ROOK_PRICE;
+        case 'N':
+            return KNIGHT_PRICE;
+        case 'B':
+            return BISHOP_PRICE;
+        case 'Q':
+            return QUEEN_PRICE;
+        default:
+            return 0;
+    }
+}
+
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]) {
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {

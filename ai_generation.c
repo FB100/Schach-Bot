@@ -2,7 +2,7 @@
 #include "util.h"
 
 
-int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index) {
+int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     int direction = whiteTurn ? -1 : 1;
 
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
@@ -11,28 +11,27 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
 
     // Ein Feld vorwärts
     if (board[i + direction][j].type == ' ') {
-        board[i][j].type = ' ';
-        board[i + direction][j] = p;
         if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
-            board[i + direction][j].type = 'Q';
-        }
-        if (!isKingThreatened(board, whiteTurn)) {
-            addBoardToArray(board, moves, index);
+            moves[index].from = 8 * i + j;
+            moves[index].to = 8 * (i + direction) + j;
+            moves[index].special = 1;
+            moves[index].preEval = getPiecePrice('Q');
+            index++;
+        } else {
+            moves[index].from = 8 * i + j;
+            moves[index].to = 8 * (i + direction) + j;
+            moves[index].special = 0;
+            moves[index].preEval = 0;
             index++;
         }
-        board[i + direction][j].type = ' ';
-        board[i][j] = p;
         // Zwei Felder vorwärts (nur möglich von Startposition)
         if ((whiteTurn && i == 6) || (!whiteTurn && i == 1)) {
             if (board[i + 2 * direction][j].type == ' ') {
-                board[i][j].type = ' ';
-                board[i + 2 * direction][j] = p;
-                if (!isKingThreatened(board, whiteTurn)) {
-                    addBoardToArray(board, moves, index);
-                    index++;
-                }
-                board[i + 2 * direction][j].type = ' ';
-                board[i][j] = p;
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (i + 2 * direction) + j;
+                moves[index].special = 0;
+                moves[index].preEval = 0;
+                index++;
             }
         }
     }
@@ -41,40 +40,42 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
         if (board[i + direction][j + 1].white != whiteTurn &&
             board[i + direction][j + 1].type != ' ') {
             p2 = board[i + direction][j + 1];
-            board[i][j].type = ' ';
-            board[i + direction][j + 1] = p;
             if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
-                board[i + direction][j + 1].type = 'Q';
-            }
-            if (!isKingThreatened(board, whiteTurn)) {
-                addBoardToArray(board, moves, index);
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (i + direction) + j + 1;
+                moves[index].special = 1;
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type) + getPiecePrice('Q');
+                index++;
+            } else {
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (i + direction) + j + 1;
+                moves[index].special = 0;
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
                 index++;
             }
-            board[i + direction][j + 1] = p2;
-            board[i][j] = p;
         }
     }
     if (j - 1 >= 0) {
-        if (board[i + direction][j - 1].white != whiteTurn &&
-            board[i + direction][j - 1].type != ' ') {
-            p2 = board[i + direction][j - 1];
-            board[i][j].type = ' ';
-            board[i + direction][j - 1] = p;
+        if (board[i + direction][j - 1].white != whiteTurn && board[i + direction][j - 1].type != ' ') {
             if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
-                board[i + direction][j - 1].type = 'Q';
-            }
-            if (!isKingThreatened(board, whiteTurn)) {
-                addBoardToArray(board, moves, index);
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (i + direction) + j - 1;
+                moves[index].special = 1;
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type) + getPiecePrice('Q');
+                index++;
+            } else {
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (i + direction) + j - 1;
+                moves[index].special = 0;
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
                 index++;
             }
-            board[i + direction][j - 1] = p2;
-            board[i][j] = p;
         }
     }
     return index;
 }
 
-int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index) {
+int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];;
     Piece p2;
@@ -91,25 +92,22 @@ int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_S
 
     // Alle 8 möglichen Züge für einen Springer
     for (int k = 0; k < 8; k++) {
-        int di = knightMoves[k][0];
-        int dj = knightMoves[k][1];
+        int di = (int) knightMoves[k][0];
+        int dj = (int) knightMoves[k][1];
         if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 || j + dj >= BOARD_SIZE)
             continue; // Zug außerhalb des Bretts
         if (board[i + di][j + dj].white == whiteTurn && board[i + di][j + dj].type != ' ') continue; // Zug auf eigenen Stein
         p2 = board[i + di][j + dj];
-        board[i][j].type = ' ';
-        board[i + di][j + dj] = p;
-        if (!isKingThreatened(board, whiteTurn)) {
-            addBoardToArray(board, moves, index);
-            index++;
-        }
-        board[i + di][j + dj] = p2;
-        board[i][j] = p;
+        moves[index].from = 8 * i + j;
+        moves[index].to = 8 * (i + di) + j + dj;
+        moves[index].special = 0;
+        moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+        index++;
     }
     return index;
 }
 
-int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index) {
+int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];;
     Piece p2;
@@ -119,30 +117,24 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_S
         for (int dj = -1; dj <= 1; dj += 2) {
             int ni = i + di;
             int nj = j + dj;
-            while (ni >= 0 && ni < BOARD_SIZE && nj >= 0 &&
-                   nj < BOARD_SIZE) { // Zug innerhalb des Bretts
+            while (ni >= 0 && ni < BOARD_SIZE && nj >= 0 && nj < BOARD_SIZE) { // Zug innerhalb des Bretts
                 if (board[ni][nj].type != ' ') { // Stein im Weg
                     if (board[ni][nj].white != whiteTurn && board[ni][nj].type != ' ') { // Gegnerischer Stein
                         p2 = board[ni][nj];
-                        board[i][j].type = ' ';
-                        board[ni][nj] = p;
-                        if (!isKingThreatened(board, whiteTurn)) {
-                            addBoardToArray(board, moves, index);
-                            index++;
-                        }
-                        board[ni][nj] = p2;
-                        board[i][j] = p;
+                        moves[index].from = 8 * i + j;
+                        moves[index].to = 8 * (ni) + nj;
+                        moves[index].special = 0;
+                        moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                        index++;
                     }
                     break; // Beende Schleife
                 }
-                board[i][j].type = ' ';
-                board[ni][nj] = p;
-                if (!isKingThreatened(board, whiteTurn)) {
-                    addBoardToArray(board, moves, index);
-                    index++;
-                }
-                board[ni][nj].type = ' ';
-                board[i][j] = p;
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (ni) + nj;
+                moves[index].special = 0;
+                moves[index].preEval = 0;
+                index++;
+
                 ni += di;
                 nj += dj;
             }
@@ -151,7 +143,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_S
     return index;
 }
 
-int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index) {
+int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];;
     Piece p2;
@@ -163,25 +155,20 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
             if (board[ni][j].type != ' ') { // Stein im Weg
                 if (board[ni][j].white != whiteTurn && board[ni][j].type != ' ') { // Gegnerischer Stein
                     p2 = board[ni][j];
-                    board[i][j].type = ' ';
-                    board[ni][j] = p;
-                    if (!isKingThreatened(board, whiteTurn)) {
-                        addBoardToArray(board, moves, index);
-                        index++;
-                    }
-                    board[ni][j] = p2;
-                    board[i][j] = p;
+                    moves[index].from = 8 * i + j;
+                    moves[index].to = 8 * (ni) + j;
+                    moves[index].special = 0;
+                    moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                    index++;
                 }
                 break; // Beende Schleife
             }
-            board[i][j].type = ' ';
-            board[ni][j] = p;
-            if (!isKingThreatened(board, whiteTurn)) {
-                addBoardToArray(board, moves, index);
-                index++;
-            }
-            board[ni][j].type = ' ';
-            board[i][j] = p;
+            moves[index].from = 8 * i + j;
+            moves[index].to = 8 * (ni) + j;
+            moves[index].special = 0;
+            moves[index].preEval = 0;
+            index++;
+
             ni += di;
         }
     }
@@ -191,33 +178,28 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
             if (board[i][nj].type != ' ') { // Stein im Weg
                 if (board[i][nj].white != whiteTurn && board[i][nj].type != ' ') { // Gegnerischer Stein
                     p2 = board[i][nj];
-                    board[i][j].type = ' ';
-                    board[i][nj] = p;
-                    if (!isKingThreatened(board, whiteTurn)) {
-                        addBoardToArray(board, moves, index);
-                        index++;
-                    }
-                    board[i][nj] = p2;
-                    board[i][j] = p;
-                    nj += dj;
+
+                    moves[index].from = 8 * i + j;
+                    moves[index].to = 8 * i + nj;
+                    moves[index].special = 0;
+                    moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                    index++;
                 }
                 break; // Beende Schleife
             }
-            board[i][j].type = ' ';
-            board[i][nj] = p;
-            if (!isKingThreatened(board, whiteTurn)) {
-                addBoardToArray(board, moves, index);
-                index++;
-            }
-            board[i][nj].type = ' ';
-            board[i][j] = p;
+            moves[index].from = 8 * i + j;
+            moves[index].to = 8 * i + nj;
+            moves[index].special = 0;
+            moves[index].preEval = 0;
+            index++;
+
             nj += dj;
         }
     }
     return index;
 }
 
-int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index) {
+int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];;
     Piece p2;
@@ -234,25 +216,20 @@ int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SI
                 if (board[ni][nj].type != ' ') { // Stein im Weg
                     if (board[ni][nj].white != whiteTurn && board[ni][nj].type != ' ') { // Gegnerischer Stein
                         p2 = board[ni][nj];
-                        board[i][j].type = ' ';
-                        board[ni][nj] = p;
-                        if (!isKingThreatened(board, whiteTurn)) {
-                            addBoardToArray(board, moves, index);
-                            index++;
-                        }
-                        board[ni][nj] = p2;
-                        board[i][j] = p;
+                        moves[index].from = 8 * i + j;
+                        moves[index].to = 8 * (ni) + nj;
+                        moves[index].special = 0;
+                        moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                        index++;
                     }
                     break; // Beende Schleife
                 }
-                board[i][j].type = ' ';
-                board[ni][nj] = p;
-                if (!isKingThreatened(board, whiteTurn)) {
-                    addBoardToArray(board, moves, index);
-                    index++;
-                }
-                board[ni][nj].type = ' ';
-                board[i][j] = p;
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (ni) + nj;
+                moves[index].special = 0;
+                moves[index].preEval = 0;
+                index++;
+
                 ni += di;
                 nj += dj;
             }
@@ -261,7 +238,7 @@ int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SI
     return index;
 }
 
-int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index) {
+int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];;
     Piece p2;
@@ -277,20 +254,18 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
             if (board[i + di][j + dj].white == whiteTurn && board[i + di][j + dj].type != ' ')
                 continue; // Zug auf eigenen Stein
             p2 = board[i + di][j + dj];
-            board[i][j].type = ' ';
-            board[i + di][j + dj] = p;
-            if (!isKingThreatened(board, whiteTurn)) {
-                addBoardToArray(board, moves, index);
-                index++;
-            }
-            board[i + di][j + dj] = p2;
-            board[i][j] = p;
+            moves[index].from = 8 * i + j;
+            moves[index].to = 8 * (i + di) + j + dj;
+            moves[index].special = 0;
+            moves[index].preEval = getPiecePrice(p2.type);
+            index++;
+
         }
     }
     return index;
 }
 
-void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int castlingRights) {
+void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int castlingRights) {
 
     int index = 0; //Index für moves Array
 
@@ -325,38 +300,24 @@ void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
     int whiteSize = (7 * whiteTurn);
     if (((castlingRights % 2 && whiteTurn) || (castlingRights % 5 && !whiteTurn)) && board[whiteSize][1].type == ' ' &&
         board[whiteSize][2].type == ' ' && board[whiteSize][3].type == ' ') {
-        board[whiteSize][0].type = ' ';
-        board[whiteSize][2].type = 'K';
-        board[whiteSize][2].white = whiteTurn;
-        board[whiteSize][3].type = 'R';
-        board[whiteSize][3].white = whiteTurn;
-        board[whiteSize][4].type = ' ';
-        addBoardToArray(board, moves, index);
-        index++;
-        board[whiteSize][0].type = 'R';
-        board[whiteSize][0].white = whiteTurn;
-        board[whiteSize][2].type = ' ';
-        board[whiteSize][3].type = ' ';
-        board[whiteSize][4].type = 'K';
-        board[whiteSize][4].white = whiteTurn;
+        if (!isKingThreatened(board, whiteTurn)) {
+            moves[index].from = 8 * whiteSize + 4;
+            moves[index].to = 8 * whiteSize + 2;
+            moves[index].special = 3;
+            moves[index].preEval = 0;
+            index++;
+        }
     }
     // kurze Rochade
     if (((castlingRights % 3 && whiteTurn) || (castlingRights % 7 && !whiteTurn)) && board[whiteSize][5].type == ' ' &&
         board[whiteSize][6].type == ' ') {
-        board[whiteSize][4].type = ' ';
-        board[whiteSize][5].type = 'R';
-        board[whiteSize][5].white = whiteTurn;
-        board[whiteSize][6].type = 'K';
-        board[whiteSize][6].white = whiteTurn;
-        board[whiteSize][7].type = ' ';
-        addBoardToArray(board, moves, index);
-        index++;
-        board[whiteSize][4].type = 'K';
-        board[whiteSize][4].white = whiteTurn;
-        board[whiteSize][5].type = ' ';
-        board[whiteSize][6].type = ' ';
-        board[whiteSize][7].type = 'R';
-        board[whiteSize][7].white = whiteTurn;
+        if (!isKingThreatened(board, whiteTurn)) {
+            moves[index].from = 8 * whiteSize + 4;
+            moves[index].to = 8 * whiteSize + 6;
+            moves[index].special = 2;
+            moves[index].preEval = 0;
+            index++;
+        }
     }
 
     for (int i = 0; i < BOARD_SIZE; i++) {

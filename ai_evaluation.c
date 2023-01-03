@@ -146,13 +146,13 @@ int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
             Piece piece = board[i][j];
             switch (piece.type) {
                 case 'P':
-                    counterWhite += piece.white ? 100 : -100;
+                    counterWhite += piece.white ? PAWN_PRICE : -PAWN_PRICE;
                     break;
                 case 'R':
-                    counterWhite += piece.white ? 563 : -563;
+                    counterWhite += piece.white ? ROOK_PRICE : -ROOK_PRICE;
                     break;
                 case 'N':
-                    counterWhite += piece.white ? 305 : -305;
+                    counterWhite += piece.white ? KNIGHT_PRICE : -KNIGHT_PRICE;
                     break;
                 case 'B':
                     //Läuferpaar bonus
@@ -168,10 +168,10 @@ int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                         }
                         bishopBlack = true;
                     }
-                    counterWhite += piece.white ? 333 : -333;
+                    counterWhite += piece.white ? BISHOP_PRICE : -BISHOP_PRICE;
                     break;
                 case 'Q':
-                    counterWhite += piece.white ? 950 : -950;
+                    counterWhite += piece.white ? QUEEN_PRICE : -QUEEN_PRICE;
                     break;
                 case 'K':
                     counterWhite += piece.white ? 100000 : -100000;
@@ -196,6 +196,8 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][B
 int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha, int beta,
                          int castlingRights, int round) {
     int evaluation;
+    Piece p;
+    Piece p2;
 
     // Ende der Rekursion
     if (!remainingDepth) {
@@ -208,15 +210,16 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
 
     //
     Piece *maxBoard = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
+    Piece *tempBoard = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
     if (maxBoard == NULL) {
         fprintf(stderr, "Malloc of maxBoard failed");
     }
     copyBoard(board, maxBoard);
-    Piece (*moveArray)[BOARD_SIZE][BOARD_SIZE] = calloc(BOARD_SIZE * BOARD_SIZE * 100, sizeof(Piece));
-    getAllMoves(board, moveArray, whiteTurn, castlingRights);
+    Move *moveArray = calloc(BOARD_SIZE * BOARD_SIZE * 100, sizeof(Piece));
+    getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
 
     // Checkmate or Stalemate
-    if (moveArray[0][0][0].type == 0) {
+    if (moveArray[0].from == 0 && moveArray[0].to == 0) {
         if (isKingThreatened(board, whiteTurn)) {
             free(maxBoard);
             free(moveArray);
@@ -229,24 +232,117 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     }
     // Iterate over all moves and evaluate
     for (int i = 0; i < 100; ++i) {
-        if (moveArray[i][0][0].type == 0) {
+        if (moveArray[i].from == 0 && moveArray[i].to == 0) {
             break;
         }
-        evaluation = -findMovesAndEvaluate(moveArray[i], 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
-        if (evaluation >= beta) {
 
-            if (initialCall) {
-                copyBoard(moveArray[i], board);
-            }
-            free(moveArray);
-            free(maxBoard);
-            return beta;
-        } else if (evaluation > alpha) {
-            alpha = evaluation;
-            copyBoard(moveArray[i], maxBoard);
+        int whiteSize = (7 * whiteTurn);
+
+        switch (moveArray[i].special) {
+            case 0:
+                p = board[moveArray[i].from / 8][moveArray[i].from % 8];
+                p2 = board[moveArray[i].to / 8][moveArray[i].to % 8];
+                board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
+                board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
+                if (!isKingThreatened(board, whiteTurn)) {
+                    copyBoard(board, tempBoard);
+                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
+                    if (evaluation >= beta) {
+                        free(moveArray);
+                        free(maxBoard);
+                        return beta;
+                    } else if (evaluation > alpha) {
+                        alpha = evaluation;
+                        copyBoard(board, maxBoard);
+                    }
+                }
+                board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
+                board[moveArray[i].from / 8][moveArray[i].from % 8] = p;
+                break;
+            case 1:
+                // Promotion
+                p = board[moveArray[i].from / 8][moveArray[i].from % 8];
+                p2 = board[moveArray[i].to / 8][moveArray[i].to % 8];
+                board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
+                board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
+                board[moveArray[i].to / 8][moveArray[i].to % 8].type = 'Q';
+                if (!isKingThreatened(board, whiteTurn)) {
+                    copyBoard(board, tempBoard);
+                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
+                    if (evaluation >= beta) {
+                        free(moveArray);
+                        free(maxBoard);
+                        return beta;
+                    } else if (evaluation > alpha) {
+                        alpha = evaluation;
+                        copyBoard(board, maxBoard);
+                    }
+                }
+                board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
+                board[moveArray[i].from / 8][moveArray[i].from % 8] = p;
+                break;
+            case 2:
+                // kurze Rochade
+                board[whiteSize][4].type = ' ';
+                board[whiteSize][5].type = 'R';
+                board[whiteSize][5].white = whiteTurn;
+                board[whiteSize][6].type = 'K';
+                board[whiteSize][6].white = whiteTurn;
+                board[whiteSize][7].type = ' ';
+                if (!isKingThreatened(board, whiteTurn)) {
+                    copyBoard(board, tempBoard);
+                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
+                    if (evaluation >= beta) {
+                        free(moveArray);
+                        free(maxBoard);
+                        return beta;
+                    } else if (evaluation > alpha) {
+                        alpha = evaluation;
+                        copyBoard(board, maxBoard);
+                    }
+
+                }
+                board[whiteSize][4].type = 'K';
+                board[whiteSize][4].white = whiteTurn;
+                board[whiteSize][5].type = ' ';
+                board[whiteSize][6].type = ' ';
+                board[whiteSize][7].type = 'R';
+                board[whiteSize][7].white = whiteTurn;
+                break;
+            case 3:
+                // Lange Rochade
+                board[whiteSize][0].type = ' ';
+                board[whiteSize][2].type = 'K';
+                board[whiteSize][2].white = whiteTurn;
+                board[whiteSize][3].type = 'R';
+                board[whiteSize][3].white = whiteTurn;
+                board[whiteSize][4].type = ' ';
+                if (!isKingThreatened(board, whiteTurn)) {
+                    copyBoard(board, tempBoard);
+                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
+                    if (evaluation >= beta) {
+                        free(moveArray);
+                        free(maxBoard);
+                        return beta;
+                    } else if (evaluation > alpha) {
+                        alpha = evaluation;
+                        copyBoard(board, maxBoard);
+                    }
+                }
+                board[whiteSize][0].type = 'R';
+                board[whiteSize][0].white = whiteTurn;
+                board[whiteSize][2].type = ' ';
+                board[whiteSize][3].type = ' ';
+                board[whiteSize][4].type = 'K';
+                board[whiteSize][4].white = whiteTurn;
+                break;
+            default:
+
+                break;
         }
     }
     free(moveArray);
+    free(tempBoard);
 
     if (initialCall) {
         copyBoard(maxBoard, board);
