@@ -223,10 +223,12 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
         if (isKingThreatened(board, whiteTurn)) {
             free(maxBoard);
             free(moveArray);
+            free(tempBoard);
             return -MAX_ALPHPA_BETA;
         } else {
             free(maxBoard);
             free(moveArray);
+            free(tempBoard);
             return 0;
         }
     }
@@ -250,6 +252,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     if (evaluation >= beta) {
                         free(moveArray);
                         free(maxBoard);
+                        free(tempBoard);
                         return beta;
                     } else if (evaluation > alpha) {
                         alpha = evaluation;
@@ -272,6 +275,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     if (evaluation >= beta) {
                         free(moveArray);
                         free(maxBoard);
+                        free(tempBoard);
                         return beta;
                     } else if (evaluation > alpha) {
                         alpha = evaluation;
@@ -295,6 +299,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     if (evaluation >= beta) {
                         free(moveArray);
                         free(maxBoard);
+                        free(tempBoard);
                         return beta;
                     } else if (evaluation > alpha) {
                         alpha = evaluation;
@@ -323,6 +328,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     if (evaluation >= beta) {
                         free(moveArray);
                         free(maxBoard);
+                        free(tempBoard);
                         return beta;
                     } else if (evaluation > alpha) {
                         alpha = evaluation;

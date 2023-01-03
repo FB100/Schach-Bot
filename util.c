@@ -368,7 +368,7 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     return false;
 }
 
-int getPiecePrice(char pieceType) {
+int getPiecePrice(const char pieceType) {
     switch (pieceType) {
         case 'P':
             return PAWN_PRICE;
