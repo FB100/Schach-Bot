@@ -294,9 +294,6 @@ void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
 
     int index = 0; //Index für moves Array
 
-    // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p;
-    Piece p2;
 
     // wer darf rochieren
     // white king
@@ -364,10 +361,8 @@ void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
 
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            p = board[i][j];
-
-            if (p.white == whiteTurn) {
-                switch (p.type) {
+            if (board[i][j].white == whiteTurn) {
+                switch (board[i][j].type) {
                     case 'P':
                         index = getPawnMoves(board, moves, whiteTurn, i, j, index);
                         break;

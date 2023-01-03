@@ -124,6 +124,7 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
         board[whiteSize][6].type = 'K';
         board[whiteSize][6].white = whiteTurn;
         board[whiteSize][7].type = ' ';
+
     } else if (moveFrom[0] == 'c' && moveFrom[1] == 'l') {
         int whiteSize = (7 * whiteTurn);
         board[whiteSize][0].type = ' ';
@@ -193,7 +194,7 @@ int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             whiteTurn = 1 - whiteTurn;
             i++;
         }
-        for (; i < 100; i += 2) {
+        for (; i < 200; i += 2) {
             printBoard(board);
             if (isGameEnded(board, whiteTurn)) {
                 free(board);

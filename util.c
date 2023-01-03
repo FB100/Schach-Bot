@@ -53,8 +53,8 @@ bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
             }
         }
     }
-// Überprüfe, ob der König von einem gegnerischen Turm oder Dame bedroht wird
-// Horizontal
+    // Überprüfe, ob der König von einem gegnerischen Turm oder Dame bedroht wird
+    // Horizontal
     for (int di = -1; di <= 1; di += 2) {
         for (int k = 1; k < BOARD_SIZE; k++) {
             int ni = ki + di * k;
@@ -68,7 +68,7 @@ bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
             }
         }
     }
-// Vertikal
+    // Vertikal
     for (int dj = -1; dj <= 1; dj++) {
         for (int k = 1; k < BOARD_SIZE; k++) {
             int ni = ki;
@@ -91,7 +91,7 @@ bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
             }
         }
     }
-// König wird von keiner Figur bedroht
+    // König wird von keiner Figur bedroht
     return false;
 }
 
