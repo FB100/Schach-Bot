@@ -289,3 +289,113 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZ
     }
     return index;
 }
+
+void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int castlingRights) {
+
+    int index = 0; //Index für moves Array
+
+    // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
+    Piece p;
+    Piece p2;
+
+    // wer darf rochieren
+    // white king
+    if (castlingRights % 6 && (board[BOARD_SIZE - 1][4].type != 'K' || !board[BOARD_SIZE - 1][4].white)) {
+        castlingRights *= 6;
+    }
+    // white a = 2
+    if (castlingRights % 2 && (board[BOARD_SIZE - 1][0].type != 'R' || !board[BOARD_SIZE - 1][0].white)) {
+        castlingRights *= 2;
+    }
+    // white h = 3
+    if (castlingRights % 3 && (board[BOARD_SIZE - 1][BOARD_SIZE - 1].type != 'R' || !board[BOARD_SIZE - 1][BOARD_SIZE - 1].white)) {
+        castlingRights *= 3;
+    }
+    // black king
+    if (castlingRights % 35 && (board[0][4].type != 'K' || board[0][4].white)) {
+        castlingRights *= 35;
+    }
+    // black a = 5
+    if (castlingRights % 5 && (board[0][0].type != 'R' || board[0][0].white)) {
+        castlingRights *= 5;
+    }
+    // black h = 7
+    if (castlingRights % 7 && (board[0][BOARD_SIZE - 1].type != 'R' || board[0][BOARD_SIZE - 1].white)) {
+        castlingRights *= 7;
+    }
+
+    // lange Rochade
+    int whiteSize = (7 * whiteTurn);
+    if (((castlingRights % 2 && whiteTurn) || (castlingRights % 5 && !whiteTurn)) && board[whiteSize][1].type == ' ' &&
+        board[whiteSize][2].type == ' ' && board[whiteSize][3].type == ' ') {
+        board[whiteSize][0].type = ' ';
+        board[whiteSize][2].type = 'K';
+        board[whiteSize][2].white = whiteTurn;
+        board[whiteSize][3].type = 'R';
+        board[whiteSize][3].white = whiteTurn;
+        board[whiteSize][4].type = ' ';
+        addBoardToArray(board, moves, index);
+        index++;
+        board[whiteSize][0].type = 'R';
+        board[whiteSize][0].white = whiteTurn;
+        board[whiteSize][2].type = ' ';
+        board[whiteSize][3].type = ' ';
+        board[whiteSize][4].type = 'K';
+        board[whiteSize][4].white = whiteTurn;
+    }
+    // kurze Rochade
+    if (((castlingRights % 3 && whiteTurn) || (castlingRights % 7 && !whiteTurn)) && board[whiteSize][5].type == ' ' &&
+        board[whiteSize][6].type == ' ') {
+        board[whiteSize][4].type = ' ';
+        board[whiteSize][5].type = 'R';
+        board[whiteSize][5].white = whiteTurn;
+        board[whiteSize][6].type = 'K';
+        board[whiteSize][6].white = whiteTurn;
+        board[whiteSize][7].type = ' ';
+        addBoardToArray(board, moves, index);
+        index++;
+        board[whiteSize][4].type = 'K';
+        board[whiteSize][4].white = whiteTurn;
+        board[whiteSize][5].type = ' ';
+        board[whiteSize][6].type = ' ';
+        board[whiteSize][7].type = 'R';
+        board[whiteSize][7].white = whiteTurn;
+    }
+
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            p = board[i][j];
+
+            if (p.white == whiteTurn) {
+                switch (p.type) {
+                    case 'P':
+                        index = getPawnMoves(board, moves, whiteTurn, i, j, index);
+                        break;
+
+                    case 'N':
+                        index = getKnightMoves(board, moves, whiteTurn, i, j, index);
+                        break;
+
+                    case 'B':
+                        index = getBishopMoves(board, moves, whiteTurn, i, j, index);
+                        break;
+
+                    case 'R':
+                        index = getRookMoves(board, moves, whiteTurn, i, j, index);
+                        break;
+
+                    case 'Q':
+                        index = getQueenMoves(board, moves, whiteTurn, i, j, index);
+                        break;
+
+                    case 'K':
+                        index = getKingMoves(board, moves, whiteTurn, i, j, index);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+}

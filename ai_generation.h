@@ -15,4 +15,6 @@ int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SI
 
 int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int i, int j, int index);
 
+void getAllMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int castlingRights);
+
 #endif //SCHACH_AI_GENERATION_H

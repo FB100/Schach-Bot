@@ -16,11 +16,21 @@
 #define BOARD_SIZE 8
 #define MAX_ALPHPA_BETA 10000000
 
+
 // --- Structs ---
 // Struktur für eine Schachfigur
 typedef struct {
     char type;
     bool white;
 } Piece;
+
+// Struktur eines Moves
+typedef struct {
+    int preEval;
+    uint8_t special;
+    uint8_t from;
+    uint8_t to;
+
+} Move;
 
 #endif //SCHACH_HEADERS_H
