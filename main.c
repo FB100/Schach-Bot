@@ -155,7 +155,7 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 }
 
 int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
-    int remainingDepth = 6;
+    int remainingDepth = 7;
     int evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
     //TODO Fick game Endings
 

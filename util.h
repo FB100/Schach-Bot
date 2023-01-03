@@ -14,4 +14,6 @@ int getPiecePrice(char pieceType);
 
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]);
 
+void sortMoves(Move arr[], int l, int r);
+
 #endif //SCHACH_UTIL_H

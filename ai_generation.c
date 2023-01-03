@@ -354,4 +354,5 @@ void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], boo
             }
         }
     }
+    sortMoves(moves,0, index);
 }
