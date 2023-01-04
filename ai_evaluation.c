@@ -251,7 +251,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
                         if (initialCall) {
-                            copyBoard(maxBoard, board);
+                            copyBoard(tempBoard, board);
                         }
                         free(moveArray);
                         free(maxBoard);
@@ -277,7 +277,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
                         if (initialCall) {
-                            copyBoard(maxBoard, board);
+                            copyBoard(tempBoard, board);
                         }
                         free(moveArray);
                         free(maxBoard);
@@ -304,7 +304,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
                         if (initialCall) {
-                            copyBoard(maxBoard, board);
+                            copyBoard(tempBoard, board);
                         }
                         free(moveArray);
                         free(maxBoard);
@@ -336,7 +336,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                     evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
                     if (evaluation >= beta) {
                         if (initialCall) {
-                            copyBoard(maxBoard, board);
+                            copyBoard(tempBoard, board);
                         }
                         free(moveArray);
                         free(maxBoard);
