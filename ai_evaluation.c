@@ -57,8 +57,8 @@ int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                                -300, -400, -400, -500, -500, -400, -400, -300,
                                -200, -300, -300, -400, -400, -300, -300, -200,
                                -100, -200, -200, -200, -200, -200, -200, -100,
-                               200, 100, 0, 0, 0, 0, 100, 200,
-                               200, 300, 100, 0, 0, 100, 300, 200};
+                               200, 100, -100, -100, -100, -100, 100, 200,
+                               200, 350, 100, 0, 0, 100, 350, 200};
 
     int modifierKingEnd[64] = {-500, -400, -300, -200, -200, -300, -400, -500,
                                -300, -200, -100, 0, 0, -100, -200, -300,
@@ -130,7 +130,6 @@ int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
             }
         }
     }
-
     return positionModifier;
 }
 
@@ -218,6 +217,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     Move *moveArray = calloc(BOARD_SIZE * BOARD_SIZE * 100, sizeof(Piece));
     getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
 
+    // TODO: falsch das sind nur pseudolegal moves => wenn lehr problem
     // Checkmate or Stalemate
     if (moveArray[0].from == 0 && moveArray[0].to == 0) {
         if (isKingThreatened(board, whiteTurn)) {
@@ -232,6 +232,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
             return 0;
         }
     }
+
     // Iterate over all moves and evaluate
     for (int i = 0; i < 100; ++i) {
         if (moveArray[i].from == 0 && moveArray[i].to == 0) {
@@ -242,6 +243,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
 
         switch (moveArray[i].special) {
             case 0:
+                //normal Moves
                 p = board[moveArray[i].from / 8][moveArray[i].from % 8];
                 p2 = board[moveArray[i].to / 8][moveArray[i].to % 8];
                 board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
@@ -355,7 +357,6 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][4].white = whiteTurn;
                 break;
             default:
-
                 break;
         }
     }
