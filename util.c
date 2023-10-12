@@ -167,7 +167,7 @@ void addBoardToArray(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD
     }
 }
 
-Piece*  createBoard(int boardSize){
+Piece *createBoard(int boardSize) {
     Piece (*board)[] = malloc(sizeof(Piece) * boardSize * boardSize);
     return (Piece *) board;
 }
