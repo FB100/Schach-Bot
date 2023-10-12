@@ -80,7 +80,7 @@ int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
     Piece p = board[i][j];;
     Piece p2;
 
-    //Relative Position der Felder, au die ein Night ziehen kann
+    //Relative Position der Felder, auf die ein Night ziehen kann
     int8_t knightMoves[8][2] = {{2,  1},
                                 {2,  -1},
                                 {-2, 1},

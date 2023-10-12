@@ -1,5 +1,5 @@
 #include "util.h"
-
+#include "headers.h"
 
 // Funktion, die überprüft, ob der König eines Spielers bedroht wird
 bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
@@ -103,6 +103,15 @@ void addBoardToArray(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD
         }
     }
 }
+
+Piece*  createBoard(int boardSize){
+    Piece (*board)[] = malloc(sizeof(Piece) * boardSize * boardSize);
+    if (board == NULL) {
+        fprintf(stderr, "Malloc of board failed");
+    }
+    return (Piece *) board;
+}
+
 
 bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 

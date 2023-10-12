@@ -2,6 +2,8 @@
 #include "init.h"
 #include "ai_evaluation.h"
 #include "util.h"
+#include "headers.h"
+//#include "tests.h"
 
 
 int main(int argc, char **argv) {
@@ -9,10 +11,6 @@ int main(int argc, char **argv) {
 }
 
 int handleArguments(int argc, char **argv) {
-    Piece *board = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
-    if (board == NULL) {
-        fprintf(stderr, "Malloc of board failed");
-    }
 
     bool white = 1;
     bool aiOnly = 0;
@@ -35,6 +33,8 @@ int handleArguments(int argc, char **argv) {
             case 'f':
                 fen = optarg;
                 break;
+            case 't':
+                break;
             case 'h':
                 printHelp();
                 return EXIT_SUCCESS;
@@ -44,6 +44,13 @@ int handleArguments(int argc, char **argv) {
                 return EXIT_FAILURE;
         }
     }
+
+    //create the board
+    Piece (*board)[] = (Piece(*)[]) createBoard(BOARD_SIZE);
+    if (board == NULL) {
+        fprintf(stderr, "Malloc of board failed");
+    }
+
     printf("Begin Game with Parameters: \n");
     printf("-FEN: %s\n", fen);
     printf("-white: %s\n", white ? "true" : "false");
