@@ -3,6 +3,9 @@
 
 #include "headers.h"
 
+void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]);
+
+void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]);
 
 bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
 

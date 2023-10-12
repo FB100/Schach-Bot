@@ -1,5 +1,4 @@
 #include "main.h"
-#include "init.h"
 #include "ai_evaluation.h"
 #include "util.h"
 #include "headers.h"
@@ -49,8 +48,9 @@ int handleArguments(int argc, char **argv) {
     Piece (*board)[] = (Piece(*)[]) createBoard(BOARD_SIZE);
     if (board == NULL) {
         fprintf(stderr, "Malloc of board failed");
+        return EXIT_FAILURE;
     }
-
+    //initialise Game
     printf("Begin Game with Parameters: \n");
     printf("-FEN: %s\n", fen);
     printf("-white: %s\n", white ? "true" : "false");
