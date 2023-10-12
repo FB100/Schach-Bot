@@ -2,7 +2,7 @@
 #include "ai_evaluation.h"
 #include "util.h"
 #include "headers.h"
-//#include "tests.h"
+#include "tests.h"
 
 
 int main(int argc, char **argv) {
@@ -18,9 +18,13 @@ int handleArguments(int argc, char **argv) {
     int opt;
     int option_index = 0;
 
-    static struct option longOptions[] = {{"help", no_argument, 0, 'h'}};
+    static struct option longOptions[] = {
+            {"help",   no_argument, 0, 'h'},
+            {"test",   no_argument, 0, 't'},
+            {"aionly", no_argument, 0, 'o'}
+    };
 
-    while ((opt = getopt_long(argc, argv, "o:b:f:h", longOptions, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "o:b:f:t:h", longOptions, &option_index)) != -1) {
         printf("opt: %c\n\n", opt);
         switch (opt) {
             case 'o':
@@ -33,7 +37,8 @@ int handleArguments(int argc, char **argv) {
                 fen = optarg;
                 break;
             case 't':
-                break;
+                runTests();
+                return EXIT_SUCCESS;
             case 'h':
                 printHelp();
                 return EXIT_SUCCESS;
@@ -65,7 +70,7 @@ void printHelp() {
             "Optional arguments:\n"
             "  -b         Start as black (wird nicht berücksichtigt in AI-only mode)\n"
             "  -f <str>   Start with custom fen string\n"
-            "  -a         Let AI only play\n"
+            "  -o         Let AI only play\n"
             "  -h|--help  Show help message (this text)\n";
 
     fprintf(stderr, "\n%s", help_msg);
