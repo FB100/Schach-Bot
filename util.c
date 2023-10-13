@@ -61,6 +61,52 @@ void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]) {
     }
 }
 
+char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int castlingRights) {
+    char fen[(BOARD_SIZE * BOARD_SIZE) + 1];
+    int index = 0;
+
+    // Piece placement data
+    for (int rank = BOARD_SIZE - 1; rank >= 0; rank--) {
+        int emptySquares = 0;
+        for (int file = 0; file < BOARD_SIZE; file++) {
+            char type = board[rank][file].type;
+            bool white = board[rank][file].white;
+            if (type == ' ') {
+                emptySquares++;
+            } else {
+                if (emptySquares > 0) {
+                    fen[index++] = emptySquares + '0';
+                    emptySquares = 0;
+                }
+                if (white) {
+                    fen[index++] = type;
+                } else {
+                    fen[index++] = toupper(type);
+                }
+            }
+        }
+        if (emptySquares > 0) {
+            fen[index++] = emptySquares + '0';
+        }
+        if (rank > 0) {
+            fen[index++] = '/';
+        }
+    }
+    fen[index++] = ' ';
+
+    // Active color
+    fen[index++] = whitePlays ? 'w' : 'b';
+    fen[index++] = ' ';
+
+    // Castling availability (assuming no castling available)
+    fen[index++] = '-';  // Replace with actual castling availability if needed
+    fen[index++] = ' ';
+
+
+    char *result = strdup(fen);
+    return result;
+}
+
 
 
 
