@@ -62,7 +62,7 @@ void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]) {
 }
 
 char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int castlingRights) {
-    char fen[(BOARD_SIZE * BOARD_SIZE) + 1];
+    char fen[(BOARD_SIZE * BOARD_SIZE) + 20];
     int index = 0;
 
     // Piece placement data

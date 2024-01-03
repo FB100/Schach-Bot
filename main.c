@@ -19,9 +19,10 @@ int handleArguments(int argc, char **argv) {
     int option_index = 0;
 
     static struct option longOptions[] = {
-            {"help",   no_argument, 0, 'h'},
-            {"test",   no_argument, 0, 't'},
-            {"aionly", no_argument, 0, 'o'}
+            {"help",   no_argument,       0, 'h'},
+            {"test",   no_argument,       0, 't'},
+            {"aionly", no_argument,       0, 'o'},
+            {"fen",    required_argument, 0, 'f'}
     };
 
     while ((opt = getopt_long(argc, argv, "o:b:f:t:h", longOptions, &option_index)) != -1) {
