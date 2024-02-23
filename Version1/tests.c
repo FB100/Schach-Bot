@@ -4,7 +4,7 @@
 #include "ai_generation.h"
 
 int runTests() {
-    uint16_t testsFailed = 0;
+    uint16_t testsFailed;
     uint16_t overallTestsFailed = 0;
     const uint16_t numberTests = 4;
 

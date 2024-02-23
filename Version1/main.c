@@ -63,7 +63,8 @@ int handleArguments(int argc, char **argv) {
     printf("-AI only: %s\n", aiOnly ? "true" : "false");
     printf("\n");
     fenToBoard(fen, board);
-    return runGame(board, white, aiOnly);
+    runGame(board, white, aiOnly);
+    return EXIT_SUCCESS;
 }
 
 void printHelp() {
@@ -175,13 +176,14 @@ int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
     return evaluation;
 }
 
-int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
+void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
+
     // AI vs AI Game
     if (aiOnly) {
         for (int i = 1; i < 200; i++) {
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
-                return EXIT_SUCCESS;
+                return;
             }
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
@@ -190,7 +192,7 @@ int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             whiteTurn = 1 - whiteTurn;
         }
         free(board);
-        return EXIT_SUCCESS;
+        return;
     } else {
 
         //AI vs Human game
@@ -199,7 +201,7 @@ int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             printBoard(board);
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
-                return EXIT_SUCCESS;
+                return;
             }
             printf("Move: %d\n", 1);
             printf("Black to move\n");
@@ -211,7 +213,7 @@ int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             printBoard(board);
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
-                return EXIT_SUCCESS;
+                return;
             }
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
@@ -220,7 +222,7 @@ int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             printBoard(board);
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
-                return EXIT_SUCCESS;
+                return;
             }
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
@@ -229,6 +231,6 @@ int runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
         }
 
         free(board);
-        return EXIT_SUCCESS;
+        return;
     }
 }
