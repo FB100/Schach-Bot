@@ -190,7 +190,7 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][B
 }
 
 
-int evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece* tempBoard, Piece *maxBoard, Move *moveArray,
+bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece* tempBoard, Piece *maxBoard, Move *moveArray,
                             bool whiteTurn, bool initialCall, int remainingDepth, int* alpha, int beta, int castlingRights, int round) {
     int evaluation;
     if (!isKingThreatened(board, whiteTurn)) {
@@ -203,13 +203,13 @@ int evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece* tempBoar
             free(moveArray);
             free(maxBoard);
             free(tempBoard);
-            return beta;
+            return true;
         } else if (evaluation > *alpha) {
             *alpha = evaluation;
             copyBoard(board, maxBoard);
         }
     }
-    return beta;
+    return false;
 }
 
 
@@ -273,7 +273,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 p2 = board[move.to / 8][move.to % 8];
                 board[move.from / 8][move.from % 8].type = ' ';
                 board[move.to / 8][move.to % 8] = p;
-                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
+                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                    return beta;
+                }
                 board[move.to / 8][move.to % 8] = p2;
                 board[move.from / 8][move.from % 8] = p;
                 break;
@@ -284,7 +286,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
                 board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
                 board[moveArray[i].to / 8][moveArray[i].to % 8].type = 'Q';
-                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
+                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                    return beta;
+                }
                 board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
                 board[moveArray[i].from / 8][moveArray[i].from % 8] = p;
                 break;
@@ -296,7 +300,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][6].type = 'K';
                 board[whiteSize][6].white = whiteTurn;
                 board[whiteSize][7].type = ' ';
-                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
+                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                    return beta;
+                }
                 board[whiteSize][4].type = 'K';
                 board[whiteSize][4].white = whiteTurn;
                 board[whiteSize][5].type = ' ';
@@ -312,7 +318,9 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][3].type = 'R';
                 board[whiteSize][3].white = whiteTurn;
                 board[whiteSize][4].type = ' ';
-                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
+                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                    return beta;
+                }
                 board[whiteSize][0].type = 'R';
                 board[whiteSize][0].white = whiteTurn;
                 board[whiteSize][2].type = ' ';
@@ -324,6 +332,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 break;
         }
     }
+
     free(moveArray);
     free(tempBoard);
 
