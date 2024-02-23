@@ -6,7 +6,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
     int direction = whiteTurn ? -1 : 1;
 
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];;
+    Piece p = board[i][j];
     Piece p2;
 
     // Ein Feld vorwärts
@@ -77,7 +77,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
 
 int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];;
+    Piece p = board[i][j];
     Piece p2;
 
     //Relative Position der Felder, auf die ein Night ziehen kann
@@ -109,7 +109,7 @@ int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
 
 int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];;
+    Piece p = board[i][j];
     Piece p2;
 
     // Bewege den Läufer in alle 4 Richtungen, solange kein Stein im Weg ist
@@ -145,7 +145,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
 
 int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];;
+    Piece p = board[i][j];
     Piece p2;
 
     // Bewege den Turm in alle 4 Richtungen, solange kein Stein im Weg ist
@@ -201,7 +201,7 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
 
 int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];;
+    Piece p = board[i][j];
     Piece p2;
 
     // Bewege die Dame in alle 4 Richtungen, solange kein Stein im Weg ist
@@ -240,7 +240,6 @@ int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whi
 
 int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];;
     Piece p2;
 
     // Alle 8 möglichen Züge um den König herum
@@ -354,8 +353,8 @@ void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], boo
             }
         }
     }
-    if(index > 100){
-        printf("index: %d",index);
+    if (index > 100) {
+        printf("index: %d", index);
     }
-    sortMoves(moves,0, index - 1);
+    sortMoves(moves, 0, index - 1);
 }

@@ -49,7 +49,7 @@ void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             }
                 // Schachstein
             else {
-                board[i][j].type = toupper(*ptr);
+                board[i][j].type = (char) toupper(*ptr);
                 board[i][j].white = isupper(*ptr);
                 j++;
             }
@@ -81,7 +81,7 @@ char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int
                 if (white) {
                     fen[index++] = type;
                 } else {
-                    fen[index++] = toupper(type);
+                    fen[index++] = (char) toupper(type);
                 }
             }
         }

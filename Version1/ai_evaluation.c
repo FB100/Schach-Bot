@@ -71,62 +71,60 @@ int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
 
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if (board[i][j].type != ' ') {
-                switch (board[i][j].type) {
-                    case 'P':
-                        if (board[i][j].white) {
-                            positionModifier += modifierPawn[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierPawn[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                        break;
-                    case 'N':
-                        if (board[i][j].white) {
-                            positionModifier += modifierKnight[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierKnight[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                        break;
-                    case 'B':
-                        if (board[i][j].white) {
-                            positionModifier += modifierBishop[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierBishop[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                        break;
-                    case 'R':
-                        if (board[i][j].white) {
-                            positionModifier += modifierRook[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierRook[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                        break;
-                    case 'Q':
-                        if (board[i][j].white) {
-                            positionModifier += modifierQueen[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierQueen[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                        break;
+            switch (board[i][j].type) {
+                case 'P':
+                    if (board[i][j].white) {
+                        positionModifier += modifierPawn[(i * BOARD_SIZE) + j];
+                    } else {
+                        positionModifier -= modifierPawn[(63 - (i * BOARD_SIZE) + j)];
+                    }
+                    break;
+                case 'N':
+                    if (board[i][j].white) {
+                        positionModifier += modifierKnight[(i * BOARD_SIZE) + j];
+                    } else {
+                        positionModifier -= modifierKnight[(63 - (i * BOARD_SIZE) + j)];
+                    }
+                    break;
+                case 'B':
+                    if (board[i][j].white) {
+                        positionModifier += modifierBishop[(i * BOARD_SIZE) + j];
+                    } else {
+                        positionModifier -= modifierBishop[(63 - (i * BOARD_SIZE) + j)];
+                    }
+                    break;
+                case 'R':
+                    if (board[i][j].white) {
+                        positionModifier += modifierRook[(i * BOARD_SIZE) + j];
+                    } else {
+                        positionModifier -= modifierRook[(63 - (i * BOARD_SIZE) + j)];
+                    }
+                    break;
+                case 'Q':
+                    if (board[i][j].white) {
+                        positionModifier += modifierQueen[(i * BOARD_SIZE) + j];
+                    } else {
+                        positionModifier -= modifierQueen[(63 - (i * BOARD_SIZE) + j)];
+                    }
+                    break;
 
-                    case 'K':
-                        if (round < 30) {
-                            if (board[i][j].white) {
-                                positionModifier += modifierKingMid[(i * BOARD_SIZE) + j];
-                            } else {
-                                positionModifier -= modifierKingMid[(63 - (i * BOARD_SIZE) + j)];
-                            }
+                case 'K':
+                    if (round < 30) {
+                        if (board[i][j].white) {
+                            positionModifier += modifierKingMid[(i * BOARD_SIZE) + j];
                         } else {
-                            if (board[i][j].white) {
-                                positionModifier += modifierKingEnd[(i * BOARD_SIZE) + j];
-                            } else {
-                                positionModifier -= modifierKingEnd[(63 - (i * BOARD_SIZE) + j)];
-                            }
+                            positionModifier -= modifierKingMid[(63 - (i * BOARD_SIZE) + j)];
                         }
-                        break;
-                    default:
-                        break;
-                }
+                    } else {
+                        if (board[i][j].white) {
+                            positionModifier += modifierKingEnd[(i * BOARD_SIZE) + j];
+                        } else {
+                            positionModifier -= modifierKingEnd[(63 - (i * BOARD_SIZE) + j)];
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -190,8 +188,8 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][B
 }
 
 
-bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece* tempBoard, Piece *maxBoard, Move *moveArray,
-                            bool whiteTurn, bool initialCall, int remainingDepth, int* alpha, int beta, int castlingRights, int round) {
+bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoard, Piece *maxBoard, Move *moveArray,
+                             bool whiteTurn, bool initialCall, int remainingDepth, int *alpha, int beta, int castlingRights, int round) {
     int evaluation;
     if (!isKingThreatened(board, whiteTurn)) {
         copyBoard(board, tempBoard);
@@ -240,7 +238,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     Move *moveArray = calloc(BOARD_SIZE * BOARD_SIZE * 100, sizeof(Piece));
     getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
 
-    // TODO: falsch das sind nur pseudolegal moves => wenn lehr problem
+    // TODO: falsch das sind nur pseudo-legal moves => wenn leer problem
     // Checkmate or Stalemate
     if (moveArray[0].from == 0 && moveArray[0].to == 0) {
         if (isKingThreatened(board, whiteTurn)) {
@@ -273,7 +271,8 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 p2 = board[move.to / 8][move.to % 8];
                 board[move.from / 8][move.from % 8].type = ' ';
                 board[move.to / 8][move.to % 8] = p;
-                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
+                                            castlingRights, round)) {
                     return beta;
                 }
                 board[move.to / 8][move.to % 8] = p2;
@@ -286,7 +285,8 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
                 board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
                 board[moveArray[i].to / 8][moveArray[i].to % 8].type = 'Q';
-                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
+                                            castlingRights, round)) {
                     return beta;
                 }
                 board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
@@ -300,7 +300,8 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][6].type = 'K';
                 board[whiteSize][6].white = whiteTurn;
                 board[whiteSize][7].type = ' ';
-                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
+                                            castlingRights, round)) {
                     return beta;
                 }
                 board[whiteSize][4].type = 'K';
@@ -318,7 +319,8 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][3].type = 'R';
                 board[whiteSize][3].white = whiteTurn;
                 board[whiteSize][4].type = ' ';
-                if(evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round)){
+                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
+                                            castlingRights, round)) {
                     return beta;
                 }
                 board[whiteSize][0].type = 'R';
