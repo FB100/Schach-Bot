@@ -56,12 +56,6 @@ uint16_t runAllFenStringTests(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     return testsFailed;
 }
 
-uint16_t testMoveGeneration() {
-    bool testFailed = 0;
-
-
-    return testFailed;
-}
 
 uint16_t testPawnMoveGeneration(Piece board[BOARD_SIZE][BOARD_SIZE], const char *fen, Move rightMoves[100]) {
     bool testFailed = 0;
