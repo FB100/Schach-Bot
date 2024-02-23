@@ -190,6 +190,29 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][B
 }
 
 
+int evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece* tempBoard, Piece *maxBoard, Move *moveArray,
+                            bool whiteTurn, bool initialCall, int remainingDepth, int* alpha, int beta, int castlingRights, int round) {
+    int evaluation;
+    if (!isKingThreatened(board, whiteTurn)) {
+        copyBoard(board, tempBoard);
+        evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
+        if (evaluation >= beta) {
+            if (initialCall) {
+                copyBoard(tempBoard, board);
+            }
+            free(moveArray);
+            free(maxBoard);
+            free(tempBoard);
+            return beta;
+        } else if (evaluation > *alpha) {
+            *alpha = evaluation;
+            copyBoard(board, maxBoard);
+        }
+    }
+    return beta;
+}
+
+
 // TODO Stellungswiederholung vermeiden, wenn vorne
 // TODO Move ordering
 int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha, int beta,
@@ -235,37 +258,24 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
 
     // Iterate over all moves and evaluate
     for (int i = 0; i < 100; ++i) {
-        if (moveArray[i].from == 0 && moveArray[i].to == 0) {
+        Move move = moveArray[i];
+
+        if (move.from == 0 && move.to == 0) {
             break;
         }
 
         int whiteSize = (7 * whiteTurn);
 
-        switch (moveArray[i].special) {
+        switch (move.special) {
             case 0:
                 //normal Moves
-                p = board[moveArray[i].from / 8][moveArray[i].from % 8];
-                p2 = board[moveArray[i].to / 8][moveArray[i].to % 8];
-                board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
-                board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
-                if (!isKingThreatened(board, whiteTurn)) {
-                    copyBoard(board, tempBoard);
-                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
-                    if (evaluation >= beta) {
-                        if (initialCall) {
-                            copyBoard(tempBoard, board);
-                        }
-                        free(moveArray);
-                        free(maxBoard);
-                        free(tempBoard);
-                        return beta;
-                    } else if (evaluation > alpha) {
-                        alpha = evaluation;
-                        copyBoard(board, maxBoard);
-                    }
-                }
-                board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
-                board[moveArray[i].from / 8][moveArray[i].from % 8] = p;
+                p = board[move.from / 8][move.from % 8];
+                p2 = board[move.to / 8][move.to % 8];
+                board[move.from / 8][move.from % 8].type = ' ';
+                board[move.to / 8][move.to % 8] = p;
+                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
+                board[move.to / 8][move.to % 8] = p2;
+                board[move.from / 8][move.from % 8] = p;
                 break;
             case 1:
                 // Promotion
@@ -274,22 +284,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
                 board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
                 board[moveArray[i].to / 8][moveArray[i].to % 8].type = 'Q';
-                if (!isKingThreatened(board, whiteTurn)) {
-                    copyBoard(board, tempBoard);
-                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
-                    if (evaluation >= beta) {
-                        if (initialCall) {
-                            copyBoard(tempBoard, board);
-                        }
-                        free(moveArray);
-                        free(maxBoard);
-                        free(tempBoard);
-                        return beta;
-                    } else if (evaluation > alpha) {
-                        alpha = evaluation;
-                        copyBoard(board, maxBoard);
-                    }
-                }
+                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
                 board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
                 board[moveArray[i].from / 8][moveArray[i].from % 8] = p;
                 break;
@@ -301,23 +296,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][6].type = 'K';
                 board[whiteSize][6].white = whiteTurn;
                 board[whiteSize][7].type = ' ';
-                if (!isKingThreatened(board, whiteTurn)) {
-                    copyBoard(board, tempBoard);
-                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
-                    if (evaluation >= beta) {
-                        if (initialCall) {
-                            copyBoard(tempBoard, board);
-                        }
-                        free(moveArray);
-                        free(maxBoard);
-                        free(tempBoard);
-                        return beta;
-                    } else if (evaluation > alpha) {
-                        alpha = evaluation;
-                        copyBoard(board, maxBoard);
-                    }
-
-                }
+                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
                 board[whiteSize][4].type = 'K';
                 board[whiteSize][4].white = whiteTurn;
                 board[whiteSize][5].type = ' ';
@@ -333,22 +312,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
                 board[whiteSize][3].type = 'R';
                 board[whiteSize][3].white = whiteTurn;
                 board[whiteSize][4].type = ' ';
-                if (!isKingThreatened(board, whiteTurn)) {
-                    copyBoard(board, tempBoard);
-                    evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -alpha, castlingRights, round);
-                    if (evaluation >= beta) {
-                        if (initialCall) {
-                            copyBoard(tempBoard, board);
-                        }
-                        free(moveArray);
-                        free(maxBoard);
-                        free(tempBoard);
-                        return beta;
-                    } else if (evaluation > alpha) {
-                        alpha = evaluation;
-                        copyBoard(board, maxBoard);
-                    }
-                }
+                beta = evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta, castlingRights, round);
                 board[whiteSize][0].type = 'R';
                 board[whiteSize][0].white = whiteTurn;
                 board[whiteSize][2].type = ' ';
