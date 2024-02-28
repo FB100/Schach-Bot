@@ -3,13 +3,15 @@
 #include "util.h"
 #include "headers.h"
 #include "tests.h"
+#include "zobrist_hashing.h"
 
 
 int main(int argc, char **argv) {
-    return handleArguments(argc, argv);
+    return handleArgumentsAndInitialiseGame(argc, argv);
 }
 
-int handleArguments(int argc, char **argv) {
+
+int handleArgumentsAndInitialiseGame(int argc, char **argv) {
 
     bool white = 1;
     bool aiOnly = 0;
@@ -63,6 +65,7 @@ int handleArguments(int argc, char **argv) {
     printf("-AI only: %s\n", aiOnly ? "true" : "false");
     printf("\n");
     fenToBoard(fen, board);
+    initZobristTable();
     runGame(board, white, aiOnly);
     return EXIT_SUCCESS;
 }
@@ -190,6 +193,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             printf("AI evaluation: %d\n", playAI(board, whiteTurn, i));
             printBoard(board);
             whiteTurn = 1 - whiteTurn;
+
         }
         free(board);
         return;

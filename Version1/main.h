@@ -4,7 +4,7 @@
 #include "headers.h"
 
 
-int handleArguments(int argc, char **argv);
+int handleArgumentsAndInitialiseGame(int argc, char **argv);
 
 void printHelp();
 

@@ -1,4 +1,5 @@
 #include "repetition_table.h"
+#include "zobrist_hashing.h"
 
 ulong hashes[RT_SIZE];
 u_int8_t amount[RT_SIZE] = {0};
@@ -28,4 +29,14 @@ void pushRepetitionTable(ulong h) {
     } else {
         amount[index]++;
     }
+}
+
+//Gibt zurück, ob ein Remis durch Stellungswiederholung passiert
+bool handleRepetitions(Piece board[BOARD_SIZE][BOARD_SIZE]){
+    ulong hash = computeHash(board);
+    if (amountInRepetitionTable(hash) < 3){
+        pushRepetitionTable(hash);
+        return true;
+    }
+    return false;
 }
