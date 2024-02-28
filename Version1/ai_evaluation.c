@@ -1,6 +1,8 @@
 #include "ai_evaluation.h"
 #include "ai_generation.h"
 #include "util.h"
+#include "repetition_table.h"
+#include "zobrist_hashing.h"
 
 
 int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
@@ -191,21 +193,32 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][B
 bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoard, Piece *maxBoard, Move *moveArray,
                              bool whiteTurn, bool initialCall, int remainingDepth, int *alpha, int beta, int castlingRights, int round) {
     int evaluation;
-    if (!isKingThreatened(board, whiteTurn)) {
-        copyBoard(board, tempBoard);
-        evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
-        if (evaluation >= beta) {
-            if (initialCall) {
-                copyBoard(tempBoard, board);
-            }
-            free(moveArray);
-            free(maxBoard);
-            free(tempBoard);
-            return true;
-        } else if (evaluation > *alpha) {
-            *alpha = evaluation;
-            copyBoard(board, maxBoard);
+
+    //TODO Das ist ein placeholder bevor ich richtige Stellungswiederholung mache
+    if (amountInRepetitionTable(computeHash(board)) > 1) {
+        return 0;
+    }
+
+    if (isKingThreatened(board, whiteTurn)) {
+        return false;
+    }
+
+    copyBoard(board, tempBoard);
+    evaluation = 0;
+    if (amountInRepetitionTable(computeHash(board)) < 2) {
+        evaluation =  -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
+    }
+    if (evaluation >= beta) {
+        if (initialCall) {
+            copyBoard(tempBoard, board);
         }
+        free(moveArray);
+        free(maxBoard);
+        free(tempBoard);
+        return true;
+    } else if (evaluation > *alpha) {
+        *alpha = evaluation;
+        copyBoard(board, maxBoard);
     }
     return false;
 }

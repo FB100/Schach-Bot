@@ -4,6 +4,7 @@
 #include "headers.h"
 #include "tests.h"
 #include "zobrist_hashing.h"
+#include "repetition_table.h"
 
 
 int main(int argc, char **argv) {
@@ -83,6 +84,12 @@ void printHelp() {
 
 
 bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
+    if (amountInRepetitionTable(computeHash(board)) >= 2) {
+        printf("-----------------------\n");
+        printf("Remis durch Wiederholung\n");
+        printf("-----------------------\n");
+        return true;
+    }
     Piece (*tempBoard)[BOARD_SIZE] = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
     // TODO remove (just for debug)
     copyBoard(board, tempBoard);
@@ -173,7 +180,14 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 
 int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
     int remainingDepth = 6;
-    int evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
+    int evaluation = -MAX_ALPHPA_BETA;
+    while(evaluation == -MAX_ALPHPA_BETA) {
+        evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
+        remainingDepth--;
+        if (remainingDepth == 0){
+            break;
+        }
+    }
     //TODO Fick game Endings
 
     return evaluation;
@@ -193,7 +207,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             printf("AI evaluation: %d\n", playAI(board, whiteTurn, i));
             printBoard(board);
             whiteTurn = 1 - whiteTurn;
-
+            pushRepetitionTable(computeHash(board));
         }
         free(board);
         return;
@@ -215,6 +229,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
         }
         for (; i < 200; i += 2) {
             printBoard(board);
+            pushRepetitionTable(computeHash(board));
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
                 return;

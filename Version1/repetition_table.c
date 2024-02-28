@@ -16,7 +16,7 @@ uint16_t findIndexRepetitionTable(ulong h) {
 
 u_int8_t amountInRepetitionTable(ulong h) {
     uint16_t index = findIndexRepetitionTable(h);
-    return index == (uint16_t) -1? 0 : amount[index];
+    return index == (uint16_t) -1 ? 0 : amount[index];
 }
 
 void pushRepetitionTable(ulong h) {
@@ -32,9 +32,9 @@ void pushRepetitionTable(ulong h) {
 }
 
 //Gibt zurück, ob ein Remis durch Stellungswiederholung passiert
-bool handleRepetitions(Piece board[BOARD_SIZE][BOARD_SIZE]){
+bool handleRepetitions(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     ulong hash = computeHash(board);
-    if (amountInRepetitionTable(hash) < 3){
+    if (amountInRepetitionTable(hash) < 3) {
         pushRepetitionTable(hash);
         return true;
     }

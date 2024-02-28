@@ -4,6 +4,7 @@
 #include "headers.h"
 
 void initZobristTable();
+
 unsigned long long int computeHash(Piece board[BOARD_SIZE][BOARD_SIZE]);
 
 
