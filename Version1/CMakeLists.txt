@@ -5,4 +5,4 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(Version1
         main.c ai_evaluation.c util.c ai_generation.h ai_generation.c tests.c
-        transposition_table.c)
+        repetition_table.c)

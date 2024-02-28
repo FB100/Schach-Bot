@@ -23,6 +23,9 @@
 #define ROOK_PRICE 563
 #define QUEEN_PRICE 950
 
+//Tablesizes
+#define RT_SIZE 512 //Repetition-table size
+
 
 // --- Structs ---
 // Struktur für eine Schachfigur

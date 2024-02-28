@@ -1,7 +1,6 @@
 #ifndef SCHACH_AI_EVALUATION_H
 #define SCHACH_AI_EVALUATION_H
 
-
 #include "headers.h"
 
 

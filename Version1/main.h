@@ -1,7 +1,6 @@
 #ifndef SCHACH_MAIN_H
 #define SCHACH_MAIN_H
 
-
 #include "headers.h"
 
 
