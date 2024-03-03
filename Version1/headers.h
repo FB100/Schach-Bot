@@ -14,7 +14,6 @@
 // --- Definitions ---
 // Größe des Schachbretts
 #define BOARD_SIZE 8
-#define MAX_ALPHPA_BETA 10000000
 
 // Wert der Figuren
 #define PAWN_PRICE 100
@@ -27,7 +26,9 @@
 #define RT_SIZE 512 //Repetition-table size
 
 // Sonstiges
-#define AI_ONLY_MAX_MOVES 200 //Wie lange aionly games maximal dauern dürfen. danach wird abgebrochen
+#define MAX_MOVES 200 //Wie lange games maximal dauern dürfen. danach wird abgebrochen
+#define MAX_AI_DEPTH 6 //Suchtiefe
+#define MAX_ALPHPA_BETA 10000000
 
 
 // --- Structs ---

@@ -184,7 +184,7 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 }
 
 int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
-    int remainingDepth = 6;
+    int remainingDepth = MAX_AI_DEPTH;
     int evaluation = -MAX_ALPHPA_BETA;
     while (evaluation == -MAX_ALPHPA_BETA) {
         evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
@@ -202,7 +202,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
 
     // AI vs AI Game
     if (aiOnly) {
-        for (int i = 1; i < AI_ONLY_MAX_MOVES; i++) {
+        for (int i = 1; i < MAX_MOVES; i++) {
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
                 return;
@@ -220,6 +220,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
 
         //AI vs Human game
         int i = 1;
+        int evaluation = 0;
         if (!whiteTurn) {
             printBoard(board);
             if (isGameEnded(board, whiteTurn)) {
@@ -232,7 +233,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             whiteTurn = 1 - whiteTurn;
             i++;
         }
-        for (; i < 200; i += 2) {
+        for (; i < MAX_MOVES; i += 2) {
             printBoard(board);
             pushRepetitionTable(computeHash(board));
             if (isGameEnded(board, whiteTurn)) {
@@ -248,9 +249,10 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
                 free(board);
                 return;
             }
+            evaluation = playAI(board, whiteTurn, i);
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
-            printf("AI evaluation: %d\n", playAI(board, whiteTurn, i));
+            printf("AI evaluation: %d\n", evaluation);
             whiteTurn = 1 - whiteTurn;
         }
         free(board);
