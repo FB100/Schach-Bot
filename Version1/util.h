@@ -11,8 +11,6 @@ char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int
 
 bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
 
-void addBoardToArray(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], int index);
-
 Piece *createBoard(int boardSize);
 
 bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
