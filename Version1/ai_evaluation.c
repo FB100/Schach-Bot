@@ -5,16 +5,24 @@
 #include "zobrist_hashing.h"
 
 
+int getPositionModifier(int i, int j, Piece piece, int round) {
+    int modifierPawnMid[64] = {0, 0, 0, 0, 0, 0, 0, 0,
+                               500, 500, 500, 500, 500, 500, 500, 500,
+                               100, 100, 200, 300, 300, 200, 100, 100,
+                               50, 50, 100, 250, 250, 100, 50, 50,
+                               0, 0, 0, 200, 200, 0, 0, 0,
+                               50, -50, -100, 0, 0, -100, -50, 50,
+                               50, 100, 100, -200, -200, 100, 100, 50,
+                               0, 0, 0, 0, 0, 0, 0, 0};
 
-int getPositionModifier(int i, int j, Piece piece, int round){
-    int modifierPawn[64] = {0, 0, 0, 0, 0, 0, 0, 0,
-                            500, 500, 500, 500, 500, 500, 500, 500,
-                            100, 100, 200, 300, 300, 200, 100, 100,
-                            50, 50, 100, 250, 250, 100, 50, 50,
-                            0, 0, 0, 200, 200, 0, 0, 0,
-                            50, -50, -100, 0, 0, -100, -50, 50,
-                            50, 100, 100, -200, -200, 100, 100, 50,
-                            0, 0, 0, 0, 0, 0, 0, 0};
+    int modifierPawnEnd[64] = {0, 0, 0, 0, 0, 0, 0, 0,
+                               500, 500, 500, 500, 500, 500, 500, 500,
+                               400, 400, 400, 400, 400, 400, 400, 400,
+                               300, 300, 300, 300, 300, 300, 300, 300,
+                               200, 200, 200, 200, 200, 200, 200, 200,
+                               100, 100, 100, 100, 100, 100, 100, 100,
+                               0, 0, 0, -200, -200, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0};
 
     int modifierKnight[64] = {-500, -400, -300, -300, -300, -300, -400, -500,
                               -400, -200, 0, 0, 0, 0, -200, -400,
@@ -72,53 +80,62 @@ int getPositionModifier(int i, int j, Piece piece, int round){
 
     switch (piece.type) {
         case 'P':
-            if (piece.white){
-                return modifierPawn[i*BOARD_SIZE+j];
-            } else{
-                return modifierPawn[63-(i*BOARD_SIZE+j)];
+            if (round < 30) {
+                if (piece.white) {
+                    return modifierPawnMid[i * BOARD_SIZE + j];
+                } else {
+                    return -modifierPawnMid[63 - (i * BOARD_SIZE + j)];
+                }
+            } else {
+                if (piece.white) {
+                    return modifierPawnEnd[i * BOARD_SIZE + j];
+                } else {
+                    return -modifierPawnEnd[63 - (i * BOARD_SIZE + j)];
+                }
             }
 
+
         case 'N':
-            if (piece.white){
-                return modifierKnight[i*BOARD_SIZE+j];
-            } else{
-                return modifierKnight[63-(i*BOARD_SIZE+j)];
+            if (piece.white) {
+                return modifierKnight[i * BOARD_SIZE + j];
+            } else {
+                return -modifierKnight[63 - (i * BOARD_SIZE + j)];
             }
 
         case 'B':
-            if (piece.white){
-                return modifierBishop[i*BOARD_SIZE+j];
-            } else{
-                return modifierBishop[63-(i*BOARD_SIZE+j)];
+            if (piece.white) {
+                return modifierBishop[i * BOARD_SIZE + j];
+            } else {
+                return -modifierBishop[63 - (i * BOARD_SIZE + j)];
             }
 
         case 'R':
-            if (piece.white){
-                return modifierRook[i*BOARD_SIZE+j];
-            } else{
-                return modifierRook[63-(i*BOARD_SIZE+j)];
+            if (piece.white) {
+                return modifierRook[i * BOARD_SIZE + j];
+            } else {
+                return -modifierRook[63 - (i * BOARD_SIZE + j)];
             }
 
         case 'Q':
-            if (piece.white){
-                return modifierQueen[i*BOARD_SIZE+j];
-            } else{
-                return modifierQueen[63-(i*BOARD_SIZE+j)];
+            if (piece.white) {
+                return modifierQueen[i * BOARD_SIZE + j];
+            } else {
+                return -modifierQueen[63 - (i * BOARD_SIZE + j)];
             }
 
 
         case 'K':
             if (round < 30) {
-                if (piece.white){
-                    return modifierKingMid[i*BOARD_SIZE+j];
-                } else{
-                    return modifierKingMid[63-(i*BOARD_SIZE+j)];
+                if (piece.white) {
+                    return modifierKingMid[i * BOARD_SIZE + j];
+                } else {
+                    return -modifierKingMid[63 - (i * BOARD_SIZE + j)];
                 }
             } else {
-                if (piece.white){
-                    return modifierKingEnd[i*BOARD_SIZE+j];
-                } else{
-                    return modifierKingEnd[63-(i*BOARD_SIZE+j)];
+                if (piece.white) {
+                    return modifierKingEnd[i * BOARD_SIZE + j];
+                } else {
+                    return -modifierKingEnd[63 - (i * BOARD_SIZE + j)];
                 }
             }
         default:
@@ -171,7 +188,7 @@ int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                 default:
                     break;
             }
-            counterWhite += getPositionModifier(i,j,piece,round);
+            counterWhite += (getPositionModifier(i, j, piece, round) / 10);
         }
     }
     return counterWhite;
