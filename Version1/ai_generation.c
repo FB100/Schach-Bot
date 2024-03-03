@@ -37,8 +37,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
     }
     // Diagonal schlagen (nur möglich bei gegnerischem piece)
     if (j + 1 < BOARD_SIZE) {
-        if (board[i + direction][j + 1].white != whiteTurn &&
-            board[i + direction][j + 1].type != ' ') {
+        if (board[i + direction][j + 1].white != whiteTurn && board[i + direction][j + 1].type != ' ') {
             p2 = board[i + direction][j + 1];
             if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
                 moves[index].from = 8 * i + j;
@@ -57,6 +56,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
     }
     if (j - 1 >= 0) {
         if (board[i + direction][j - 1].white != whiteTurn && board[i + direction][j - 1].type != ' ') {
+            p2 = board[i + direction][j - 1];
             if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j - 1;
