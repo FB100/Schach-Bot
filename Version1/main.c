@@ -95,35 +95,40 @@ bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     copyBoard(board, tempBoard);
     if (!whiteTurn) {
         copyBoard(board, tempBoard);
-        if (!hasLegalMove(tempBoard, false)) {
-            if (isKingThreatened(tempBoard, false)) {
-                printf("-----------------------\n");
-                printf("   Weiß hat Gewonnen   \n");
-                printf("-----------------------\n");
-            } else {
-                printf("------------------------\n");
-                printf("Weiß stalemated Schwarz \n");
-                printf("------------------------\n");
-            }
+        if (hasLegalMove(tempBoard, false)) {
             free(tempBoard);
-            return (true);
+            return (false);
         }
-    }
-    if (whiteTurn) {
+        if (isKingThreatened(tempBoard, false)) {
+            printf("-----------------------\n");
+            printf("   Weiß hat Gewonnen   \n");
+            printf("-----------------------\n");
+        } else {
+            printf("------------------------\n");
+            printf("Weiß stalemated Schwarz \n");
+            printf("------------------------\n");
+        }
+        free(tempBoard);
+        return (true);
+
+    } else {
         copyBoard(board, tempBoard);
-        if (!hasLegalMove(tempBoard, true)) {
-            if (isKingThreatened(tempBoard, true)) {
-                printf("------------------------\n");
-                printf("  Schwarz hat Gewonnen  \n");
-                printf("------------------------\n");
-            } else {
-                printf("------------------------\n");
-                printf("Schwarz stalemated Weiß \n");
-                printf("------------------------\n");
-            }
+        if (hasLegalMove(tempBoard, true)) {
             free(tempBoard);
-            return true;
+            return (false);
         }
+        if (isKingThreatened(tempBoard, true)) {
+            printf("------------------------\n");
+            printf("  Schwarz hat Gewonnen  \n");
+            printf("------------------------\n");
+        } else {
+            printf("------------------------\n");
+            printf("Schwarz stalemated Weiß \n");
+            printf("------------------------\n");
+        }
+        free(tempBoard);
+        return true;
+
     }
     free(tempBoard);
     return (false);
@@ -181,10 +186,10 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
     int remainingDepth = 6;
     int evaluation = -MAX_ALPHPA_BETA;
-    while(evaluation == -MAX_ALPHPA_BETA) {
+    while (evaluation == -MAX_ALPHPA_BETA) {
         evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
         remainingDepth--;
-        if (remainingDepth == 0){
+        if (remainingDepth == 0) {
             break;
         }
     }
@@ -197,7 +202,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
 
     // AI vs AI Game
     if (aiOnly) {
-        for (int i = 1; i < 200; i++) {
+        for (int i = 1; i < AI_ONLY_MAX_MOVES; i++) {
             if (isGameEnded(board, whiteTurn)) {
                 free(board);
                 return;
@@ -248,7 +253,6 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             printf("AI evaluation: %d\n", playAI(board, whiteTurn, i));
             whiteTurn = 1 - whiteTurn;
         }
-
         free(board);
         return;
     }

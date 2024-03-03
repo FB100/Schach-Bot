@@ -23,8 +23,11 @@
 #define ROOK_PRICE 563
 #define QUEEN_PRICE 950
 
-//Tablesizes
+// Tablesizes
 #define RT_SIZE 512 //Repetition-table size
+
+// Sonstiges
+#define AI_ONLY_MAX_MOVES 200 //Wie lange aionly games maximal dauern dürfen. danach wird abgebrochen
 
 
 // --- Structs ---

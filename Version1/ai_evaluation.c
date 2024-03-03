@@ -5,9 +5,8 @@
 #include "zobrist_hashing.h"
 
 
-int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
-    int positionModifier = 0;
 
+int getPositionModifier(int i, int j, Piece piece, int round){
     int modifierPawn[64] = {0, 0, 0, 0, 0, 0, 0, 0,
                             500, 500, 500, 500, 500, 500, 500, 500,
                             100, 100, 200, 300, 300, 200, 100, 100,
@@ -71,66 +70,60 @@ int getPositionModifier(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                                -300, -300, 0, 0, 0, 0, -300, -300,
                                -500, -300, -300, -300, -300, -300, -300, -500};
 
-    for (int i = 0; i < BOARD_SIZE; i++) {
-        for (int j = 0; j < BOARD_SIZE; j++) {
-            switch (board[i][j].type) {
-                case 'P':
-                    if (board[i][j].white) {
-                        positionModifier += modifierPawn[(i * BOARD_SIZE) + j];
-                    } else {
-                        positionModifier -= modifierPawn[(63 - (i * BOARD_SIZE) + j)];
-                    }
-                    break;
-                case 'N':
-                    if (board[i][j].white) {
-                        positionModifier += modifierKnight[(i * BOARD_SIZE) + j];
-                    } else {
-                        positionModifier -= modifierKnight[(63 - (i * BOARD_SIZE) + j)];
-                    }
-                    break;
-                case 'B':
-                    if (board[i][j].white) {
-                        positionModifier += modifierBishop[(i * BOARD_SIZE) + j];
-                    } else {
-                        positionModifier -= modifierBishop[(63 - (i * BOARD_SIZE) + j)];
-                    }
-                    break;
-                case 'R':
-                    if (board[i][j].white) {
-                        positionModifier += modifierRook[(i * BOARD_SIZE) + j];
-                    } else {
-                        positionModifier -= modifierRook[(63 - (i * BOARD_SIZE) + j)];
-                    }
-                    break;
-                case 'Q':
-                    if (board[i][j].white) {
-                        positionModifier += modifierQueen[(i * BOARD_SIZE) + j];
-                    } else {
-                        positionModifier -= modifierQueen[(63 - (i * BOARD_SIZE) + j)];
-                    }
-                    break;
-
-                case 'K':
-                    if (round < 30) {
-                        if (board[i][j].white) {
-                            positionModifier += modifierKingMid[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierKingMid[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                    } else {
-                        if (board[i][j].white) {
-                            positionModifier += modifierKingEnd[(i * BOARD_SIZE) + j];
-                        } else {
-                            positionModifier -= modifierKingEnd[(63 - (i * BOARD_SIZE) + j)];
-                        }
-                    }
-                    break;
-                default:
-                    break;
+    switch (piece.type) {
+        case 'P':
+            if (piece.white){
+                return modifierPawn[i*BOARD_SIZE+j];
+            } else{
+                return modifierPawn[63-(i*BOARD_SIZE+j)];
             }
-        }
+
+        case 'N':
+            if (piece.white){
+                return modifierKnight[i*BOARD_SIZE+j];
+            } else{
+                return modifierKnight[63-(i*BOARD_SIZE+j)];
+            }
+
+        case 'B':
+            if (piece.white){
+                return modifierBishop[i*BOARD_SIZE+j];
+            } else{
+                return modifierBishop[63-(i*BOARD_SIZE+j)];
+            }
+
+        case 'R':
+            if (piece.white){
+                return modifierRook[i*BOARD_SIZE+j];
+            } else{
+                return modifierRook[63-(i*BOARD_SIZE+j)];
+            }
+
+        case 'Q':
+            if (piece.white){
+                return modifierQueen[i*BOARD_SIZE+j];
+            } else{
+                return modifierQueen[63-(i*BOARD_SIZE+j)];
+            }
+
+
+        case 'K':
+            if (round < 30) {
+                if (piece.white){
+                    return modifierKingMid[i*BOARD_SIZE+j];
+                } else{
+                    return modifierKingMid[63-(i*BOARD_SIZE+j)];
+                }
+            } else {
+                if (piece.white){
+                    return modifierKingEnd[i*BOARD_SIZE+j];
+                } else{
+                    return modifierKingEnd[63-(i*BOARD_SIZE+j)];
+                }
+            }
+        default:
+            return 0;
     }
-    return positionModifier;
 }
 
 //counts the number of pieces on the board, first place - white pieces, second - black pieces
@@ -178,9 +171,9 @@ int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
                 default:
                     break;
             }
+            counterWhite += getPositionModifier(i,j,piece,round);
         }
     }
-    counterWhite += getPositionModifier(board, round);
     return counterWhite;
 }
 
@@ -206,7 +199,7 @@ bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoa
     copyBoard(board, tempBoard);
     evaluation = 0;
     if (amountInRepetitionTable(computeHash(board)) < 2) {
-        evaluation =  -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
+        evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
     }
     if (evaluation >= beta) {
         if (initialCall) {
