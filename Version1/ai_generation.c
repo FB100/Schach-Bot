@@ -247,8 +247,7 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
         for (int dj = -1; dj <= 1; dj++) {
             if (di == 0 && dj == 0)
                 continue; // Kein Zug auf die aktuelle Position
-            if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 ||
-                j + dj >= BOARD_SIZE)
+            if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 || j + dj >= BOARD_SIZE)
                 continue; // Zug außerhalb des Bretts
             if (board[i + di][j + dj].white == whiteTurn && board[i + di][j + dj].type != ' ')
                 continue; // Zug auf eigenen Stein
@@ -258,7 +257,6 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
             moves[index].special = 0;
             moves[index].preEval = getPiecePrice(p2.type);
             index++;
-
         }
     }
     return index;
@@ -356,5 +354,5 @@ void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], boo
     if (index > 100) {
         printf("index: %d", index);
     }
-    sortMoves(moves, 0, index - 1);
+    sortMoves(moves, index-1);
 }

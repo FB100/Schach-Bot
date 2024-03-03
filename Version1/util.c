@@ -500,49 +500,18 @@ int getPiecePrice(const char pieceType) {
     }
 }
 
+//TODO memcpy for Efficiency
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]) {
-    for (int i = 0; i < BOARD_SIZE; i++) {
-        for (int j = 0; j < BOARD_SIZE; j++) {
-            newBoard[i][j].type = oldBoard[i][j].type;
-            newBoard[i][j].white = oldBoard[i][j].white;
-        }
-    }
+    memcpy(newBoard,oldBoard,BOARD_SIZE*BOARD_SIZE* sizeof(Piece));
 }
 
-// Mergesort für Move-ordering
-void merge(Move arr[100], int l, int m, int r) {
-    int n1 = m - l + 1;
-    int n2 = r - m;
-    Move L[n1];
-    Move R[n2];
-    for (int i = 0; i < n1; i++) {
-        L[i] = arr[l + i];
-    }
-    for (int i = 0; i < n2; i++) {
-        R[i] = arr[m + 1 + i];
-    }
-    int i = 0, j = 0, k = l;
-    while (i < n1 && j < n2) {
-        if (L[i].preEval >= R[j].preEval) {
-            arr[k++] = L[i++];
-        } else {
-            arr[k++] = R[j++];
-        }
-    }
-    while (i < n1) {
-        arr[k++] = L[i++];
-    }
-    while (j < n2) {
-        arr[k++] = R[j++];
-    }
+//sort Movearray acording to preEval for more efficient AlphaBeta Pruning
+int moveComperator(const void* p, const void* q){
+    return ((Move*)p)->preEval - ((Move*)q)->preEval;
 }
 
-void sortMoves(Move arr[100], int l, int r) {
-    if (l < r) {
-        int m = l + (r - l) / 2;
-        sortMoves(arr, l, m);
-        sortMoves(arr, m + 1, r);
-        merge(arr, l, m, r);
-    }
+void sortMoves(Move arr[100], int size){
+    qsort(arr, size, sizeof(Move), moveComperator);
 }
+
 
