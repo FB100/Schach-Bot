@@ -2,26 +2,28 @@
 #include "headers.h"
 
 void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]) {
-    printf("    A  B  C  D  E  F  G  H\n");
-    printf("  * * * * * * * * * * * * * *\n");
+    printf("      A   B   C   D   E   F   G   H\n");
+    printf("  *   *   *   *   *   *   *   *   *   *\n");
+    printf("  * --------------------------------- *\n");
     for (int i = 0; i < BOARD_SIZE; i++) {
-        printf("%d * ", BOARD_SIZE - i);
+        printf("%d * | ", BOARD_SIZE - i);
         for (int j = 0; j < BOARD_SIZE; j++) {
             char c = board[i][j].type;
             if (c == ' ') {
-                printf("   ");
+                printf("  | ");
             } else {
                 if (board[i][j].white) {
-                    printf("%c  ", c);
+                    printf("%c | ", c);
                 } else {
-                    printf("%c  ", tolower(c));
+                    printf("%c | ", tolower(c));
                 }
             }
         }
         printf("* %d\n", BOARD_SIZE - i);
+        printf("  * --------------------------------- *\n");
     }
-    printf("  * * * * * * * * * * * * * *\n");
-    printf("    A  B  C  D  E  F  G  H\n");
+    printf("  *   *   *   *   *   *   *   *   *   *\n");
+    printf("      A   B   C   D   E   F   G   H\n");
 }
 
 // Funktion, die einen FEN-String in das interne Schachbrett-Format umwandelt
@@ -500,7 +502,6 @@ int getPiecePrice(const char pieceType) {
     }
 }
 
-//TODO memcpy for Efficiency
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]) {
     memcpy(newBoard,oldBoard,BOARD_SIZE*BOARD_SIZE* sizeof(Piece));
 }
