@@ -500,7 +500,7 @@ void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE
 
 //sort Movearray acording to preEval for more efficient AlphaBeta Pruning
 int moveComperator(const void* p, const void* q){
-    return ((Move*)p)->preEval - ((Move*)q)->preEval;
+    return ((Move*)q)->preEval - ((Move*)p)->preEval;
 }
 
 void sortMoves(Move arr[100], int size){

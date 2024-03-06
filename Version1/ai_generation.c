@@ -1,4 +1,5 @@
 #include "ai_generation.h"
+#include "ai_evaluation.h"
 #include "util.h"
 
 
@@ -15,13 +16,13 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (i + direction) + j;
             moves[index].special = 1;
-            moves[index].preEval = getPiecePrice('Q');
+            moves[index].preEval = getPiecePrice('Q') - getPiecePrice('P');
             index++;
         } else {
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (i + direction) + j;
             moves[index].special = 0;
-            moves[index].preEval = 0;
+            moves[index].preEval = abs(getPositionModifierPawn(i + direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
             index++;
         }
         // Zwei Felder vorwärts (nur möglich von Startposition)
@@ -30,7 +31,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + 2 * direction) + j;
                 moves[index].special = 0;
-                moves[index].preEval = 0;
+                moves[index].preEval = abs(getPositionModifierPawn(i + 2 * direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
             }
         }
@@ -43,13 +44,14 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j + 1;
                 moves[index].special = 1;
-                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type) + getPiecePrice('Q');
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
                 index++;
             } else {
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j + 1;
                 moves[index].special = 0;
-                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                moves[index].preEval = getPiecePrice(p2.type);
+                moves[index].preEval += abs(getPositionModifierPawn(i + 2 * direction, j + 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
             }
         }
@@ -61,13 +63,15 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 1;
-                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type) + getPiecePrice('Q');
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
                 index++;
             } else {
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 0;
-                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                moves[index].preEval = getPiecePrice(p2.type);
+                moves[index].preEval += abs(getPositionModifierPawn(i + 2 * direction, j - 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+
                 index++;
             }
         }
@@ -101,7 +105,9 @@ int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
         moves[index].from = 8 * i + j;
         moves[index].to = 8 * (i + di) + j + dj;
         moves[index].special = 0;
-        moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+        moves[index].preEval = getPiecePrice(p2.type);
+        moves[index].preEval += abs(getPositionModifierPawn(i + di, j + dj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+
         index++;
     }
     return index;
@@ -124,7 +130,8 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
                         moves[index].from = 8 * i + j;
                         moves[index].to = 8 * (ni) + nj;
                         moves[index].special = 0;
-                        moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                        moves[index].preEval = getPiecePrice(p2.type);
+                        moves[index].preEval += abs(getPositionModifierPawn(ni, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                         index++;
                     }
                     break; // Beende Schleife
@@ -132,7 +139,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (ni) + nj;
                 moves[index].special = 0;
-                moves[index].preEval = 0;
+                moves[index].preEval = abs(getPositionModifierPawn(ni, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
 
                 ni += di;
@@ -158,7 +165,9 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                     moves[index].from = 8 * i + j;
                     moves[index].to = 8 * (ni) + j;
                     moves[index].special = 0;
-                    moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                    moves[index].preEval = getPiecePrice(p2.type);
+                    moves[index].preEval += abs(getPositionModifierPawn(ni, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+
                     index++;
                 }
                 break; // Beende Schleife
@@ -166,7 +175,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (ni) + j;
             moves[index].special = 0;
-            moves[index].preEval = 0;
+            moves[index].preEval = abs(getPositionModifierPawn(ni, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+
             index++;
 
             ni += di;
@@ -182,7 +192,9 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                     moves[index].from = 8 * i + j;
                     moves[index].to = 8 * i + nj;
                     moves[index].special = 0;
-                    moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
+                    moves[index].preEval = getPiecePrice(p2.type);
+                    moves[index].preEval += abs(getPositionModifierPawn(i, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+
                     index++;
                 }
                 break; // Beende Schleife
@@ -191,6 +203,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
             moves[index].to = 8 * i + nj;
             moves[index].special = 0;
             moves[index].preEval = 0;
+            moves[index].preEval += abs(getPositionModifierPawn(i, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+
             index++;
 
             nj += dj;
@@ -200,41 +214,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
 }
 
 int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
-    // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];
-    Piece p2;
-
-    // Bewege die Dame in alle 4 Richtungen, solange kein Stein im Weg ist
-    for (int di = -1; di <= 1; di++) {
-        for (int dj = -1; dj <= 1; dj++) {
-            if (di == 0 && dj == 0)
-                continue; // Kein Zug auf die aktuelle Position
-            int ni = i + di;
-            int nj = j + dj;
-            while (ni >= 0 && ni < BOARD_SIZE && nj >= 0 &&
-                   nj < BOARD_SIZE) { // Zug innerhalb des Bretts
-                if (board[ni][nj].type != ' ') { // Stein im Weg
-                    if (board[ni][nj].white != whiteTurn && board[ni][nj].type != ' ') { // Gegnerischer Stein
-                        p2 = board[ni][nj];
-                        moves[index].from = 8 * i + j;
-                        moves[index].to = 8 * (ni) + nj;
-                        moves[index].special = 0;
-                        moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice(p.type);
-                        index++;
-                    }
-                    break; // Beende Schleife
-                }
-                moves[index].from = 8 * i + j;
-                moves[index].to = 8 * (ni) + nj;
-                moves[index].special = 0;
-                moves[index].preEval = 0;
-                index++;
-
-                ni += di;
-                nj += dj;
-            }
-        }
-    }
+    index = getRookMoves(board, moves, whiteTurn, i, j, index);
+    index = getBishopMoves(board, moves, whiteTurn, i, j, index);
     return index;
 }
 
@@ -354,5 +335,5 @@ void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], boo
     if (index > 100) {
         printf("index: %d", index);
     }
-    sortMoves(moves, index-1);
+    sortMoves(moves, index - 1);
 }

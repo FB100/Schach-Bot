@@ -339,7 +339,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
         fprintf(stderr, "Malloc of maxBoard failed");
     }
     copyBoard(board, maxBoard);
-    Move *moveArray = calloc(BOARD_SIZE * BOARD_SIZE * 100, sizeof(Piece));
+    Move *moveArray = calloc(100, sizeof(Move));
     getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
 
     // TODO: falsch das sind nur pseudo-legal moves => wenn leer problem
@@ -359,7 +359,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     }
 
     // Iterate over all moves and evaluate
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 100; i++) {
         Move move = moveArray[i];
 
         if (move.from == 0 && move.to == 0) {
