@@ -335,7 +335,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
             }
         }
     }
-    realloc(moves, (index + 1) * sizeof(Move));
+    moves = realloc(moves, (index + 1) * sizeof(Move));
     sortMoves(moves, index - 1);
     return index;
 }
