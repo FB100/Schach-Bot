@@ -368,75 +368,12 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
 
         int whiteSize = (7 * whiteTurn);
 
-        switch (move.special) {
-            case 0:
-                //normal Moves
-                p = board[move.from / 8][move.from % 8];
-                p2 = board[move.to / 8][move.to % 8];
-                board[move.from / 8][move.from % 8].type = ' ';
-                board[move.to / 8][move.to % 8] = p;
-                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
-                                            castlingRights, round)) {
-                    return beta;
-                }
-                board[move.to / 8][move.to % 8] = p2;
-                board[move.from / 8][move.from % 8] = p;
-                break;
-            case 1:
-                // Promotion
-                p = board[moveArray[i].from / 8][moveArray[i].from % 8];
-                p2 = board[moveArray[i].to / 8][moveArray[i].to % 8];
-                board[moveArray[i].from / 8][moveArray[i].from % 8].type = ' ';
-                board[moveArray[i].to / 8][moveArray[i].to % 8] = p;
-                board[moveArray[i].to / 8][moveArray[i].to % 8].type = 'Q';
-                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
-                                            castlingRights, round)) {
-                    return beta;
-                }
-                board[moveArray[i].to / 8][moveArray[i].to % 8] = p2;
-                board[moveArray[i].from / 8][moveArray[i].from % 8] = p;
-                break;
-            case 2:
-                // kurze Rochade
-                board[whiteSize][4].type = ' ';
-                board[whiteSize][5].type = 'R';
-                board[whiteSize][5].white = whiteTurn;
-                board[whiteSize][6].type = 'K';
-                board[whiteSize][6].white = whiteTurn;
-                board[whiteSize][7].type = ' ';
-                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
-                                            castlingRights, round)) {
-                    return beta;
-                }
-                board[whiteSize][4].type = 'K';
-                board[whiteSize][4].white = whiteTurn;
-                board[whiteSize][5].type = ' ';
-                board[whiteSize][6].type = ' ';
-                board[whiteSize][7].type = 'R';
-                board[whiteSize][7].white = whiteTurn;
-                break;
-            case 3:
-                // Lange Rochade
-                board[whiteSize][0].type = ' ';
-                board[whiteSize][2].type = 'K';
-                board[whiteSize][2].white = whiteTurn;
-                board[whiteSize][3].type = 'R';
-                board[whiteSize][3].white = whiteTurn;
-                board[whiteSize][4].type = ' ';
-                if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
-                                            castlingRights, round)) {
-                    return beta;
-                }
-                board[whiteSize][0].type = 'R';
-                board[whiteSize][0].white = whiteTurn;
-                board[whiteSize][2].type = ' ';
-                board[whiteSize][3].type = ' ';
-                board[whiteSize][4].type = 'K';
-                board[whiteSize][4].white = whiteTurn;
-                break;
-            default:
-                break;
+        makeMove(move, board);
+        if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
+                                    castlingRights, round)) {
+            return beta;
         }
+        unmakeMove(move, board);
     }
 
     free(moveArray);

@@ -136,7 +136,7 @@ bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 
 void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     //IO
-    printf("Make a move:");
+    printf("Make from move:");
     printf("Where do you want to move from?\n");
     char moveFrom[10];
     if (scanf("%s", moveFrom) >= 10) {

@@ -495,16 +495,94 @@ int getPiecePrice(const char pieceType) {
 }
 
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]) {
-    memcpy(newBoard,oldBoard,BOARD_SIZE*BOARD_SIZE* sizeof(Piece));
+    memcpy(newBoard, oldBoard, BOARD_SIZE * BOARD_SIZE * sizeof(Piece));
 }
 
 //sort Movearray acording to preEval for more efficient AlphaBeta Pruning
-int moveComperator(const void* p, const void* q){
-    return ((Move*)q)->preEval - ((Move*)p)->preEval;
+int moveComperator(const void *p, const void *q) {
+    return ((Move *) q)->preEval - ((Move *) p)->preEval;
 }
 
-void sortMoves(Move arr[100], int size){
+void sortMoves(int size, Move arr[size]) {
     qsort(arr, size, sizeof(Move), moveComperator);
 }
 
+void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
+    int whiteSize;
 
+    switch (move.special) {
+        case 0:
+            //normal Moves
+            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
+            board[move.from / 8][move.from % 8].type = ' ';
+            break;
+        case 1:
+            // Promotion
+            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
+            board[move.to / 8][move.to % 8].type = 'Q';
+            board[move.from / 8][move.from % 8].type = ' ';
+            break;
+        case 2:
+            whiteSize = (move.to - 2) / 8;
+            // kurze Rochade
+            board[whiteSize][4].type = ' ';
+            board[whiteSize][5].type = 'R';
+            board[whiteSize][5].white = whiteSize / 7;
+            board[whiteSize][6].type = 'K';
+            board[whiteSize][6].white = whiteSize / 7;
+            board[whiteSize][7].type = ' ';
+            break;
+        case 3:
+            whiteSize = (move.to - 2) / 8;
+            // Lange Rochade
+            board[whiteSize][0].type = ' ';
+            board[whiteSize][2].type = 'K';
+            board[whiteSize][2].white = whiteSize / 7;
+            board[whiteSize][3].type = 'R';
+            board[whiteSize][3].white = whiteSize / 7;
+            board[whiteSize][4].type = ' ';
+            break;
+        default:
+            break;
+    }
+}
+
+void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
+    int whiteSize;
+
+    switch (move.special) {
+        case 0:
+            //normal Moves
+            board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
+            board[move.to / 8][move.to % 8].type = ' ';
+            break;
+        case 1:
+            // Promotion
+            board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
+            board[move.from / 8][move.from % 8].type = 'P';
+            board[move.to / 8][move.to % 8].type = ' ';
+            break;
+        case 2:
+            whiteSize = (move.to - 2) / 8;
+            // kurze Rochade
+            board[whiteSize][4].type = 'K';
+            board[whiteSize][4].white = whiteSize / 7;
+            board[whiteSize][5].type = ' ';
+            board[whiteSize][6].type = ' ';
+            board[whiteSize][7].type = 'R';
+            board[whiteSize][7].white = whiteSize / 7;
+            break;
+        case 3:
+            whiteSize = (move.to - 2) / 8;
+            // Lange Rochade
+            board[whiteSize][0].type = 'R';
+            board[whiteSize][0].white = whiteSize / 7;
+            board[whiteSize][2].type = ' ';
+            board[whiteSize][3].type = ' ';
+            board[whiteSize][4].type = 'K';
+            board[whiteSize][4].white = whiteSize / 7;
+            break;
+        default:
+            break;
+    }
+}

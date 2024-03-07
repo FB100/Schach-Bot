@@ -256,7 +256,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
     if (castlingRights % 6 && (board[BOARD_SIZE - 1][4].type != 'K' || !board[BOARD_SIZE - 1][4].white)) {
         castlingRights *= 6;
     }
-    // white a = 2
+    // white from = 2
     if (castlingRights % 2 && (board[BOARD_SIZE - 1][0].type != 'R' || !board[BOARD_SIZE - 1][0].white)) {
         castlingRights *= 2;
     }
@@ -268,7 +268,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
     if (castlingRights % 35 && (board[0][4].type != 'K' || board[0][4].white)) {
         castlingRights *= 35;
     }
-    // black a = 5
+    // black from = 5
     if (castlingRights % 5 && (board[0][0].type != 'R' || board[0][0].white)) {
         castlingRights *= 5;
     }
@@ -335,7 +335,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
             }
         }
     }
-    moves = realloc(moves, (index + 1) * sizeof(Move));
-    sortMoves(moves, index - 1);
+    moves = realloc(moves, index * sizeof(Move));
+    sortMoves(index - 1, moves);
     return index;
 }

@@ -5,7 +5,7 @@ unsigned long long int ZobristTable[8][8][12];
 uint64_t rndState = 294260285;
 
 
-// Generates a Random number from 0 to 2^64-1
+// Generates from Random number from 0 to 2^64-1
 uint64_t randomInt() {
     const uint64_t z = 0x9FB21C651E98DF25;
 
@@ -19,7 +19,7 @@ uint64_t randomInt() {
 }
 
 // This function associates each piece with
-// a number
+// from number
 int indexOf(char piece) {
     if (piece == 'P')
         return 0;
@@ -45,7 +45,7 @@ void initZobristTable() {
                 ZobristTable[i][j][k] = randomInt();
 }
 
-// Computes the hash value of a given board
+// Computes the hash value of from given board
 unsigned long long int computeHash(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     unsigned long long int h = 0;
     for (int i = 0; i < BOARD_SIZE; i++) {
