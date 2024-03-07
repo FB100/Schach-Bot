@@ -276,7 +276,7 @@ int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
 }
 
 
-void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[100][BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
+void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[MAX_MOVE_ARRAY_SIZE][BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
 // TODO am Ende vor der Evaluation über diese Methode nur ruhige Positionen bewerten
 }
 
@@ -339,8 +339,8 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
         fprintf(stderr, "Malloc of maxBoard failed");
     }
     copyBoard(board, maxBoard);
-    Move *moveArray = calloc(100, sizeof(Move));
-    getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
+    Move *moveArray = calloc(MAX_MOVE_ARRAY_SIZE, sizeof(Move));
+    int moveArraySize = getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
 
     // TODO: falsch das sind nur pseudo-legal moves => wenn leer problem
     // Checkmate or Stalemate
@@ -359,7 +359,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     }
 
     // Iterate over all moves and evaluate
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < moveArraySize; i++) {
         Move move = moveArray[i];
 
         if (move.from == 0 && move.to == 0) {

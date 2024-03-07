@@ -3,7 +3,7 @@
 #include "util.h"
 
 
-int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
+int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     int direction = whiteTurn ? -1 : 1;
 
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
@@ -31,7 +31,8 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + 2 * direction) + j;
                 moves[index].special = 0;
-                moves[index].preEval = abs(getPositionModifierPawn(i + 2 * direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                moves[index].preEval =
+                        abs(getPositionModifierPawn(i + 2 * direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
             }
         }
@@ -51,7 +52,8 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                 moves[index].to = 8 * (i + direction) + j + 1;
                 moves[index].special = 0;
                 moves[index].preEval = getPiecePrice(p2.type);
-                moves[index].preEval += abs(getPositionModifierPawn(i + 2 * direction, j + 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                moves[index].preEval +=
+                        abs(getPositionModifierPawn(i + 2 * direction, j + 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
             }
         }
@@ -70,7 +72,8 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 0;
                 moves[index].preEval = getPiecePrice(p2.type);
-                moves[index].preEval += abs(getPositionModifierPawn(i + 2 * direction, j - 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                moves[index].preEval +=
+                        abs(getPositionModifierPawn(i + 2 * direction, j - 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
 
                 index++;
             }
@@ -79,7 +82,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
     return index;
 }
 
-int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
+int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];
     Piece p2;
@@ -113,7 +116,7 @@ int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
     return index;
 }
 
-int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
+int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];
     Piece p2;
@@ -150,7 +153,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool wh
     return index;
 }
 
-int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
+int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];
     Piece p2;
@@ -213,13 +216,13 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
     return index;
 }
 
-int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
+int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     index = getRookMoves(board, moves, whiteTurn, i, j, index);
     index = getBishopMoves(board, moves, whiteTurn, i, j, index);
     return index;
 }
 
-int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int i, int j, int index) {
+int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p2;
 
@@ -243,7 +246,7 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whit
     return index;
 }
 
-void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], bool whiteTurn, int castlingRights) {
+int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int castlingRights) {
 
     int index = 0; //Index für moves Array
 
@@ -332,8 +335,7 @@ void getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[100], boo
             }
         }
     }
-    if (index > 100) {
-        printf("index: %d", index);
-    }
+    realloc(moves, (index + 1) * sizeof(Move));
     sortMoves(moves, index - 1);
+    return index;
 }
