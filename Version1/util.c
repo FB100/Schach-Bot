@@ -523,7 +523,7 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[move.from / 8][move.from % 8].type = ' ';
             break;
         case 2:
-            whiteSize = (move.to - 2) / 8;
+            whiteSize = (move.from - 4) / 8;
             // kurze Rochade
             board[whiteSize][4].type = ' ';
             board[whiteSize][5].type = 'R';
@@ -533,7 +533,7 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[whiteSize][7].type = ' ';
             break;
         case 3:
-            whiteSize = (move.to - 2) / 8;
+            whiteSize = (move.from - 4) / 8;
             // Lange Rochade
             board[whiteSize][0].type = ' ';
             board[whiteSize][2].type = 'K';
@@ -563,7 +563,7 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[move.to / 8][move.to % 8].type = ' ';
             break;
         case 2:
-            whiteSize = (move.to - 2) / 8;
+            whiteSize = (move.from - 4) / 8;
             // kurze Rochade
             board[whiteSize][4].type = 'K';
             board[whiteSize][4].white = whiteSize / 7;
@@ -573,7 +573,7 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[whiteSize][7].white = whiteSize / 7;
             break;
         case 3:
-            whiteSize = (move.to - 2) / 8;
+            whiteSize = (move.from - 4) / 8;
             // Lange Rochade
             board[whiteSize][0].type = 'R';
             board[whiteSize][0].white = whiteSize / 7;

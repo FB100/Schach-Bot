@@ -144,27 +144,21 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
         fprintf(stderr, "-%s-\n", moveFrom);
         return;
     }
+    Move move;
 
     if (moveFrom[0] == 'c' && moveFrom[1] == 's') {
         int whiteSize = (7 * whiteTurn);
-        board[whiteSize][4].type = ' ';
-        board[whiteSize][5].type = 'R';
-        board[whiteSize][5].white = whiteTurn;
-        board[whiteSize][6].type = 'K';
-        board[whiteSize][6].white = whiteTurn;
-        board[whiteSize][7].type = ' ';
+        move.from = 8 * whiteSize + 4;
+        move.to = 8 * whiteSize + 6;
+        move.special = 2;
 
     } else if (moveFrom[0] == 'c' && moveFrom[1] == 'l') {
         int whiteSize = (7 * whiteTurn);
-        board[whiteSize][0].type = ' ';
-        board[whiteSize][1].type = ' ';
-        board[whiteSize][2].type = 'K';
-        board[whiteSize][2].white = whiteTurn;
-        board[whiteSize][3].type = 'R';
-        board[whiteSize][3].white = whiteTurn;
-        board[whiteSize][4].type = ' ';
-    } else {
+        move.from = 8 * whiteSize + 4;
+        move.to = 8 * whiteSize + 2;
+        move.special = 3;
 
+    } else {
         printf("Where do you want to move to?\n");
         char moveTo[10];
         if (scanf("%s", moveTo) >= 5) {
@@ -173,13 +167,17 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
             return;
         }
 
-        //Translate IO to board
-        char tempType = board[8 - (moveFrom[1] - 48)][moveFrom[0] - 97].type;
-        bool tempWhite = board[8 - (moveFrom[1] - 48)][moveFrom[0] - 97].white;
-        board[8 - (moveFrom[1] - 48)][moveFrom[0] - 97].type = ' ';
-        board[8 - (moveTo[1] - 48)][moveTo[0] - 97].type = tempType;
-        board[8 - (moveTo[1] - 48)][moveTo[0] - 97].white = tempWhite;
+        //Normal moves
+        move.from = 8 * (8 - (moveFrom[1] - 48)) + (moveFrom[0] - 97);
+        move.to = 8 * (8 - (moveTo[1] - 48)) + (moveTo[0] - 97);
+        if (board[move.from / 8][move.from % 8].type == 'P' && (8 * (8 - (moveTo[1] - 48)) == BOARD_SIZE - 1 || 8 - (moveTo[1] - 48) == 0)) {
+            move.special = 1; //Promotion
+        }else{
+            move.special = 0;
+        }
+
     }
+    makeMove(move, board);
     printf("The new Board looks like this: \n");
 }
 
