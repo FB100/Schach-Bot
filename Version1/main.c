@@ -5,6 +5,7 @@
 #include "tests.h"
 #include "zobrist_hashing.h"
 #include "repetition_table.h"
+#include "additional_functionality/precompute_bitboards.h"
 
 
 int main(int argc, char **argv) {
@@ -24,11 +25,12 @@ int handleArgumentsAndInitialiseGame(int argc, char **argv) {
     static struct option longOptions[] = {
             {"help",   no_argument,       0, 'h'},
             {"test",   no_argument,       0, 't'},
+            {"preComp",   no_argument,       0, 'p'},
             {"aionly", no_argument,       0, 'o'},
             {"fen",    required_argument, 0, 'f'}
     };
 
-    while ((opt = getopt_long(argc, argv, "o:b:f:t:h", longOptions, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "o:b:f:t:p:h", longOptions, &option_index)) != -1) {
         printf("opt: %c\n\n", opt);
         switch (opt) {
             case 'o':
@@ -42,6 +44,9 @@ int handleArgumentsAndInitialiseGame(int argc, char **argv) {
                 break;
             case 't':
                 runTests();
+                return EXIT_SUCCESS;
+            case 'p':
+                precomputeKnightMoves();
                 return EXIT_SUCCESS;
             case 'h':
                 printHelp();

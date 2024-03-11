@@ -507,6 +507,14 @@ void sortMoves(int size, Move arr[size]) {
     qsort(arr, size, sizeof(Move), moveComperator);
 }
 
+//pops the Least Significant Bit off an Int and returns its Position
+uint64_t popLSB(int *num) {
+    uint64_t pos = 0;
+    _BitScanForward64(&pos, *num);
+    *num ^= 1 << (pos-1);
+    return pos;
+}
+
 void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
     int whiteSize;
 
