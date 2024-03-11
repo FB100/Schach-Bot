@@ -524,12 +524,6 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
             board[move.from / 8][move.from % 8].type = ' ';
             break;
-        case 1:
-            // Promotion
-            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
-            board[move.to / 8][move.to % 8].type = 'Q';
-            board[move.from / 8][move.from % 8].type = ' ';
-            break;
         case 2:
             whiteSize = (move.from - 4) / 8;
             // kurze Rochade
@@ -550,6 +544,30 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[whiteSize][3].white = whiteSize / 7;
             board[whiteSize][4].type = ' ';
             break;
+        case 4:
+            // Promotion Dame
+            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
+            board[move.to / 8][move.to % 8].type = 'Q';
+            board[move.from / 8][move.from % 8].type = ' ';
+            break;
+        case 5:
+            // Promotion Turm
+            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
+            board[move.to / 8][move.to % 8].type = 'R';
+            board[move.from / 8][move.from % 8].type = ' ';
+            break;
+        case 6:
+            // Promotion Läufer
+            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
+            board[move.to / 8][move.to % 8].type = 'B';
+            board[move.from / 8][move.from % 8].type = ' ';
+            break;
+        case 7:
+            // Promotion Springer
+            board[move.to / 8][move.to % 8] = board[move.from / 8][move.from % 8];
+            board[move.to / 8][move.to % 8].type = 'N';
+            board[move.from / 8][move.from % 8].type = ' ';
+            break;
         default:
             break;
     }
@@ -562,12 +580,6 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
         case 0:
             //normal Moves
             board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
-            board[move.to / 8][move.to % 8].type = ' ';
-            break;
-        case 1:
-            // Promotion
-            board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
-            board[move.from / 8][move.from % 8].type = 'P';
             board[move.to / 8][move.to % 8].type = ' ';
             break;
         case 2:
@@ -589,6 +601,12 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             board[whiteSize][3].type = ' ';
             board[whiteSize][4].type = 'K';
             board[whiteSize][4].white = whiteSize / 7;
+            break;
+        case 4 ... 7:
+            // Promotion
+            board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
+            board[move.from / 8][move.from % 8].type = 'P';
+            board[move.to / 8][move.to % 8].type = ' ';
             break;
         default:
             break;

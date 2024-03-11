@@ -13,16 +13,20 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
     // Ein Feld vorwärts
     if (board[i + direction][j].type == ' ') {
         if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
-            moves[index].from = 8 * i + j;
-            moves[index].to = 8 * (i + direction) + j;
-            moves[index].special = 1;
-            moves[index].preEval = getPiecePrice('Q') - getPiecePrice('P');
-            index++;
+            //Alle 4 Promotionen
+            for (int k = 0; k < 3; k++) {
+                moves[index].from = 8 * i + j;
+                moves[index].to = 8 * (i + direction) + j;
+                moves[index].special = 4 + k;
+                moves[index].preEval = getPiecePrice('Q') - getPiecePrice('P'); //TODO hier richtiges Piece nicht immer Queen
+                index++;
+            }
         } else {
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (i + direction) + j;
             moves[index].special = 0;
-            moves[index].preEval = abs(getPositionModifierPawn(i + direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+            moves[index].preEval =
+                    abs(getPositionModifierPawn(i + direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
             index++;
         }
         // Zwei Felder vorwärts (nur möglich von Startposition)
@@ -42,11 +46,14 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
         if (board[i + direction][j + 1].white != whiteTurn && board[i + direction][j + 1].type != ' ') {
             p2 = board[i + direction][j + 1];
             if (i + direction == BOARD_SIZE - 1 || i + direction == 0) {
-                moves[index].from = 8 * i + j;
-                moves[index].to = 8 * (i + direction) + j + 1;
-                moves[index].special = 1;
-                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
-                index++;
+                //Alle 4 Promotionen
+                for (int k = 0; k < 3; k++) {
+                    moves[index].from = 8 * i + j;
+                    moves[index].to = 8 * (i + direction) + j + 1;
+                    moves[index].special = 4 + k;
+                    moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
+                    index++;
+                }
             } else {
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j + 1;

@@ -47,7 +47,16 @@ typedef struct {
     uint8_t special;
     uint8_t from;
     uint8_t to;
-
 } Move;
+/* spezial:
+ * 0: normaler Move
+ * 1: En Passant
+ * 2: kurze Rochade
+ * 3: lange Rochade
+ * 4: Promotion Dame
+ * 5: Promotion Turm
+ * 6: Promotion Läufer
+ * 7: Promotion Springer
+*/
 
 #endif //SCHACH_HEADERS_H
