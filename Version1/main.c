@@ -176,7 +176,21 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
         move.from = 8 * (8 - (moveFrom[1] - 48)) + (moveFrom[0] - 97);
         move.to = 8 * (8 - (moveTo[1] - 48)) + (moveTo[0] - 97);
         if (board[move.from / 8][move.from % 8].type == 'P' && (8 * (8 - (moveTo[1] - 48)) == BOARD_SIZE - 1 || 8 - (moveTo[1] - 48) == 0)) {
-            move.special = 1; //Promotion
+            //Promotion
+            printf("What do you want to Promote to?\n");
+            char promoteTo[10];
+            if (scanf("%s", promoteTo) >= 5) {
+                fprintf(stderr, "Invalid input: ");
+                fprintf(stderr, "-%s-\n", moveFrom);
+                return;
+            }
+            switch (toupper(promoteTo[0])) {
+                case 'Q': move.special = 4; break;
+                case 'R': move.special = 5; break;
+                case 'B': move.special = 6; break;
+                case 'N': move.special = 7; break;
+                default: move.special = 0;
+            }
         }else{
             move.special = 0;
         }
