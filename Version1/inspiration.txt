@@ -1,0 +1,41 @@
+This is a file with liks to useful resources, that aid the Development of this Engine
+
+Wikis:
+
+    Chessprogrammingwiki:
+        https://www.chessprogramming.org
+
+    Stockfish Evaluation Guide:
+        https://hxim.github.io/Stockfish-Evaluation-Guide/
+
+Engines in C:
+
+    Engine in C by Bartek Spitza:
+        https://github.com/bartekspitza/sophia
+        https://www.youtube.com/watch?v=w4FFX_otR-4
+
+    Engine in C by Brendon Schlaman:
+        https://github.com/bschlaman/chess
+
+    TSCP by Tom Kerrigan:
+        http://www.tckerrigan.com/Chess/TSCP/
+
+Engines in other Languages:
+
+    Engine in C# by Sebastian Lague:
+        https://github.com/SebLague/Chess-Coding-Adventure
+        https://www.youtube.com/watch?v=U4ogK0MIzqk
+        https://www.youtube.com/watch?v=_vqlIPDR2TU
+
+    Fast Movegenerator in C++ by Danial Inführ:
+        https://github.com/Gigantua/Gigantua
+        https://www.codeproject.com/Articles/5313417/Worlds-fastest-Bitboard-Chess-Movegenerator
+
+Other:
+
+    Lichess Analysis Board:
+        https://lichess.org/analysis
+
+
+
+
