@@ -26,6 +26,29 @@ void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     printf("      A   B   C   D   E   F   G   H\n");
 }
 
+void printBitBoard(uint64_t bitboard) {
+    printf("%lu\n",bitboard);
+    char printBoard[64] = {0};
+
+    unsigned long x;
+    do {
+        x = popLSB(&bitboard);
+        printBoard[x] = 1;
+    } while (bitboard);
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            if(printBoard[i*BOARD_SIZE+j] == 1){
+                printf("1 ");
+            }else{
+                printf("0 ");
+            }
+
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 // Funktion, die einen FEN-String in das interne Schachbrett-Format umwandelt
 void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]) {
     // Alle Felder leer machen
@@ -508,14 +531,14 @@ void sortMoves(int size, Move arr[size]) {
 }
 
 //pops the Least Significant Bit off an Int and returns its Position
-uint64_t popLSB(int *num) {
+uint64_t popLSB(uint64_t *num) {
     uint64_t pos = 0;
     _BitScanForward64(&pos, *num);
-    *num ^= 1 << (pos-1);
+    *num ^= 1ULL << (pos);
     return pos;
 }
 
-void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
+void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBordBord) {
     int whiteSize;
 
     switch (move.special) {
@@ -573,7 +596,7 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
     }
 }
 
-void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]) {
+void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBordBord) {
     int whiteSize;
 
     switch (move.special) {

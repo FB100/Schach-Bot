@@ -1,4 +1,5 @@
 #include "precompute_bitboards.h"
+#include "../util.h"
 
 void precomputeKnightMoves() {
     uint64_t moves[64] = {0};
@@ -21,10 +22,10 @@ void precomputeKnightMoves() {
                 int dj = (int) knightMoves[k][1];
                 if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 || j + dj >= BOARD_SIZE)
                     continue; // Zug außerhalb des Bretts
-                bitboard ^= 1 << (8*(i+di)+(j+dj));
+                bitboard ^= 1ULL << (8*(i+di)+(j+dj));
             }
             moves[8*i+j] = bitboard;
-            printf("%lu, ",bitboard);
+            printBitBoard(bitboard);
         }
     }
 }

@@ -30,7 +30,7 @@
 // Sonstiges
 #define MAX_MOVES 200 //Wie lange games maximal dauern dürfen. danach wird abgebrochen
 #define MAX_AI_DEPTH 7 //Suchtiefe
-#define MAX_ALPHPA_BETA 10000000
+#define MAX_ALPHA_BETA 10000000
 #define MAX_MOVE_ARRAY_SIZE 218
 
 
@@ -44,6 +44,7 @@ typedef struct {
 // Struktur eines Moves
 typedef struct {
     int preEval;
+    char type;
     uint8_t special;
     uint8_t from;
     uint8_t to;
@@ -58,6 +59,33 @@ typedef struct {
  * 6: Promotion Läufer
  * 7: Promotion Springer
 */
+
+typedef uint64_t Bitboard;
+
+typedef struct {
+    Bitboard pawn_W;
+    Bitboard knight_W;
+    Bitboard bishop_W;
+    Bitboard rook_W;
+    Bitboard queen_W;
+    Bitboard king_W;
+    Bitboard pawn_B;
+    Bitboard knight_B;
+    Bitboard bishop_B;
+    Bitboard rook_B;
+    Bitboard queen_B;
+    Bitboard king_B;
+    int turn;
+    int castling;
+    int epSquare; //En Passant Square
+    u_short whiteKingSq;
+    u_short blackKingSq;
+    Bitboard occupancy;
+    Bitboard occupancyWhite;
+    Bitboard occupancyBlack;
+    Bitboard hash; //Zobrist hash
+    Bitboard attacks; // The attack mask of the other side
+} Board;
 
 enum SQUARES {
     H1, G1, F1, E1, D1, C1, B1, A1,

@@ -90,7 +90,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
 }
 
 //TODO Precompute using Bitboards
-int getKnightMoves(Piece board[8][8], Move moves[218], bool whiteTurn, int i, int j, int index) {
+int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];
     Piece p2;
@@ -115,6 +115,7 @@ int getKnightMoves(Piece board[8][8], Move moves[218], bool whiteTurn, int i, in
         p2 = board[i + di][j + dj];
         moves[index].from = 8 * i + j;
         moves[index].to = 8 * (i + di) + j + dj;
+        moves[index].type = 'K';
         moves[index].special = 0;
         moves[index].preEval = getPiecePrice(p2.type);
         moves[index].preEval += abs(getPositionModifierPawn(i + di, j + dj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));

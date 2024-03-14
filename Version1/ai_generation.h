@@ -5,7 +5,7 @@
 
 int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index);
 
-int getKnightMoves(Piece board[8][8], Move moves[218], bool whiteTurn, int i, int j, int index);
+int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index);
 
 int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index);
 

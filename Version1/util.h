@@ -41,6 +41,8 @@ static inline unsigned char _BitScanReverse64(unsigned long *Index, uint64_t Mas
 
 void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]);
 
+void printBitBoard(uint64_t bitboard);
+
 void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]);
 
 char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int castlingRights);
@@ -55,10 +57,12 @@ int getPiecePrice(char pieceType);
 
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]);
 
-void sortMoves(int size, Move arr[100]);
+void sortMoves(int size, Move arr[size]);
 
-void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]);
+uint64_t popLSB(uint64_t *num);
 
-void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE]);
+void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBordBord);
+
+void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBordBord);
 
 #endif //SCHACH_UTIL_H

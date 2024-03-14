@@ -196,15 +196,18 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
         }
 
     }
-    makeMove(move, board);
+
+    void *v;
+
+    makeMove(move, board, v);
     printf("The new Board looks like this: \n");
 }
 
 int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
     int remainingDepth = MAX_AI_DEPTH;
-    int evaluation = -MAX_ALPHPA_BETA;
-    while (evaluation == -MAX_ALPHPA_BETA) {
-        evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHPA_BETA, MAX_ALPHPA_BETA, 1, round);
+    int evaluation = -MAX_ALPHA_BETA;
+    while (evaluation == -MAX_ALPHA_BETA) {
+        evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHA_BETA, MAX_ALPHA_BETA, 1, round);
         remainingDepth--;
         if (remainingDepth == 0) {
             break;

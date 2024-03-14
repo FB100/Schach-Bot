@@ -349,7 +349,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
             free(maxBoard);
             free(moveArray);
             free(tempBoard);
-            return -MAX_ALPHPA_BETA;
+            return -MAX_ALPHA_BETA;
         } else {
             free(maxBoard);
             free(moveArray);
@@ -357,6 +357,8 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
             return 0;
         }
     }
+
+    void *v;
 
     // Iterate over all moves and evaluate
     for (int i = 0; i < moveArraySize; i++) {
@@ -368,12 +370,12 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
 
         int whiteSize = (7 * whiteTurn);
 
-        makeMove(move, board);
+        makeMove(move, board, (Board *) v);
         if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
                                     castlingRights, round)) {
             return beta;
         }
-        unmakeMove(move, board);
+        unmakeMove(move, board, (Board *) v);
     }
 
     free(moveArray);
