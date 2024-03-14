@@ -1,6 +1,7 @@
 #include "ai_evaluation.h"
 #include "ai_generation.h"
 #include "util.h"
+#include "board.h"
 #include "repetition_table.h"
 #include "zobrist_hashing.h"
 
@@ -294,20 +295,21 @@ bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoa
         return false;
     }
 
-    copyBoard(board, tempBoard);
+    copyBoard(board,  tempBoard);
     evaluation = 0;
     if (amountInRepetitionTable(computeHash(board)) < 2) {
-        evaluation = -findMovesAndEvaluate(tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
+        evaluation = -findMovesAndEvaluate( tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
     }
     if (evaluation >= beta) {
         if (initialCall) {
-            copyBoard(tempBoard, board);
+            copyBoard( tempBoard, board);
         }
         free(moveArray);
         free(maxBoard);
         free(tempBoard);
         return true;
-    } else if (evaluation > *alpha) {
+    }
+    if (evaluation > *alpha) {
         *alpha = evaluation;
         copyBoard(board, maxBoard);
     }

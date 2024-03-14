@@ -61,8 +61,6 @@ void sortMoves(int size, Move arr[size]);
 
 uint64_t popLSB(uint64_t *num);
 
-void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBordBord);
 
-void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBordBord);
 
 #endif //SCHACH_UTIL_H

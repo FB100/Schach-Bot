@@ -8,4 +8,6 @@ add_executable(Version1
         additional_functionality/precompute_bitboards.h
         additional_functionality/precompute_bitboards.c
         additional_functionality/precomputed_data.h
+        board.h
+        board.c
 )

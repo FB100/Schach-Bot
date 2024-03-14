@@ -251,12 +251,9 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
     // Alle 8 möglichen Züge um den König herum
     for (int di = -1; di <= 1; di++) {
         for (int dj = -1; dj <= 1; dj++) {
-            if (di == 0 && dj == 0)
-                continue; // Kein Zug auf die aktuelle Position
-            if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 || j + dj >= BOARD_SIZE)
-                continue; // Zug außerhalb des Bretts
-            if (board[i + di][j + dj].white == whiteTurn && board[i + di][j + dj].type != ' ')
-                continue; // Zug auf eigenen Stein
+            if (di == 0 && dj == 0) { continue; } // Kein Zug auf die aktuelle Position
+            if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 || j + dj >= BOARD_SIZE) { continue; }  // Zug außerhalb des Bretts
+            if (board[i + di][j + dj].white == whiteTurn && board[i + di][j + dj].type != ' ') { continue; } // Zug auf eigenen Stein
             p2 = board[i + di][j + dj];
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (i + di) + j + dj;

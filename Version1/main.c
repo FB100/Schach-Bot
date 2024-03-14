@@ -1,6 +1,7 @@
 #include "main.h"
 #include "ai_evaluation.h"
 #include "util.h"
+#include "board.h"
 #include "headers.h"
 #include "tests.h"
 #include "zobrist_hashing.h"

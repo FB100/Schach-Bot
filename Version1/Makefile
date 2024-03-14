@@ -7,7 +7,7 @@ CFLAGSEND=-lm
 all: main
 # Added all files to be scanned for changes
 # Hardcoded main.c as input files since other files are included in header
-main: main.c ai_evaluation.c ai_generation.c util.c tests.c zobrist_hashing.c repetition_table.c additional_functionality/precompute_bitboards.c
+main: main.c ai_evaluation.c ai_generation.c util.c tests.c zobrist_hashing.c repetition_table.c board.c additional_functionality/precompute_bitboards.c
 	$(CC) $(CFLAGS) -o $@ $^ $(CFLAGSEND)
 clean:
 	rm -f main
