@@ -41,10 +41,15 @@ typedef struct {
     bool white;
 } Piece;
 
+enum PIECES {
+    PAWN_W, KNIGHT_W, BISHOP_W, ROOK_W, QUEEN_W, KING_W,
+    PAWN_B, KNIGHT_B, BISHOP_B, ROOK_B, QUEEN_B, KING_B
+};
+
 // Struktur eines Moves
 typedef struct {
     int preEval;
-    char type;
+    enum PIECES type;
     uint8_t special;
     uint8_t from;
     uint8_t to;

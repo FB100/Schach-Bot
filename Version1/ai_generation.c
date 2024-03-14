@@ -18,6 +18,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j;
                 moves[index].special = 4 + k;
+                moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                 moves[index].preEval = getPiecePrice('Q') - getPiecePrice('P'); //TODO hier richtiges Piece nicht immer Queen
                 index++;
             }
@@ -25,6 +26,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (i + direction) + j;
             moves[index].special = 0;
+            moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
             moves[index].preEval =
                     abs(getPositionModifierPawn(i + direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
             index++;
@@ -35,6 +37,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + 2 * direction) + j;
                 moves[index].special = 0;
+                moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                 moves[index].preEval =
                         abs(getPositionModifierPawn(i + 2 * direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
@@ -51,6 +54,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                     moves[index].from = 8 * i + j;
                     moves[index].to = 8 * (i + direction) + j + 1;
                     moves[index].special = 4 + k;
+                    moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                     moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
                     index++;
                 }
@@ -59,6 +63,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].to = 8 * (i + direction) + j + 1;
                 moves[index].special = 0;
                 moves[index].preEval = getPiecePrice(p2.type);
+                moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                 moves[index].preEval +=
                         abs(getPositionModifierPawn(i + 2 * direction, j + 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
@@ -72,12 +77,14 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 1;
+                moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                 moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
                 index++;
             } else {
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 0;
+                moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                 moves[index].preEval = getPiecePrice(p2.type);
                 moves[index].preEval +=
                         abs(getPositionModifierPawn(i + 2 * direction, j - 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
@@ -115,8 +122,8 @@ int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRA
         p2 = board[i + di][j + dj];
         moves[index].from = 8 * i + j;
         moves[index].to = 8 * (i + di) + j + dj;
-        moves[index].type = 'K';
         moves[index].special = 0;
+        moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
         moves[index].preEval = getPiecePrice(p2.type);
         moves[index].preEval += abs(getPositionModifierPawn(i + di, j + dj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
 
@@ -142,6 +149,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRA
                         moves[index].from = 8 * i + j;
                         moves[index].to = 8 * (ni) + nj;
                         moves[index].special = 0;
+                        moves[index].type = whiteTurn ? BISHOP_W : BISHOP_B;
                         moves[index].preEval = getPiecePrice(p2.type);
                         moves[index].preEval += abs(getPositionModifierPawn(ni, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                         index++;
@@ -151,6 +159,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRA
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (ni) + nj;
                 moves[index].special = 0;
+                moves[index].type = whiteTurn ? BISHOP_W : BISHOP_B;
                 moves[index].preEval = abs(getPositionModifierPawn(ni, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
 
@@ -177,6 +186,7 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                     moves[index].from = 8 * i + j;
                     moves[index].to = 8 * (ni) + j;
                     moves[index].special = 0;
+                    moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
                     moves[index].preEval = getPiecePrice(p2.type);
                     moves[index].preEval += abs(getPositionModifierPawn(ni, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
 
@@ -187,10 +197,9 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (ni) + j;
             moves[index].special = 0;
+            moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
             moves[index].preEval = abs(getPositionModifierPawn(ni, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
-
             index++;
-
             ni += di;
         }
     }
@@ -204,6 +213,7 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                     moves[index].from = 8 * i + j;
                     moves[index].to = 8 * i + nj;
                     moves[index].special = 0;
+                    moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
                     moves[index].preEval = getPiecePrice(p2.type);
                     moves[index].preEval += abs(getPositionModifierPawn(i, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
 
@@ -214,11 +224,10 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * i + nj;
             moves[index].special = 0;
+            moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
             moves[index].preEval = 0;
             moves[index].preEval += abs(getPositionModifierPawn(i, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
-
             index++;
-
             nj += dj;
         }
     }
@@ -226,8 +235,12 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
 }
 
 int getQueenMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
+    int index_old = index;
     index = getRookMoves(board, moves, whiteTurn, i, j, index);
     index = getBishopMoves(board, moves, whiteTurn, i, j, index);
+    for (int k = index_old; k < index; k++) {
+        moves[k].type = whiteTurn ? QUEEN_W : QUEEN_B;
+    }
     return index;
 }
 
@@ -248,6 +261,7 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].from = 8 * i + j;
             moves[index].to = 8 * (i + di) + j + dj;
             moves[index].special = 0;
+            moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
             moves[index].preEval = getPiecePrice(p2.type);
             index++;
         }
@@ -294,6 +308,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
             moves[index].from = 8 * whiteSize + 4;
             moves[index].to = 8 * whiteSize + 2;
             moves[index].special = 3;
+            moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
             moves[index].preEval = 0;
             index++;
         }
@@ -305,6 +320,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
             moves[index].from = 8 * whiteSize + 4;
             moves[index].to = 8 * whiteSize + 6;
             moves[index].special = 2;
+            moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
             moves[index].preEval = 0;
             index++;
         }
