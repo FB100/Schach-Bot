@@ -1,6 +1,7 @@
 #include "ai_generation.h"
 #include "ai_evaluation.h"
 #include "util.h"
+#include "additional_functionality/precomputed_data.h"
 
 
 int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
@@ -96,37 +97,19 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
     return index;
 }
 
-//TODO Precompute using Bitboards
-int getKnightMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
-    // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
-    Piece p = board[i][j];
-    Piece p2;
-
-    //Relative Position der Felder, auf die ein Night ziehen kann
-    int8_t knightMoves[8][2] = {{2,  1},
-                                {2,  -1},
-                                {-2, 1},
-                                {-2, -1},
-                                {1,  2},
-                                {1,  -2},
-                                {-1, 2},
-                                {-1, -2}};
-
-    // Alle 8 möglichen Züge für einen Springer
-    for (int k = 0; k < 8; k++) {
-        int di = (int) knightMoves[k][0];
-        int dj = (int) knightMoves[k][1];
-        if (i + di < 0 || i + di >= BOARD_SIZE || j + dj < 0 || j + dj >= BOARD_SIZE)
-            continue; // Zug außerhalb des Bretts
-        if (board[i + di][j + dj].white == whiteTurn && board[i + di][j + dj].type != ' ') continue; // Zug auf eigenen Stein
-        p2 = board[i + di][j + dj];
-        moves[index].from = 8 * i + j;
-        moves[index].to = 8 * (i + di) + j + dj;
-        moves[index].special = 0;
+int getKnightMoves(Board bitBoardBoard, Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int i, int j, int index) {
+    int preEvalWhite = 0;
+    unsigned long x;
+    uint64_t friendlyOccupancy = whiteTurn ? bitBoardBoard.occupancyWhite : bitBoardBoard.occupancyBlack;
+    uint64_t knightSquares = PRE_KNIGHT_MOVE[BOARD_SIZE * i + j] & ~friendlyOccupancy;
+    while (knightSquares) {
+        x = popLSB(&knightSquares);
+        moves[index].from = BOARD_SIZE * i + j;
+        moves[index].to = x;
         moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
-        moves[index].preEval = getPiecePrice(p2.type);
-        moves[index].preEval += abs(getPositionModifierPawn(i + di, j + dj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
-
+        moves[index].special = 0;
+        preEvalWhite = abs(getPositionModifierKnight(x / 8ULL, x % 8ULL, whiteTurn, 0)) - abs(getPositionModifierKnight(i, j, whiteTurn, 0));
+        moves[index].preEval = whiteTurn ? preEvalWhite : -preEvalWhite;
         index++;
     }
     return index;
@@ -136,6 +119,7 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRA
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];
     Piece p2;
+    int preEvalWhite = 0;
 
     // Bewege den Läufer in alle 4 Richtungen, solange kein Stein im Weg ist
     for (int di = -1; di <= 1; di += 2) {
@@ -151,7 +135,8 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRA
                         moves[index].special = 0;
                         moves[index].type = whiteTurn ? BISHOP_W : BISHOP_B;
                         moves[index].preEval = getPiecePrice(p2.type);
-                        moves[index].preEval += abs(getPositionModifierPawn(ni, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                        preEvalWhite = getPositionModifierBishop(ni, nj, whiteTurn, 0) - getPositionModifierBishop(i, j, whiteTurn, 0);
+                        moves[index].preEval += whiteTurn ? preEvalWhite : -preEvalWhite;
                         index++;
                     }
                     break; // Beende Schleife
@@ -160,7 +145,8 @@ int getBishopMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRA
                 moves[index].to = 8 * (ni) + nj;
                 moves[index].special = 0;
                 moves[index].type = whiteTurn ? BISHOP_W : BISHOP_B;
-                moves[index].preEval = abs(getPositionModifierPawn(ni, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                preEvalWhite = getPositionModifierBishop(ni, nj, whiteTurn, 0) - getPositionModifierBishop(i, j, whiteTurn, 0);
+                moves[index].preEval += whiteTurn ? preEvalWhite : -preEvalWhite;
                 index++;
 
                 ni += di;
@@ -175,6 +161,7 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
     // 2 Pieces, damit ich die nicht immer neu initialisieren muss. P1 ist das aktuelle Piece. P2 ein eventuell geschlagenes
     Piece p = board[i][j];
     Piece p2;
+    int preEvalWhite = 0;
 
     // Bewege den Turm in alle 4 Richtungen, solange kein Stein im Weg ist
     for (int di = -1; di <= 1; di += 2) {
@@ -188,8 +175,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                     moves[index].special = 0;
                     moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
                     moves[index].preEval = getPiecePrice(p2.type);
-                    moves[index].preEval += abs(getPositionModifierPawn(ni, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
-
+                    preEvalWhite = getPositionModifierRook(ni, j, whiteTurn, 0) - getPositionModifierRook(i, j, whiteTurn, 0);
+                    moves[index].preEval += whiteTurn ? preEvalWhite : -preEvalWhite;
                     index++;
                 }
                 break; // Beende Schleife
@@ -198,7 +185,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].to = 8 * (ni) + j;
             moves[index].special = 0;
             moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
-            moves[index].preEval = abs(getPositionModifierPawn(ni, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+            preEvalWhite = getPositionModifierRook(ni, j, whiteTurn, 0) - getPositionModifierRook(i, j, whiteTurn, 0);
+            moves[index].preEval += whiteTurn ? preEvalWhite : -preEvalWhite;
             index++;
             ni += di;
         }
@@ -215,7 +203,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                     moves[index].special = 0;
                     moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
                     moves[index].preEval = getPiecePrice(p2.type);
-                    moves[index].preEval += abs(getPositionModifierPawn(i, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                    preEvalWhite = getPositionModifierRook(i, nj, whiteTurn, 0) - getPositionModifierRook(i, j, whiteTurn, 0);
+                    moves[index].preEval += whiteTurn ? preEvalWhite : -preEvalWhite;
 
                     index++;
                 }
@@ -226,8 +215,8 @@ int getRookMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].special = 0;
             moves[index].type = whiteTurn ? ROOK_W : ROOK_B;
             moves[index].preEval = 0;
-            moves[index].preEval += abs(getPositionModifierPawn(i, nj, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
-            index++;
+            preEvalWhite = getPositionModifierRook(i, nj, whiteTurn, 0) - getPositionModifierRook(i, j, whiteTurn, 0);
+            moves[index].preEval += whiteTurn ? preEvalWhite : -preEvalWhite;            index++;
             nj += dj;
         }
     }
@@ -266,7 +255,7 @@ int getKingMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
     return index;
 }
 
-int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int castlingRights) {
+int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Board bitBoardBoard, Move moves[MAX_MOVE_ARRAY_SIZE], bool whiteTurn, int castlingRights) {
 
     int index = 0; //Index für moves Array
 
@@ -332,7 +321,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_A
                         break;
 
                     case 'N':
-                        index = getKnightMoves(board, moves, whiteTurn, i, j, index);
+                        index = getKnightMoves(bitBoardBoard, moves, whiteTurn, i, j, index);
                         break;
 
                     case 'B':

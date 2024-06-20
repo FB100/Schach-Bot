@@ -21,20 +21,22 @@ uint64_t randomInt() {
 // This function associates each piece with
 // from number
 int indexOf(char piece) {
-    if (piece == 'P')
-        return 0;
-    if (piece == 'N')
-        return 1;
-    if (piece == 'B')
-        return 2;
-    if (piece == 'R')
-        return 3;
-    if (piece == 'Q')
-        return 4;
-    if (piece == 'K')
-        return 5;
-    else
-        return -1;
+    switch (piece) {
+        case 'P':
+            return 0;
+        case 'N':
+            return 1;
+        case 'B':
+            return 2;
+        case 'R':
+            return 3;
+        case 'Q':
+            return 4;
+        case 'K':
+            return 5;
+        default:
+            return -1;
+    }
 }
 
 // Initializes the table
@@ -50,10 +52,9 @@ unsigned long long int computeHash(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     unsigned long long int h = 0;
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if (board[i][j].type != ' ') {
-                int piece = indexOf(board[i][j].type);
-                h ^= ZobristTable[i][j][piece];
-            }
+            if (board[i][j].type == ' ') { continue; }
+            int piece = indexOf(board[i][j].type);
+            h ^= ZobristTable[i][j][piece];
         }
     }
     return h;

@@ -1,75 +1,84 @@
 #include "board.h"
 
-void updateBitBoardBoard(Move move, Board *bitBoardBoard){
-    switch (move.type) {
-        case PAWN_W:
-            bitBoardBoard->pawn_W ^= (1 << move.to) & (1 << move.from);
-            break;
-        case PAWN_B:
-            bitBoardBoard->pawn_B ^= (1 << move.to) & (1 << move.from);
-            break;
-        case KNIGHT_W:
-            bitBoardBoard->knight_W ^= (1 << move.to) & (1 << move.from);
-            break;
-        case KNIGHT_B:
-            bitBoardBoard->knight_B ^= (1 << move.to) & (1 << move.from);
-            break;
-        case BISHOP_W:
-            bitBoardBoard->bishop_W ^= (1 << move.to) & (1 << move.from);
-            break;
-        case BISHOP_B:
-            bitBoardBoard->bishop_B ^= (1 << move.to) & (1 << move.from);
-            break;
-        case ROOK_W:
-            bitBoardBoard->rook_W ^= (1 << move.to) & (1 << move.from);
-            break;
-        case ROOK_B:
-            bitBoardBoard->rook_B ^= (1 << move.to) & (1 << move.from);
-            break;
-        case QUEEN_W:
-            bitBoardBoard->queen_W ^= (1 << move.to) & (1 << move.from);
-            break;
-        case QUEEN_B:
-            bitBoardBoard->queen_B ^= (1 << move.to) & (1 << move.from);
-            break;
-        case KING_W:
-            bitBoardBoard->king_W ^= (1 << move.to) & (1 << move.from);
-            break;
-        case KING_B:
-            bitBoardBoard->king_B ^= (1 << move.to) & (1 << move.from);
-            break;
-    }
+
+void computeOccupancyMasks(Board *board) {
+    board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W | board->rook_W | board->queen_W | board->king_W;
+    board->occupancyBlack = board->pawn_B | board->knight_B | board->bishop_B | board->rook_B | board->queen_B | board->king_B;
+    board->occupancy = board->occupancyBlack | board->occupancyWhite;
 }
 
-void updateBitBoardBoardPromotion(Move move, Board *bitBoardBoard){
+void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
+    switch (move.type) {
+        case PAWN_W:
+            bitBoardBoard->pawn_W ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case PAWN_B:
+            bitBoardBoard->pawn_B ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case KNIGHT_W:
+            bitBoardBoard->knight_W ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case KNIGHT_B:
+            bitBoardBoard->knight_B ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case BISHOP_W:
+            bitBoardBoard->bishop_W ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case BISHOP_B:
+            bitBoardBoard->bishop_B ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case ROOK_W:
+            bitBoardBoard->rook_W ^= (1ULL << move.to) & (1ULL< move.from);
+            break;
+        case ROOK_B:
+            bitBoardBoard->rook_B ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case QUEEN_W:
+            bitBoardBoard->queen_W ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case QUEEN_B:
+            bitBoardBoard->queen_B ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case KING_W:
+            bitBoardBoard->king_W ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+        case KING_B:
+            bitBoardBoard->king_B ^= (1ULL << move.to) & (1ULL << move.from);
+            break;
+    }
+    computeOccupancyMasks(bitBoardBoard);
+}
+
+void updateBitBoardBoardPromotion(Move move, Board *bitBoardBoard) {
     switch (move.special) {
         case 4:
-            bitBoardBoard->pawn_W ^= !(move.type/8) ?  1 << move.from : 0ULL;
-            bitBoardBoard->queen_W ^= !(move.type/8) ?  1 << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type/8 ?  1 << move.from : 0ULL;
-            bitBoardBoard->queen_B ^= move.type/8 ?  1 << move.to : 0ULL;
+            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->queen_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->queen_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
             break;
         case 5:
-            bitBoardBoard->pawn_W ^= !(move.type/8) ?  1 << move.from : 0ULL;
-            bitBoardBoard->rook_W ^= !(move.type/8) ?  1 << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type/8 ?  1 << move.from : 0ULL;
-            bitBoardBoard->rook_B ^= move.type/8 ?  1 << move.to : 0ULL;
+            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->rook_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->rook_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
             break;
         case 6:
-            bitBoardBoard->pawn_W ^= !(move.type/8) ?  1 << move.from : 0ULL;
-            bitBoardBoard->bishop_W ^= !(move.type/8) ?  1 << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type/8 ?  1 << move.from : 0ULL;
-            bitBoardBoard->bishop_B ^= move.type/8 ?  1 << move.to : 0ULL;
+            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->bishop_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->bishop_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
             break;
         case 7:
-            bitBoardBoard->pawn_W ^= !(move.type/8) ?  1 << move.from : 0ULL;
-            bitBoardBoard->knight_W ^= !(move.type/8) ?  1 << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type/8 ?  1 << move.from : 0ULL;
-            bitBoardBoard->knight_B ^= move.type/8 ?  1 << move.to : 0ULL;
+            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->knight_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->knight_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
             break;
         default:
             break;
     }
+    computeOccupancyMasks(bitBoardBoard);
 }
 
 void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard) {
@@ -91,9 +100,9 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoa
             board[whiteSize][6].type = 'K';
             board[whiteSize][6].white = whiteSize / 7;
             board[whiteSize][7].type = ' ';
+            bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * 8 + 5)) & (1ULL << (whiteSize * 8 + 7)) : 0ULL;
+            bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * 8 + 5)) & (1ULL << (whiteSize * 8 + 7)) : 0ULL;
             updateBitBoardBoard(move, bitBoardBoard);
-            bitBoardBoard->rook_W ^= move.type == KING_W ?  (1 << (whiteSize*8+5)) & (1 << (whiteSize*8+7)) : 0ULL;
-            bitBoardBoard->rook_B ^= move.type == KING_B ?  (1 << (whiteSize*8+5)) & (1 << (whiteSize*8+7)) : 0ULL;
             break;
         case 3:
             whiteSize = (move.from - 4) / 8;
@@ -104,9 +113,9 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoa
             board[whiteSize][3].type = 'R';
             board[whiteSize][3].white = whiteSize / 7;
             board[whiteSize][4].type = ' ';
+            bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * 8 + 3)) & (1ULL << (whiteSize * 8)) : 0ULL;
+            bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * 8 + 3)) & (1ULL << (whiteSize * 8)) : 0ULL;
             updateBitBoardBoard(move, bitBoardBoard);
-            bitBoardBoard->rook_W ^= move.type == KING_W ?  (1 << (whiteSize*8+3)) & (1 << (whiteSize*8)) : 0ULL;
-            bitBoardBoard->rook_B ^= move.type == KING_B ?  (1 << (whiteSize*8+3)) & (1 << (whiteSize*8)) : 0ULL;
             break;
         case 4:
             // Promotion Dame
@@ -160,9 +169,9 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             board[whiteSize][6].type = ' ';
             board[whiteSize][7].type = 'R';
             board[whiteSize][7].white = whiteSize / 7;
+            bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * 8 + 5)) & (1ULL << (whiteSize * 8 + 7)) : 0ULL;
+            bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * 8 + 5)) & (1ULL << (whiteSize * 8 + 7)) : 0ULL;
             updateBitBoardBoard(move, bitBoardBoard);
-            bitBoardBoard->rook_W ^= move.type == KING_W ?  (1 << (whiteSize*8+5)) & (1 << (whiteSize*8+7)) : 0ULL;
-            bitBoardBoard->rook_B ^= move.type == KING_B ?  (1 << (whiteSize*8+5)) & (1 << (whiteSize*8+7)) : 0ULL;
             break;
         case 3:
             whiteSize = (move.from - 4) / 8;
@@ -173,9 +182,9 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             board[whiteSize][3].type = ' ';
             board[whiteSize][4].type = 'K';
             board[whiteSize][4].white = whiteSize / 7;
+            bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * 8 + 3)) & (1ULL << (whiteSize * 8)) : 0ULL;
+            bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * 8 + 3)) & (1ULL << (whiteSize * 8)) : 0ULL;
             updateBitBoardBoard(move, bitBoardBoard);
-            bitBoardBoard->rook_W ^= move.type == KING_W ?  (1 << (whiteSize*8+3)) & (1 << (whiteSize*8)) : 0ULL;
-            bitBoardBoard->rook_B ^= move.type == KING_B ?  (1 << (whiteSize*8+3)) & (1 << (whiteSize*8)) : 0ULL;
             break;
         case 4 ... 7:
             // Promotion

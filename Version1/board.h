@@ -3,6 +3,8 @@
 
 #include "headers.h"
 
+void computeOccupancyMasks(Board *board);
+
 void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard);
 
 void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard);

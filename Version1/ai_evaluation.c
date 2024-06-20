@@ -29,16 +29,15 @@ int getPositionModifierPawn(int i, int j, bool white, int round) {
     if (round < 30) {
         if (white) {
             return modifierPawnMid[i * BOARD_SIZE + j];
-        } else {
-            return -modifierPawnMid[63 - (i * BOARD_SIZE + j)];
         }
-    } else {
-        if (white) {
-            return modifierPawnEnd[i * BOARD_SIZE + j];
-        } else {
-            return -modifierPawnEnd[63 - (i * BOARD_SIZE + j)];
-        }
+        return -modifierPawnMid[63 - (i * BOARD_SIZE + j)];
     }
+    if (white) {
+        return modifierPawnEnd[i * BOARD_SIZE + j];
+    }
+    return -modifierPawnEnd[63 - (i * BOARD_SIZE + j)];
+
+
 }
 
 int getPositionModifierKnight(int i, int j, bool white, int round) {
@@ -282,7 +281,7 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[MAX_MO
 }
 
 
-bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoard, Piece *maxBoard, Move *moveArray,
+bool evaluateAndDoSingleMove(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoard, Piece *maxBoard, Move *moveArray,
                              bool whiteTurn, bool initialCall, int remainingDepth, int *alpha, int beta, int castlingRights, int round) {
     int evaluation;
 
@@ -295,14 +294,14 @@ bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoa
         return false;
     }
 
-    copyBoard(board,  tempBoard);
+    copyBoard(board, tempBoard);
     evaluation = 0;
     if (amountInRepetitionTable(computeHash(board)) < 2) {
-        evaluation = -findMovesAndEvaluate( tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
+        evaluation = -findMovesAndEvaluate(bitBoardBoard, tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
     }
     if (evaluation >= beta) {
         if (initialCall) {
-            copyBoard( tempBoard, board);
+            copyBoard(tempBoard, board);
         }
         free(moveArray);
         free(maxBoard);
@@ -319,7 +318,8 @@ bool evaluateAndDoSingleMove(Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoa
 
 // TODO Stellungswiederholung vermeiden, wenn vorne
 // TODO Move ordering
-int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha, int beta,
+int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha,
+                         int beta,
                          int castlingRights, int round) {
     int evaluation;
     Piece p;
@@ -342,7 +342,7 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
     }
     copyBoard(board, maxBoard);
     Move *moveArray = calloc(MAX_MOVE_ARRAY_SIZE, sizeof(Move));
-    int moveArraySize = getAllPseudoMoves(board, moveArray, whiteTurn, castlingRights);
+    int moveArraySize = getAllPseudoMoves(board, *bitBoardBoard, moveArray, whiteTurn, castlingRights);
 
     // TODO: falsch das sind nur pseudo-legal moves => wenn leer problem
     // Checkmate or Stalemate
@@ -360,8 +360,6 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
         }
     }
 
-    void *v;
-
     // Iterate over all moves and evaluate
     for (int i = 0; i < moveArraySize; i++) {
         Move move = moveArray[i];
@@ -372,12 +370,12 @@ int findMovesAndEvaluate(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bo
 
         int whiteSize = (7 * whiteTurn);
 
-        makeMove(move, board, (Board *) v);
-        if (evaluateAndDoSingleMove(board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
+        makeMove(move, board, bitBoardBoard);
+        if (evaluateAndDoSingleMove(bitBoardBoard, board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
                                     castlingRights, round)) {
             return beta;
         }
-        unmakeMove(move, board, (Board *) v);
+        unmakeMove(move, board, bitBoardBoard);
     }
 
     free(moveArray);

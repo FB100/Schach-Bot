@@ -1,4 +1,5 @@
 #include "util.h"
+#include "board.h"
 #include "headers.h"
 
 void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]) {
@@ -27,7 +28,7 @@ void printBoard(Piece board[BOARD_SIZE][BOARD_SIZE]) {
 }
 
 void printBitBoard(uint64_t bitboard) {
-    printf("%lu\n",bitboard);
+    printf("%lu\n", bitboard);
     char printBoard[64] = {0};
 
     unsigned long x;
@@ -37,9 +38,9 @@ void printBitBoard(uint64_t bitboard) {
     } while (bitboard);
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if(printBoard[i*BOARD_SIZE+j] == 1){
+            if (printBoard[i * BOARD_SIZE + j] == 1) {
                 printf("1 ");
-            }else{
+            } else {
                 printf("0 ");
             }
 
@@ -71,9 +72,8 @@ void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             if (*ptr >= '1' && *ptr <= '8') {
                 int numEmpty = *ptr - '0';
                 j += numEmpty;
-            }
+            } else {
                 // Schachstein
-            else {
                 board[i][j].type = (char) toupper(*ptr);
                 board[i][j].white = isupper(*ptr);
                 j++;
@@ -84,6 +84,99 @@ void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]) {
             ptr++;
         }
     }
+}
+
+// Funktion, die einen FEN-String in das interne Schachbrett-Format umwandelt
+void fenToBitBoardBoard(const char *fen, Board *bitboard) {
+    // Alle Felder leer machen
+    bitboard->pawn_W = 0;
+    bitboard->knight_W = 0;
+    bitboard->bishop_W = 0;
+    bitboard->rook_W = 0;
+    bitboard->queen_W = 0;
+    bitboard->king_W = 0;
+    bitboard->pawn_B = 0;
+    bitboard->knight_B = 0;
+    bitboard->bishop_B = 0;
+    bitboard->rook_B = 0;
+    bitboard->queen_B = 0;
+    bitboard->king_B = 0;
+    bitboard->turn = 0;
+    bitboard->castling = 0;
+    bitboard->epSquare = 0; //En Passant Square
+    bitboard->whiteKingSq = 0;
+    bitboard->blackKingSq = 0;
+    bitboard->occupancy = 0;
+    bitboard->occupancyWhite = 0;
+    bitboard->occupancyBlack = 0;
+    bitboard->hash = 0; //Zobrist hash
+    bitboard->attacks = 0; // The attack mask of the other side
+
+    //TODO rest der Felder ausfüllen
+
+    // Zeiger auf den aktuellen Zeichen im FEN-String
+    const char *ptr = fen;
+
+    // Reihe durchlaufen
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        int j = 0;
+        // Zeichen im FEN-String durchlaufen
+        while (*ptr != '\0' && *ptr != '/') {
+            // Zahl, die leere Felder anzeigt
+            if (*ptr >= '1' && *ptr <= '8') {
+                int numEmpty = *ptr - '0';
+                j += numEmpty;
+            } else {
+                // Schachstein
+                switch (*ptr) {
+                    case 'p':
+                        bitboard->pawn_B ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'n':
+                        bitboard->knight_B ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'b':
+                        bitboard->bishop_B ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'r':
+                        bitboard->rook_B ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'q':
+                        bitboard->queen_B ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'k':
+                        bitboard->king_B ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'P':
+                        bitboard->pawn_W ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'N':
+                        bitboard->knight_W ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'B':
+                        bitboard->bishop_W ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'R':
+                        bitboard->rook_W ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'Q':
+                        bitboard->queen_W ^= 1ULL << (8 * i + j);
+                        break;
+                    case 'K':
+                        bitboard->king_W ^= 1ULL << (8 * i + j);
+                        break;
+                    default:
+                        break;
+                }
+                j++;
+            }
+            ptr++;
+        }
+        if (*ptr == '/') {
+            ptr++;
+        }
+    }
+    computeOccupancyMasks(bitboard);
 }
 
 char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int castlingRights) {

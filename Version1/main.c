@@ -24,11 +24,11 @@ int handleArgumentsAndInitialiseGame(int argc, char **argv) {
     int option_index = 0;
 
     static struct option longOptions[] = {
-            {"help",   no_argument,       0, 'h'},
-            {"test",   no_argument,       0, 't'},
-            {"preComp",   no_argument,       0, 'p'},
-            {"aionly", no_argument,       0, 'o'},
-            {"fen",    required_argument, 0, 'f'}
+            {"help",    no_argument,       0, 'h'},
+            {"test",    no_argument,       0, 't'},
+            {"preComp", no_argument,       0, 'p'},
+            {"aionly",  no_argument,       0, 'o'},
+            {"fen",     required_argument, 0, 'f'}
     };
 
     while ((opt = getopt_long(argc, argv, "o:b:f:t:p:h", longOptions, &option_index)) != -1) {
@@ -61,6 +61,7 @@ int handleArgumentsAndInitialiseGame(int argc, char **argv) {
 
     //create the board
     Piece (*board)[] = (Piece(*)[]) createBoard(BOARD_SIZE);
+    Board *bitBoardBoard = (Board *) malloc(sizeof(Board));
     if (board == NULL) {
         fprintf(stderr, "Malloc of board failed");
         return EXIT_FAILURE;
@@ -72,8 +73,9 @@ int handleArgumentsAndInitialiseGame(int argc, char **argv) {
     printf("-AI only: %s\n", aiOnly ? "true" : "false");
     printf("\n");
     fenToBoard(fen, board);
+    fenToBitBoardBoard(fen, bitBoardBoard);
     initZobristTable();
-    runGame(board, white, aiOnly);
+    runGame(board, bitBoardBoard, white, aiOnly);
     return EXIT_SUCCESS;
 }
 
@@ -176,7 +178,8 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
         //Normal moves
         move.from = 8 * (8 - (moveFrom[1] - 48)) + (moveFrom[0] - 97);
         move.to = 8 * (8 - (moveTo[1] - 48)) + (moveTo[0] - 97);
-        if (board[move.from / 8][move.from % 8].type == 'P' && (8 * (8 - (moveTo[1] - 48)) == BOARD_SIZE - 1 || 8 - (moveTo[1] - 48) == 0)) {
+        move.preEval = 0;
+        if (board[move.from / 8][move.from % 8].type % 8 == PAWN_W && (8 * (8 - (moveTo[1] - 48)) == BOARD_SIZE - 1 || 8 - (moveTo[1] - 48) == 0)) {
             //Promotion
             printf("What do you want to Promote to?\n");
             char promoteTo[10];
@@ -186,13 +189,22 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
                 return;
             }
             switch (toupper(promoteTo[0])) {
-                case 'Q': move.special = 4; break;
-                case 'R': move.special = 5; break;
-                case 'B': move.special = 6; break;
-                case 'N': move.special = 7; break;
-                default: move.special = 0;
+                case 'Q':
+                    move.special = 4;
+                    break;
+                case 'R':
+                    move.special = 5;
+                    break;
+                case 'B':
+                    move.special = 6;
+                    break;
+                case 'N':
+                    move.special = 7;
+                    break;
+                default:
+                    move.special = 0;
             }
-        }else{
+        } else {
             move.special = 0;
         }
 
@@ -204,11 +216,11 @@ void playHuman(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
     printf("The new Board looks like this: \n");
 }
 
-int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
+int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard, bool whiteTurn, int round) {
     int remainingDepth = MAX_AI_DEPTH;
     int evaluation = -MAX_ALPHA_BETA;
     while (evaluation == -MAX_ALPHA_BETA) {
-        evaluation = findMovesAndEvaluate(board, whiteTurn, true, remainingDepth, -MAX_ALPHA_BETA, MAX_ALPHA_BETA, 1, round);
+        evaluation = findMovesAndEvaluate(bitBoardBoard, board, whiteTurn, true, remainingDepth, -MAX_ALPHA_BETA, MAX_ALPHA_BETA, 1, round);
         remainingDepth--;
         if (remainingDepth == 0) {
             break;
@@ -219,7 +231,7 @@ int playAI(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, int round) {
     return evaluation;
 }
 
-void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
+void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard, bool whiteTurn, bool aiOnly) {
 
     // AI vs AI Game
     if (aiOnly) {
@@ -230,7 +242,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             }
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
-            printf("AI evaluation: %d\n", playAI(board, whiteTurn, i));
+            printf("AI evaluation: %d\n", playAI(board, bitBoardBoard, whiteTurn, i));
             printBoard(board);
             whiteTurn = 1 - whiteTurn;
             pushRepetitionTable(computeHash(board));
@@ -250,7 +262,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
             }
             printf("Move: %d\n", 1);
             printf("Black to move\n");
-            printf("AI evaluation: %d\n", playAI(board, whiteTurn, i));
+            printf("AI evaluation: %d\n", playAI(board, bitBoardBoard, whiteTurn, i));
             whiteTurn = 1 - whiteTurn;
             i++;
         }
@@ -270,7 +282,7 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool aiOnly) {
                 free(board);
                 return;
             }
-            evaluation = playAI(board, whiteTurn, i);
+            evaluation = playAI(board, bitBoardBoard, whiteTurn, i);
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
             printf("AI evaluation: %d\n", evaluation);

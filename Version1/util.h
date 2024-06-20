@@ -45,6 +45,8 @@ void printBitBoard(uint64_t bitboard);
 
 void fenToBoard(const char *fen, Piece board[BOARD_SIZE][BOARD_SIZE]);
 
+void fenToBitBoardBoard(const char *fen, Board *bitboard);
+
 char *boardToFEN(const Piece board[BOARD_SIZE][BOARD_SIZE], bool whitePlays, int castlingRights);
 
 bool isKingThreatened(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
@@ -60,7 +62,6 @@ void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE
 void sortMoves(int size, Move arr[size]);
 
 uint64_t popLSB(uint64_t *num);
-
 
 
 #endif //SCHACH_UTIL_H
