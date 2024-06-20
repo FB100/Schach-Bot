@@ -14,7 +14,7 @@
 
 // --- Definitions ---
 // Größen
-#define BOARD_SIZE 8
+#define BOARD_SIZE 8 //Don't change or things break
 #define Moves_SIZE 218
 
 // Wert der Figuren

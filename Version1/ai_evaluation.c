@@ -27,16 +27,9 @@ int getPositionModifierPawn(int i, int j, bool white, int round) {
             0, 0, 0, 0, 0, 0, 0, 0,};
 
     if (round < 30) {
-        if (white) {
-            return modifierPawnMid[i * BOARD_SIZE + j];
-        }
-        return -modifierPawnMid[63 - (i * BOARD_SIZE + j)];
+        return  white ? modifierPawnMid[(i << 3) + j] : -modifierPawnMid[63 - ((i << 3) + j)];
     }
-    if (white) {
-        return modifierPawnEnd[i * BOARD_SIZE + j];
-    }
-    return -modifierPawnEnd[63 - (i * BOARD_SIZE + j)];
-
+    return  white ? modifierPawnEnd[(i << 3) + j] : -modifierPawnEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -61,18 +54,10 @@ int getPositionModifierKnight(int i, int j, bool white, int round) {
             -29, -51, -23, -15, -22, -18, -50, -64,};
 
     if (round < 30) {
-        if (white) {
-            return modifierKnightMid[i * BOARD_SIZE + j];
-        } else {
-            return -modifierKnightMid[63 - (i * BOARD_SIZE + j)];
-        }
-    } else {
-        if (white) {
-            return modifierKnightEnd[i * BOARD_SIZE + j];
-        } else {
-            return -modifierKnightEnd[63 - (i * BOARD_SIZE + j)];
-        }
+        return  white ? modifierKnightMid[(i << 3) + j] : -modifierKnightMid[63 - ((i << 3) + j)];
     }
+    return  white ? modifierKnightEnd[(i << 3) + j] : -modifierKnightEnd[63 - ((i << 3) + j)];
+
 }
 
 int getPositionModifierRook(int i, int j, bool white, int round) {
@@ -97,18 +82,10 @@ int getPositionModifierRook(int i, int j, bool white, int round) {
             -9, 2, 3, -1, -5, -13, 4, -20,};
 
     if (round < 30) {
-        if (white) {
-            return modifierRookMid[i * BOARD_SIZE + j];
-        } else {
-            return -modifierRookMid[63 - (i * BOARD_SIZE + j)];
-        }
-    } else {
-        if (white) {
-            return modifierRookEnd[i * BOARD_SIZE + j];
-        } else {
-            return -modifierRookEnd[63 - (i * BOARD_SIZE + j)];
-        }
+        return  white ? modifierRookMid[(i << 3) + j] : -modifierRookMid[63 - ((i << 3) + j)];
     }
+    return  white ? modifierRookEnd[(i << 3) + j] : -modifierRookEnd[63 - ((i << 3) + j)];
+
 }
 
 int getPositionModifierBishop(int i, int j, bool white, int round) {
@@ -133,18 +110,10 @@ int getPositionModifierBishop(int i, int j, bool white, int round) {
             -23, -9, -23, -5, -9, -16, -5, -17,};
 
     if (round < 30) {
-        if (white) {
-            return modifierBishopMid[i * BOARD_SIZE + j];
-        } else {
-            return -modifierBishopMid[63 - (i * BOARD_SIZE + j)];
-        }
-    } else {
-        if (white) {
-            return modifierBishopEnd[i * BOARD_SIZE + j];
-        } else {
-            return -modifierBishopEnd[63 - (i * BOARD_SIZE + j)];
-        }
+        return  white ? modifierBishopMid[(i << 3) + j] : -modifierBishopMid[63 - ((i << 3) + j)];
     }
+    return  white ? modifierBishopEnd[(i << 3) + j] : -modifierBishopEnd[63 - ((i << 3) + j)];
+
 }
 
 int getPositionModifierQueen(int i, int j, bool white, int round) {
@@ -169,18 +138,10 @@ int getPositionModifierQueen(int i, int j, bool white, int round) {
             -33, -28, -22, -43, -5, -32, -20, -41,};
 
     if (round < 30) {
-        if (white) {
-            return modifierQueenMid[i * BOARD_SIZE + j];
-        } else {
-            return -modifierQueenMid[63 - (i * BOARD_SIZE + j)];
-        }
-    } else {
-        if (white) {
-            return modifierQueenEnd[i * BOARD_SIZE + j];
-        } else {
-            return -modifierQueenEnd[63 - (i * BOARD_SIZE + j)];
-        }
+        return  white ? modifierQueenMid[(i << 3) + j] : -modifierQueenMid[63 - ((i << 3) + j)];
     }
+    return  white ? modifierQueenEnd[(i << 3) + j] : -modifierQueenEnd[63 - ((i << 3) + j)];
+
 }
 
 int getPositionModifierKing(int i, int j, bool white, int round) {
@@ -205,18 +166,10 @@ int getPositionModifierKing(int i, int j, bool white, int round) {
             -53, -34, -21, -11, -28, -14, -24, -43};
 
     if (round < 30) {
-        if (white) {
-            return modifierKingMid[i * BOARD_SIZE + j];
-        } else {
-            return -modifierKingMid[63 - (i * BOARD_SIZE + j)];
-        }
-    } else {
-        if (white) {
-            return modifierKingEnd[i * BOARD_SIZE + j];
-        } else {
-            return -modifierKingEnd[63 - (i * BOARD_SIZE + j)];
-        }
+        return  white ? modifierKingMid[(i << 3) + j] : -modifierKingMid[63 - ((i << 3) + j)];
     }
+    return  white ? modifierKingEnd[(i << 3) + j] : -modifierKingEnd[63 - ((i << 3) + j)];
+
 }
 
 //counts the number of pieces on the board, first place - white pieces, second - black pieces

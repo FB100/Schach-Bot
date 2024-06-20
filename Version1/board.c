@@ -1,4 +1,5 @@
 #include "board.h"
+#include "zobrist_hashing.h"
 
 
 void computeOccupancyMasks(Board *board) {
@@ -46,6 +47,9 @@ void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
             bitBoardBoard->king_B ^= (1ULL << move.to) & (1ULL << move.from);
             break;
     }
+    //TODO hash hier überall updaten, dann kann man sich das immer neu berechnen sparen
+    // bitBoardBoard->hash ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type % 6);
+    // bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type % 6);
     computeOccupancyMasks(bitBoardBoard);
 }
 

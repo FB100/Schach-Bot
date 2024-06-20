@@ -5,6 +5,8 @@
 
 void initZobristTable();
 
+unsigned long long int getZobristTable(int i, int j, int type);
+
 unsigned long long int computeHash(Piece board[BOARD_SIZE][BOARD_SIZE]);
 
 

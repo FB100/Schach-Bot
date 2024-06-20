@@ -4,6 +4,9 @@
 unsigned long long int ZobristTable[8][8][12];
 uint64_t rndState = 294260285;
 
+unsigned long long int getZobristTable(int i, int j, int type){
+    return ZobristTable[i][j][type];
+}
 
 // Generates from Random number from 0 to 2^64-1
 uint64_t randomInt() {
