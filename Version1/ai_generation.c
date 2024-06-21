@@ -56,6 +56,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                     moves[index].to = 8 * (i + direction) + j + 1;
                     moves[index].special = 4 + k;
                     moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
+                    moves[index].captureType = charPieceToEnumPiece(board[i + direction][j + 1].type, !whiteTurn);
                     moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
                     index++;
                 }
@@ -63,8 +64,9 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].from = 8 * i + j;
                 moves[index].to = 8 * (i + direction) + j + 1;
                 moves[index].special = 0;
-                moves[index].preEval = getPiecePrice(p2.type);
                 moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
+                moves[index].captureType = charPieceToEnumPiece(board[i + direction][j + 1].type, !whiteTurn);
+                moves[index].preEval = getPiecePrice(p2.type);
                 moves[index].preEval +=
                         abs(getPositionModifierPawn(i + 2 * direction, j + 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
                 index++;
@@ -79,6 +81,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 1;
                 moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
+                moves[index].captureType = charPieceToEnumPiece(board[i + direction][j - 1].type, !whiteTurn);
                 moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P') + getPiecePrice('Q');
                 index++;
             } else {
@@ -86,6 +89,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 0;
                 moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
+                moves[index].captureType = charPieceToEnumPiece(board[i + direction][j + 1].type, !whiteTurn);
                 moves[index].preEval = getPiecePrice(p2.type);
                 moves[index].preEval +=
                         abs(getPositionModifierPawn(i + 2 * direction, j - 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));

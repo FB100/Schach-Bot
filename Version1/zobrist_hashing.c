@@ -1,7 +1,8 @@
 #include "zobrist_hashing.h"
+#include "util.h"
 
 
-unsigned long long int ZobristTable[8][8][12];
+uint64_t ZobristTable[8][8][12];
 uint64_t rndState = 294260285;
 
 unsigned long long int getZobristTable(int i, int j, int type){
@@ -21,26 +22,7 @@ uint64_t randomInt() {
     return rndState;
 }
 
-// This function associates each piece with
-// from number
-int indexOf(char piece) {
-    switch (piece) {
-        case 'P':
-            return 0;
-        case 'N':
-            return 1;
-        case 'B':
-            return 2;
-        case 'R':
-            return 3;
-        case 'Q':
-            return 4;
-        case 'K':
-            return 5;
-        default:
-            return -1;
-    }
-}
+
 
 // Initializes the table
 void initZobristTable() {
@@ -56,7 +38,7 @@ unsigned long long int computeHash(Piece board[BOARD_SIZE][BOARD_SIZE]) {
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
             if (board[i][j].type == ' ') { continue; }
-            int piece = indexOf(board[i][j].type);
+            int piece = charPieceToEnumPiece(board[i][j].type, board[i][j].white);
             h ^= ZobristTable[i][j][piece];
         }
     }

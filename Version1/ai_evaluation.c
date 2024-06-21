@@ -27,9 +27,9 @@ int getPositionModifierPawn(int i, int j, bool white, int round) {
             0, 0, 0, 0, 0, 0, 0, 0,};
 
     if (round < 30) {
-        return  white ? modifierPawnMid[(i << 3) + j] : -modifierPawnMid[63 - ((i << 3) + j)];
+        return white ? modifierPawnMid[(i << 3) + j] : -modifierPawnMid[63 - ((i << 3) + j)];
     }
-    return  white ? modifierPawnEnd[(i << 3) + j] : -modifierPawnEnd[63 - ((i << 3) + j)];
+    return white ? modifierPawnEnd[(i << 3) + j] : -modifierPawnEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -54,9 +54,9 @@ int getPositionModifierKnight(int i, int j, bool white, int round) {
             -29, -51, -23, -15, -22, -18, -50, -64,};
 
     if (round < 30) {
-        return  white ? modifierKnightMid[(i << 3) + j] : -modifierKnightMid[63 - ((i << 3) + j)];
+        return white ? modifierKnightMid[(i << 3) + j] : -modifierKnightMid[63 - ((i << 3) + j)];
     }
-    return  white ? modifierKnightEnd[(i << 3) + j] : -modifierKnightEnd[63 - ((i << 3) + j)];
+    return white ? modifierKnightEnd[(i << 3) + j] : -modifierKnightEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -82,9 +82,9 @@ int getPositionModifierRook(int i, int j, bool white, int round) {
             -9, 2, 3, -1, -5, -13, 4, -20,};
 
     if (round < 30) {
-        return  white ? modifierRookMid[(i << 3) + j] : -modifierRookMid[63 - ((i << 3) + j)];
+        return white ? modifierRookMid[(i << 3) + j] : -modifierRookMid[63 - ((i << 3) + j)];
     }
-    return  white ? modifierRookEnd[(i << 3) + j] : -modifierRookEnd[63 - ((i << 3) + j)];
+    return white ? modifierRookEnd[(i << 3) + j] : -modifierRookEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -110,9 +110,9 @@ int getPositionModifierBishop(int i, int j, bool white, int round) {
             -23, -9, -23, -5, -9, -16, -5, -17,};
 
     if (round < 30) {
-        return  white ? modifierBishopMid[(i << 3) + j] : -modifierBishopMid[63 - ((i << 3) + j)];
+        return white ? modifierBishopMid[(i << 3) + j] : -modifierBishopMid[63 - ((i << 3) + j)];
     }
-    return  white ? modifierBishopEnd[(i << 3) + j] : -modifierBishopEnd[63 - ((i << 3) + j)];
+    return white ? modifierBishopEnd[(i << 3) + j] : -modifierBishopEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -138,9 +138,9 @@ int getPositionModifierQueen(int i, int j, bool white, int round) {
             -33, -28, -22, -43, -5, -32, -20, -41,};
 
     if (round < 30) {
-        return  white ? modifierQueenMid[(i << 3) + j] : -modifierQueenMid[63 - ((i << 3) + j)];
+        return white ? modifierQueenMid[(i << 3) + j] : -modifierQueenMid[63 - ((i << 3) + j)];
     }
-    return  white ? modifierQueenEnd[(i << 3) + j] : -modifierQueenEnd[63 - ((i << 3) + j)];
+    return white ? modifierQueenEnd[(i << 3) + j] : -modifierQueenEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -166,9 +166,9 @@ int getPositionModifierKing(int i, int j, bool white, int round) {
             -53, -34, -21, -11, -28, -14, -24, -43};
 
     if (round < 30) {
-        return  white ? modifierKingMid[(i << 3) + j] : -modifierKingMid[63 - ((i << 3) + j)];
+        return white ? modifierKingMid[(i << 3) + j] : -modifierKingMid[63 - ((i << 3) + j)];
     }
-    return  white ? modifierKingEnd[(i << 3) + j] : -modifierKingEnd[63 - ((i << 3) + j)];
+    return white ? modifierKingEnd[(i << 3) + j] : -modifierKingEnd[63 - ((i << 3) + j)];
 
 }
 
@@ -234,86 +234,39 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[MAX_MO
 }
 
 
-bool evaluateAndDoSingleMove(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], Piece *tempBoard, Piece *maxBoard, Move *moveArray,
-                             bool whiteTurn, bool initialCall, int remainingDepth, int *alpha, int beta, int castlingRights, int round) {
-    int evaluation;
-
-    //TODO Das ist ein placeholder bevor ich richtige Stellungswiederholung mache
-    if (amountInRepetitionTable(computeHash(board)) > 1) {
-        return 0;
-    }
-
-    if (isKingThreatened(board, whiteTurn)) {
-        return false;
-    }
-
-    copyBoard(board, tempBoard);
-    evaluation = 0;
-    if (amountInRepetitionTable(computeHash(board)) < 2) {
-        evaluation = -findMovesAndEvaluate(bitBoardBoard, tempBoard, 1 - whiteTurn, false, remainingDepth - 1, -beta, -*alpha, castlingRights, round);
-    }
-    if (evaluation >= beta) {
-        if (initialCall) {
-            copyBoard(tempBoard, board);
-        }
-        free(moveArray);
-        free(maxBoard);
-        free(tempBoard);
-        return true;
-    }
-    if (evaluation > *alpha) {
-        *alpha = evaluation;
-        copyBoard(board, maxBoard);
-    }
-    return false;
-}
-
-
 // TODO Stellungswiederholung vermeiden, wenn vorne
 // TODO Move ordering
 int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha,
-                         int beta,
-                         int castlingRights, int round) {
-    int evaluation;
-    Piece p;
-    Piece p2;
+                         int beta, int castlingRights, int round) {
 
-    // Ende der Rekursion
+    int eval = 0;
+
+    //end of recursion: just return board evaluation
     if (!remainingDepth) {
-        evaluation = evaluateBoard(board, round);
+        eval = evaluateBoard(board, round);
         if (whiteTurn) {
-            return evaluation;
+            return eval;
         }
-        return -evaluation;
+        return -eval;
     }
 
-    //
-    Piece *maxBoard = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
-    Piece *tempBoard = malloc(sizeof(Piece) * BOARD_SIZE * BOARD_SIZE);
-    if (maxBoard == NULL) {
-        fprintf(stderr, "Malloc of maxBoard failed");
-    }
-    copyBoard(board, maxBoard);
+    //get all Pseudolegal moves
     Move *moveArray = calloc(MAX_MOVE_ARRAY_SIZE, sizeof(Move));
     int moveArraySize = getAllPseudoMoves(board, *bitBoardBoard, moveArray, whiteTurn, castlingRights);
 
-    // TODO: falsch das sind nur pseudo-legal moves => wenn leer problem
-    // Checkmate or Stalemate
+    //The player has no legal moves:
     if (moveArray[0].from == 0 && moveArray[0].to == 0) {
         if (isKingThreatened(board, whiteTurn)) {
-            free(maxBoard);
             free(moveArray);
-            free(tempBoard);
             return -MAX_ALPHA_BETA;
-        } else {
-            free(maxBoard);
-            free(moveArray);
-            free(tempBoard);
-            return 0;
         }
+        free(moveArray);
+        return 0;
     }
 
-    // Iterate over all moves and evaluate
+    //iterate over all moves and find the best
+    int bestMove = 0;
+    int bestEval = -MAX_ALPHA_BETA;
     for (int i = 0; i < moveArraySize; i++) {
         Move move = moveArray[i];
 
@@ -321,22 +274,31 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
             break;
         }
 
-        int whiteSize = (7 * whiteTurn);
-
         makeMove(move, board, bitBoardBoard);
-        if (evaluateAndDoSingleMove(bitBoardBoard, board, tempBoard, maxBoard, moveArray, whiteTurn, initialCall, remainingDepth, &alpha, beta,
-                                    castlingRights, round)) {
-            return beta;
+
+        if (isKingThreatened(board, whiteTurn)) {
+            unmakeMove(move, board, bitBoardBoard);
+            continue;
+        }
+
+        if (isRepetition(bitBoardBoard->hash)) {
+            eval = 0;
+        } else {
+            eval = -findMovesAndEvaluate(bitBoardBoard,board,!whiteTurn,false,remainingDepth-1, -beta, alpha, castlingRights, round+1);
+        }
+
+        if (eval > bestEval) {
+            bestMove = i;
+            bestEval = eval;
         }
         unmakeMove(move, board, bitBoardBoard);
     }
 
-    free(moveArray);
-    free(tempBoard);
-
     if (initialCall) {
-        copyBoard(maxBoard, board);
+        makeMove(moveArray[bestMove], board, bitBoardBoard);
     }
-    free(maxBoard);
-    return alpha;
+
+    free(moveArray);
+
+    return eval;
 }

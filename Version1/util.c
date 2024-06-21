@@ -610,6 +610,27 @@ int getPiecePrice(const char pieceType) {
     }
 }
 
+// This function associates each piece with
+// from number
+int charPieceToEnumPiece(char piece, bool white) {
+    switch (piece) {
+        case 'P':
+            return white ? PAWN_W : PAWN_B;
+        case 'N':
+            return white ? KNIGHT_W : KNIGHT_B;
+        case 'B':
+            return white ? BISHOP_W : BISHOP_B;
+        case 'R':
+            return white ? ROOK_W : ROOK_B;
+        case 'Q':
+            return white ? QUEEN_W : QUEEN_B;
+        case 'K':
+            return white ? KING_W : KING_B;
+        default:
+            return -1;
+    }
+}
+
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]) {
     memcpy(newBoard, oldBoard, BOARD_SIZE * BOARD_SIZE * sizeof(Piece));
 }

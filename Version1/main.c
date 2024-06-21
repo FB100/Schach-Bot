@@ -91,8 +91,8 @@ void printHelp() {
 }
 
 
-bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn) {
-    if (amountInRepetitionTable(computeHash(board)) >= 2) {
+bool isGameEnded(Piece board[BOARD_SIZE][BOARD_SIZE], uint64_t hash, bool whiteTurn) {
+    if (isRepetition(hash)) {
         printf("-----------------------\n");
         printf("Remis durch Wiederholung\n");
         printf("-----------------------\n");
@@ -236,59 +236,57 @@ void runGame(Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard, bool whi
     // AI vs AI Game
     if (aiOnly) {
         for (int i = 1; i < MAX_MOVES; i++) {
-            if (isGameEnded(board, whiteTurn)) {
+            if (isGameEnded(board, bitBoardBoard->hash, whiteTurn)) {
                 free(board);
                 return;
             }
-            printf("Move: %d\n", i);
-            printf("%s to move\n", whiteTurn ? "White" : "Black");
-            printf("AI evaluation: %d\n", playAI(board, bitBoardBoard, whiteTurn, i));
-            printBoard(board);
-            whiteTurn = 1 - whiteTurn;
-            pushRepetitionTable(computeHash(board));
-        }
-        free(board);
-        return;
-    } else {
-
-        //AI vs Human game
-        int i = 1;
-        int evaluation = 0;
-        if (!whiteTurn) {
-            printBoard(board);
-            if (isGameEnded(board, whiteTurn)) {
-                free(board);
-                return;
-            }
-            printf("Move: %d\n", 1);
-            printf("Black to move\n");
-            printf("AI evaluation: %d\n", playAI(board, bitBoardBoard, whiteTurn, i));
-            whiteTurn = 1 - whiteTurn;
-            i++;
-        }
-        for (; i < MAX_MOVES; i += 2) {
-            printBoard(board);
-            pushRepetitionTable(computeHash(board));
-            if (isGameEnded(board, whiteTurn)) {
-                free(board);
-                return;
-            }
-            printf("Move: %d\n", i);
-            printf("%s to move\n", whiteTurn ? "White" : "Black");
-            playHuman(board, whiteTurn);
-            whiteTurn = 1 - whiteTurn;
-            printBoard(board);
-            if (isGameEnded(board, whiteTurn)) {
-                free(board);
-                return;
-            }
-            evaluation = playAI(board, bitBoardBoard, whiteTurn, i);
+            int evaluation = playAI(board, bitBoardBoard, whiteTurn, i);
             printf("Move: %d\n", i);
             printf("%s to move\n", whiteTurn ? "White" : "Black");
             printf("AI evaluation: %d\n", evaluation);
+            printBoard(board);
             whiteTurn = 1 - whiteTurn;
         }
         free(board);
         return;
     }
+    //AI vs Human game
+    int i = 1;
+    int evaluation = 0;
+    if (!whiteTurn) {
+        printBoard(board);
+        if (isGameEnded(board, bitBoardBoard->hash, whiteTurn)) {
+            free(board);
+            return;
+        }
+        evaluation = playAI(board, bitBoardBoard, whiteTurn, i);
+        printf("Move: %d\n", 1);
+        printf("Black to move\n");
+        printf("AI evaluation: %d\n", evaluation);
+        whiteTurn = 1 - whiteTurn;
+        i++;
+    }
+    for (; i < MAX_MOVES; i += 2) {
+        printBoard(board);
+        if (isGameEnded(board, bitBoardBoard->hash, whiteTurn)) {
+            free(board);
+            return;
+        }
+        printf("Move: %d\n", i);
+        printf("%s to move\n", whiteTurn ? "White" : "Black");
+        playHuman(board, whiteTurn);
+        whiteTurn = 1 - whiteTurn;
+        printBoard(board);
+        if (isGameEnded(board, bitBoardBoard->hash, whiteTurn)) {
+            free(board);
+            return;
+        }
+        evaluation = playAI(board, bitBoardBoard, whiteTurn, i);
+        printf("Move: %d\n", i);
+        printf("%s to move\n", whiteTurn ? "White" : "Black");
+        printf("AI evaluation: %d\n", evaluation);
+        whiteTurn = 1 - whiteTurn;
+    }
+    free(board);
+    return;
 }

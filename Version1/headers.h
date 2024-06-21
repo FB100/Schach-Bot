@@ -15,7 +15,7 @@
 // --- Definitions ---
 // Größen
 #define BOARD_SIZE 8 //Don't change or things break
-#define Moves_SIZE 218
+#define MAX_MOVE_ARRAY_SIZE 218
 
 // Wert der Figuren
 #define PAWN_PRICE 100
@@ -31,7 +31,7 @@
 #define MAX_MOVES 200 //Wie lange games maximal dauern dürfen. danach wird abgebrochen
 #define MAX_AI_DEPTH 6 //Suchtiefe
 #define MAX_ALPHA_BETA 10000000
-#define MAX_MOVE_ARRAY_SIZE 218
+
 
 
 // --- Structs ---
@@ -50,6 +50,7 @@ enum PIECES {
 typedef struct {
     int preEval;
     enum PIECES type;
+    enum PIECES captureType;
     uint8_t special;
     uint8_t from;
     uint8_t to;
@@ -88,7 +89,7 @@ typedef struct {
     Bitboard occupancy;
     Bitboard occupancyWhite;
     Bitboard occupancyBlack;
-    Bitboard hash; //Zobrist hash
+    uint64_t hash; //Zobrist hash
     Bitboard attacks; // The attack mask of the other side
 } Board;
 

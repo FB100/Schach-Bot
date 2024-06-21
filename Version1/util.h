@@ -57,6 +57,8 @@ bool hasLegalMove(Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn);
 
 int getPiecePrice(char pieceType);
 
+int charPieceToEnumPiece(char piece, bool white);
+
 void copyBoard(Piece oldBoard[BOARD_SIZE][BOARD_SIZE], Piece newBoard[BOARD_SIZE][BOARD_SIZE]);
 
 void sortMoves(int size, Move arr[size]);

@@ -8,7 +8,9 @@ u_int8_t amountInRepetitionTable(ulong h);
 
 void pushRepetitionTable(ulong h);
 
-bool handleRepetitions(Piece board[BOARD_SIZE][BOARD_SIZE]);
+void popRepetitionTable(ulong h);
+
+bool isRepetition(uint64_t hash);
 
 
 #endif //VERSION1_REPETITION_TABLE_H
