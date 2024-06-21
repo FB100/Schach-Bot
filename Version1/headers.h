@@ -30,7 +30,7 @@
 
 // Sonstiges
 #define MAX_MOVES 200 //Wie lange games maximal dauern dürfen. danach wird abgebrochen
-#define MAX_AI_DEPTH 3 //Suchtiefe
+#define MAX_AI_DEPTH 5 //Suchtiefe
 #define MAX_ALPHA_BETA 10000000
 
 

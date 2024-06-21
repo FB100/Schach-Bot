@@ -2,15 +2,17 @@
 #include "zobrist_hashing.h"
 #include "repetition_table.h"
 
-char captureStack[CS_SIZE];
+char captureTypeStack[CS_SIZE];
+bool captureColorStack[CS_SIZE];
 int captureStackCount = 0;
 
-void pushCaptureStack(char capturedPiece){
+void pushCaptureStack(char capturedPiece, bool white){
     if (captureStackCount >= CS_SIZE){
         fprintf(stderr, "Capturestack size limit exeeded");
         return;
     }
-    captureStack[captureStackCount] = capturedPiece;
+    captureTypeStack[captureStackCount] = capturedPiece;
+    captureColorStack[captureStackCount] = white;
     captureStackCount++;
 }
 
@@ -20,7 +22,11 @@ char popCaptureStack(){
         return ' ';
     }
     captureStackCount--;
-    return captureStack[captureStackCount];
+    return captureTypeStack[captureStackCount];
+}
+
+void resetCaptureStack(){
+    captureStackCount = 0;
 }
 
 void computeOccupancyMasks(Board *board) {
@@ -116,7 +122,8 @@ void updateBitBoardBoardPromotion(Move move, Board *bitBoardBoard) {
 
 void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard) {
     int whiteSize = 0;
-    pushCaptureStack(board[move.to / 8][move.to % 8].type);
+
+    pushCaptureStack(board[move.to / 8][move.to % 8].type, board[move.to / 8][move.to % 8].white);
 
     switch (move.special) {
         case 0:
@@ -193,7 +200,7 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
     int whiteSize = 0;
     Piece capturedUnit;
     capturedUnit.type = popCaptureStack();
-    capturedUnit.white = (move.type <= KING_W) ? false : true;
+    capturedUnit.white = captureColorStack[captureStackCount];
 
     switch (move.special) {
         case 0:

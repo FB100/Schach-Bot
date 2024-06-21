@@ -297,6 +297,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
 
     if (initialCall) {
         makeMove(moveArray[bestMove], board, bitBoardBoard);
+        resetCaptureStack();
     }
 
     free(moveArray);
