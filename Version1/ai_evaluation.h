@@ -17,8 +17,8 @@ int getPositionModifierKing(int i, int j, bool white, int round);
 
 int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round, bool whiteturn);
 
-int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha, int beta,
-                         int castlingRights, int round);
+int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha,
+                         int beta, int castlingRights, int round);
 
 
 #endif //SCHACH_AI_EVALUATION_H

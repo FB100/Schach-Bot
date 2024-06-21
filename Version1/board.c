@@ -6,8 +6,8 @@ char captureTypeStack[CS_SIZE];
 bool captureColorStack[CS_SIZE];
 int captureStackCount = 0;
 
-void pushCaptureStack(char capturedPiece, bool white){
-    if (captureStackCount >= CS_SIZE){
+void pushCaptureStack(char capturedPiece, bool white) {
+    if (captureStackCount >= CS_SIZE) {
         fprintf(stderr, "Capturestack size limit exeeded");
         return;
     }
@@ -16,8 +16,8 @@ void pushCaptureStack(char capturedPiece, bool white){
     captureStackCount++;
 }
 
-char popCaptureStack(){
-    if (captureStackCount <= 0){
+char popCaptureStack() {
+    if (captureStackCount <= 0) {
         fprintf(stderr, "Capturestack pop on empty Stack not allowed");
         return ' ';
     }
@@ -25,7 +25,7 @@ char popCaptureStack(){
     return captureTypeStack[captureStackCount];
 }
 
-void resetCaptureStack(){
+void resetCaptureStack() {
     captureStackCount = 0;
 }
 
@@ -57,7 +57,7 @@ void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
             bitBoardBoard->bishop_B ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case ROOK_W:
-            bitBoardBoard->rook_W ^= (1ULL << move.to) & (1ULL< move.from);
+            bitBoardBoard->rook_W ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case ROOK_B:
             bitBoardBoard->rook_B ^= (1ULL << move.to) & (1ULL << move.from);

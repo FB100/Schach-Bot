@@ -46,7 +46,7 @@ void popRepetitionTable(ulong h) {
     }
     if (amount[index] <= 1) {
         hashesCount--;
-    } else{
+    } else {
         amount[index]--;
     }
 

@@ -281,7 +281,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
                                          castlingRights, round + 1);
         }
 
-        if (eval > beta){
+        if (eval > beta) {
             unmakeMove(move, board, bitBoardBoard);
             free(moveArray);
             return beta;
