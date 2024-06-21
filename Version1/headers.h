@@ -25,12 +25,12 @@
 #define QUEEN_PRICE 950
 
 // Tablesizes
-#define RT_SIZE 1024 //Repetition-table size
+#define RT_SIZE 10240 //Repetition-table size
 #define CS_SIZE 64 //Capturestack size (Min MAX_AI_DEPTH + 1)
 
 // Sonstiges
 #define MAX_MOVES 200 //Wie lange games maximal dauern dürfen. danach wird abgebrochen
-#define MAX_AI_DEPTH 6 //Suchtiefe
+#define MAX_AI_DEPTH 5 //Suchtiefe
 #define MAX_ALPHA_BETA 10000000
 
 
