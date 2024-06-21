@@ -255,7 +255,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
     int moveArraySize = getAllPseudoMoves(board, *bitBoardBoard, moveArray, whiteTurn, castlingRights);
 
     //The player has no legal moves:
-    if (moveArray[0].from == 0 && moveArray[0].to == 0) {
+    if (moveArraySize == 0 || moveArray[0].from == 0 && moveArray[0].to == 0) {
         if (isKingThreatened(board, whiteTurn)) {
             free(moveArray);
             return -MAX_ALPHA_BETA;
@@ -284,7 +284,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
         if (isRepetition(bitBoardBoard->hash)) {
             eval = 0;
         } else {
-            eval = -findMovesAndEvaluate(bitBoardBoard,board,!whiteTurn,false,remainingDepth-1, -beta, alpha, castlingRights, round+1);
+            eval = -findMovesAndEvaluate(bitBoardBoard,board,!whiteTurn,false,remainingDepth-1, -beta, -alpha, castlingRights, round+1);
         }
 
         if (eval > bestEval) {

@@ -2,6 +2,26 @@
 #include "zobrist_hashing.h"
 #include "repetition_table.h"
 
+char captureStack[CS_SIZE];
+int captureStackCount = 0;
+
+void pushCaptureStack(char capturedPiece){
+    if (captureStackCount >= CS_SIZE){
+        fprintf(stderr, "Capturestack size limit exeeded");
+        return;
+    }
+    captureStack[captureStackCount] = capturedPiece;
+    captureStackCount++;
+}
+
+char popCaptureStack(){
+    if (captureStackCount <= 0){
+        fprintf(stderr, "Capturestack pop on empty Stack not allowed");
+        return ' ';
+    }
+    captureStackCount--;
+    return captureStack[captureStackCount];
+}
 
 void computeOccupancyMasks(Board *board) {
     board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W | board->rook_W | board->queen_W | board->king_W;
@@ -96,6 +116,7 @@ void updateBitBoardBoardPromotion(Move move, Board *bitBoardBoard) {
 
 void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard) {
     int whiteSize = 0;
+    pushCaptureStack(board[move.to / 8][move.to % 8].type);
 
     switch (move.special) {
         case 0:
@@ -170,12 +191,15 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoa
 
 void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoard) {
     int whiteSize = 0;
+    Piece capturedUnit;
+    capturedUnit.type = popCaptureStack();
+    capturedUnit.white = (move.type <= KING_W) ? false : true;
 
     switch (move.special) {
         case 0:
             //normal Moves
             board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
-            board[move.to / 8][move.to % 8].type = ' ';
+            board[move.to / 8][move.to % 8] = capturedUnit;
             updateBitBoardBoard(move, bitBoardBoard);
             break;
         case 2:
@@ -212,7 +236,7 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             // Promotion
             board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
             board[move.from / 8][move.from % 8].type = 'P';
-            board[move.to / 8][move.to % 8].type = ' ';
+            board[move.to / 8][move.to % 8] = capturedUnit;
             updateBitBoardBoardPromotion(move, bitBoardBoard);
             break;
         default:

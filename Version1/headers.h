@@ -26,10 +26,11 @@
 
 // Tablesizes
 #define RT_SIZE 512 //Repetition-table size
+#define CS_SIZE 64 //Capturestack size (Min MAX_AI_DEPTH + 1)
 
 // Sonstiges
 #define MAX_MOVES 200 //Wie lange games maximal dauern dürfen. danach wird abgebrochen
-#define MAX_AI_DEPTH 6 //Suchtiefe
+#define MAX_AI_DEPTH 3 //Suchtiefe
 #define MAX_ALPHA_BETA 10000000
 
 
@@ -50,7 +51,6 @@ enum PIECES {
 typedef struct {
     int preEval;
     enum PIECES type;
-    enum PIECES captureType;
     uint8_t special;
     uint8_t from;
     uint8_t to;
