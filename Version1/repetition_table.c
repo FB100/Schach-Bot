@@ -41,15 +41,11 @@ void pushRepetitionTable(ulong h) {
 
 void popRepetitionTable(ulong h) {
     uint16_t index = findIndexRepetitionTable(h);
-    if (index == (uint16_t) -1) {
+    if (index == (uint16_t) -1 || amount[index] <= 1) {
+        hashesCount--;
         return;
     }
-    if (amount[index] <= 1) {
-        hashesCount--;
-    } else {
-        amount[index]--;
-    }
-
+    amount[index]--;
 }
 
 

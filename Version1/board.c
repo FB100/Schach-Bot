@@ -144,8 +144,8 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoa
             board[whiteSize][7].type = ' ';
             bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * BOARD_SIZE + 5)) & (1ULL << (whiteSize * BOARD_SIZE + 7)) : 0ULL;
             bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * BOARD_SIZE + 5)) & (1ULL << (whiteSize * BOARD_SIZE + 7)) : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 7, move.type + 3);
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 5, move.type + 3);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 7, move.type - 2); //King type: 5/11 Rook:3/9 => hier -2
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 5, move.type - 2);
             updateBitBoardBoard(move, bitBoardBoard); //updated den King (Rook wird hier ja extra gemacht)
             break;
         case 3:
@@ -159,8 +159,8 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoa
             board[whiteSize][4].type = ' ';
             bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * BOARD_SIZE + 3)) & (1ULL << (whiteSize * BOARD_SIZE)) : 0ULL;
             bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * BOARD_SIZE + 3)) & (1ULL << (whiteSize * BOARD_SIZE)) : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 0, move.type + 3);
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 3, move.type + 3);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 0, move.type - 2);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 3, move.type - 2);
             updateBitBoardBoard(move, bitBoardBoard);
             break;
         case 4:
@@ -221,8 +221,8 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             board[whiteSize][7].white = whiteSize / 7;
             bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * BOARD_SIZE + 5)) & (1ULL << (whiteSize * BOARD_SIZE + 7)) : 0ULL;
             bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * BOARD_SIZE + 5)) & (1ULL << (whiteSize * BOARD_SIZE + 7)) : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 7, move.type + 3);
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 5, move.type + 3);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 7, move.type - 2);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 5, move.type - 2);
             updateBitBoardBoard(move, bitBoardBoard);
             break;
         case 3:
@@ -236,8 +236,8 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             board[whiteSize][4].white = whiteSize / 7;
             bitBoardBoard->rook_W ^= move.type == KING_W ? (1ULL << (whiteSize * BOARD_SIZE + 3)) & (1ULL << (whiteSize * BOARD_SIZE)) : 0ULL;
             bitBoardBoard->rook_B ^= move.type == KING_B ? (1ULL << (whiteSize * BOARD_SIZE + 3)) & (1ULL << (whiteSize * BOARD_SIZE)) : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 0, move.type + 3);
-            bitBoardBoard->hash ^= getZobristTable(whiteSize, 3, move.type + 3);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 0, move.type - 2);
+            bitBoardBoard->hash ^= getZobristTable(whiteSize, 3, move.type - 2);
             updateBitBoardBoard(move, bitBoardBoard);
             break;
         case 4 ... 7:
