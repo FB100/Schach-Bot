@@ -294,7 +294,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Board bitBoardBoard, 
             moves[index].from = 8 * whiteSize + 4;
             moves[index].to = 8 * whiteSize + 2;
             moves[index].special = 3;
-            moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
+            moves[index].type = whiteTurn ? KING_W : KING_B;
             moves[index].preEval = 0;
             index++;
         }
@@ -306,7 +306,7 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Board bitBoardBoard, 
             moves[index].from = 8 * whiteSize + 4;
             moves[index].to = 8 * whiteSize + 6;
             moves[index].special = 2;
-            moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
+            moves[index].type = whiteTurn ? KING_W : KING_B;
             moves[index].preEval = 0;
             index++;
         }

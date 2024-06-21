@@ -252,7 +252,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
 
     //get all Pseudolegal moves
     Move *moveArray = calloc(MAX_MOVE_ARRAY_SIZE, sizeof(Move));
-    int moveArraySize = getAllPseudoMoves(board, *bitBoardBoard, moveArray, whiteTurn, castlingRights);
+    int moveArraySize = (getAllPseudoMoves(board, *bitBoardBoard, moveArray, whiteTurn, castlingRights) - 1);
 
     //The player has no legal moves:
     if (moveArraySize == 0 || moveArray[0].from == 0 && moveArray[0].to == 0) {
@@ -266,7 +266,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
 
     //iterate over all moves and find the best
     int bestMove = 0;
-    int bestEval = -MAX_ALPHA_BETA;
+    int bestEval = alpha;
     for (int i = 0; i < moveArraySize; i++) {
         Move move = moveArray[i];
 
@@ -284,7 +284,8 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
         if (isRepetition(bitBoardBoard->hash)) {
             eval = 0;
         } else {
-            eval = -findMovesAndEvaluate(bitBoardBoard,board,!whiteTurn,false,remainingDepth-1, -beta, -alpha, castlingRights, round+1);
+            eval = -findMovesAndEvaluate(bitBoardBoard, board, !whiteTurn, false, remainingDepth - 1, -beta, -bestEval,
+                                         castlingRights, round + 1);
         }
 
         if (eval > bestEval) {

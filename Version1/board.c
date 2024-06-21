@@ -68,7 +68,7 @@ void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
             bitBoardBoard->king_B ^= (1ULL << move.to) & (1ULL << move.from);
             break;
     }
-    //TODO hash hier überall updaten, dann kann man sich das immer neu berechnen sparen
+
     bitBoardBoard->hash ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
     bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type);
     computeOccupancyMasks(bitBoardBoard);
@@ -198,12 +198,12 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
     switch (move.special) {
         case 0:
             //normal Moves
-            board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
-            board[move.to / 8][move.to % 8] = capturedUnit;
+            board[move.from / BOARD_SIZE][move.from % BOARD_SIZE] = board[move.to / BOARD_SIZE][move.to % BOARD_SIZE];
+            board[move.to / BOARD_SIZE][move.to % BOARD_SIZE] = capturedUnit;
             updateBitBoardBoard(move, bitBoardBoard);
             break;
         case 2:
-            whiteSize = (move.from - 4) / 8;
+            whiteSize = (move.from - 4) / BOARD_SIZE;
             // kurze Rochade
             board[whiteSize][4].type = 'K';
             board[whiteSize][4].white = whiteSize / 7;
@@ -218,7 +218,7 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             updateBitBoardBoard(move, bitBoardBoard);
             break;
         case 3:
-            whiteSize = (move.from - 4) / 8;
+            whiteSize = (move.from - 4) / BOARD_SIZE;
             // Lange Rochade
             board[whiteSize][0].type = 'R';
             board[whiteSize][0].white = whiteSize / 7;
@@ -234,9 +234,9 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
             break;
         case 4 ... 7:
             // Promotion
-            board[move.from / 8][move.from % 8] = board[move.to / 8][move.to % 8];
-            board[move.from / 8][move.from % 8].type = 'P';
-            board[move.to / 8][move.to % 8] = capturedUnit;
+            board[move.from / BOARD_SIZE][move.from % BOARD_SIZE] = board[move.to / BOARD_SIZE][move.to % BOARD_SIZE];
+            board[move.from / BOARD_SIZE][move.from % BOARD_SIZE].type = 'P';
+            board[move.to / BOARD_SIZE][move.to % BOARD_SIZE] = capturedUnit;
             updateBitBoardBoardPromotion(move, bitBoardBoard);
             break;
         default:
