@@ -172,15 +172,14 @@ int getPositionModifierKing(int i, int j, bool white, int round) {
 
 }
 
-//counts the number of pieces on the board, first place - white pieces, second - black pieces
-int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
+//counts the number of pieces on the board and gives a score (the higher the number, the better for who's turn it is)
+int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round, bool whiteturn) {
     int counterWhite = 0;
     // Speichert, ob wir schon einen Läufer gesehen haben für den Läuferpaar Bonus
     bool bishopBlack = false;
     bool bishopWhite = false;
-    int i, j;
-    for (i = 0; i < BOARD_SIZE; i++) {
-        for (j = 0; j < BOARD_SIZE; j++) {
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
             Piece piece = board[i][j];
             switch (piece.type) {
                 case 'P':
@@ -225,7 +224,7 @@ int evaluateBoard(Piece board[BOARD_SIZE][BOARD_SIZE], int round) {
             }
         }
     }
-    return counterWhite;
+    return whiteturn ? counterWhite : -counterWhite;
 }
 
 
@@ -234,8 +233,6 @@ void evaluateAllCaptures(Piece board[BOARD_SIZE][BOARD_SIZE], Piece moves[MAX_MO
 }
 
 
-// TODO Stellungswiederholung vermeiden, wenn vorne
-// TODO Move ordering
 int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZE], bool whiteTurn, bool initialCall, int remainingDepth, int alpha,
                          int beta, int castlingRights, int round) {
 
@@ -243,11 +240,7 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
 
     //end of recursion: just return board evaluation
     if (!remainingDepth) {
-        eval = evaluateBoard(board, round);
-        if (whiteTurn) {
-            return eval;
-        }
-        return -eval;
+        return evaluateBoard(board, round, whiteTurn);
     }
 
     //get all Pseudolegal moves
@@ -304,6 +297,8 @@ int findMovesAndEvaluate(Board *bitBoardBoard, Piece board[BOARD_SIZE][BOARD_SIZ
     if (initialCall) {
         makeMove(moveArray[bestMove], board, bitBoardBoard);
         resetCaptureStack();
+        printRepetitiontable();
+        //printf("Hash: %lu\n", bitBoardBoard->hash);
     }
 
     free(moveArray);

@@ -25,7 +25,7 @@
 #define QUEEN_PRICE 950
 
 // Tablesizes
-#define RT_SIZE 512 //Repetition-table size
+#define RT_SIZE 1024 //Repetition-table size
 #define CS_SIZE 64 //Capturestack size (Min MAX_AI_DEPTH + 1)
 
 // Sonstiges

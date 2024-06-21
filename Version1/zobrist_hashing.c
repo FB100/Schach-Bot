@@ -5,7 +5,7 @@
 uint64_t ZobristTable[8][8][12];
 uint64_t rndState = 294260285;
 
-unsigned long long int getZobristTable(int i, int j, int type){
+unsigned long long int getZobristTable(int i, int j, int type) {
     return ZobristTable[i][j][type];
 }
 
@@ -23,13 +23,15 @@ uint64_t randomInt() {
 }
 
 
-
 // Initializes the table
 void initZobristTable() {
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 8; j++)
-            for (int k = 0; k < 12; k++)
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            for (int k = 0; k < 12; k++) {
                 ZobristTable[i][j][k] = randomInt();
+            }
+        }
+    }
 }
 
 // Computes the hash value of from given board

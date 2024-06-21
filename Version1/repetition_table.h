@@ -3,8 +3,9 @@
 
 #include "headers.h"
 
+void printRepetitiontable();
 
-u_int8_t amountInRepetitionTable(ulong h);
+int8_t amountInRepetitionTable(ulong h);
 
 void pushRepetitionTable(ulong h);
 

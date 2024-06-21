@@ -1,9 +1,16 @@
 #include "repetition_table.h"
-#include "zobrist_hashing.h"
 
-ulong hashes[RT_SIZE];
-u_int8_t amount[RT_SIZE] = {0};
+
+ulong hashes[RT_SIZE] = {0};
+int8_t amount[RT_SIZE] = {0};
 int hashesCount = 0;
+
+void printRepetitiontable() {
+    printf("Hashtable of Repetitions with %d Hashes\n", hashesCount);
+    for (int i = 0; i < hashesCount; i++) {
+        printf("Amount: %d   |   Hash: %lu\n", amount[i], hashes[i]);
+    }
+}
 
 uint16_t findIndexRepetitionTable(ulong h) {
     for (int i = 0; i < hashesCount; i++) {
@@ -14,14 +21,14 @@ uint16_t findIndexRepetitionTable(ulong h) {
     return -1;
 }
 
-u_int8_t amountInRepetitionTable(ulong h) {
+int8_t amountInRepetitionTable(ulong h) {
     uint16_t index = findIndexRepetitionTable(h);
-    return (index == (uint16_t) - 1) ? 0 : amount[index];
+    return (index == (uint16_t) -1) ? 0 : amount[index];
 }
 
 void pushRepetitionTable(ulong h) {
     uint16_t index = findIndexRepetitionTable(h);
-    if (index == (uint16_t) - 1) {
+    if (index == (uint16_t) -1) {
         if (hashesCount < RT_SIZE) {
             hashes[hashesCount] = h;
             amount[hashesCount] = 1;
@@ -34,13 +41,15 @@ void pushRepetitionTable(ulong h) {
 
 void popRepetitionTable(ulong h) {
     uint16_t index = findIndexRepetitionTable(h);
-    if (index == (uint16_t) - 1) {
+    if (index == (uint16_t) -1) {
         return;
     }
-    amount[index]--;
-    if(amount[index] == 0){
+    if (amount[index] <= 1) {
         hashesCount--;
+    } else{
+        amount[index]--;
     }
+
 }
 
 
