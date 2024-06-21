@@ -346,6 +346,9 @@ int getAllPseudoMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Board bitBoardBoard, 
             }
         }
     }
+    if(index == 0){
+        return index;
+    }
     moves = realloc(moves, index * sizeof(Move));
     sortMoves(index - 1, moves);
     return index;

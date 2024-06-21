@@ -35,6 +35,7 @@ void computeOccupancyMasks(Board *board) {
     board->occupancy = board->occupancyBlack | board->occupancyWhite;
 }
 
+//TODO irgendwie buggy
 void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
     switch (move.type) {
         case PAWN_W:
