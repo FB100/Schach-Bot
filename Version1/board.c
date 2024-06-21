@@ -39,10 +39,10 @@ void computeOccupancyMasks(Board *board) {
 void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
     switch (move.type) {
         case PAWN_W:
-            bitBoardBoard->pawn_W ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->pawn_W   ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case PAWN_B:
-            bitBoardBoard->pawn_B ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->pawn_B   ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case KNIGHT_W:
             bitBoardBoard->knight_W ^= (1ULL << move.to) & (1ULL << move.from);
@@ -57,22 +57,22 @@ void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
             bitBoardBoard->bishop_B ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case ROOK_W:
-            bitBoardBoard->rook_W ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->rook_W   ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case ROOK_B:
-            bitBoardBoard->rook_B ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->rook_B   ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case QUEEN_W:
-            bitBoardBoard->queen_W ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->queen_W  ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case QUEEN_B:
-            bitBoardBoard->queen_B ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->queen_B  ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case KING_W:
-            bitBoardBoard->king_W ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->king_W   ^= (1ULL << move.to) & (1ULL << move.from);
             break;
         case KING_B:
-            bitBoardBoard->king_B ^= (1ULL << move.to) & (1ULL << move.from);
+            bitBoardBoard->king_B   ^= (1ULL << move.to) & (1ULL << move.from);
             break;
     }
 

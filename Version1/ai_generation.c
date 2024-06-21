@@ -29,7 +29,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
             moves[index].special = 0;
             moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
             moves[index].preEval =
-                    abs(getPositionModifierPawn(i + direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                    getPositionModifierPawn(i + direction, j, whiteTurn, 0) - getPositionModifierPawn(i, j, whiteTurn, 0);
             index++;
         }
         // Zwei Felder vorwärts (nur möglich von Startposition)
@@ -40,7 +40,7 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].special = 0;
                 moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
                 moves[index].preEval =
-                        abs(getPositionModifierPawn(i + 2 * direction, j, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                        getPositionModifierPawn(i + 2 * direction, j, whiteTurn, 0) - getPositionModifierPawn(i, j, whiteTurn, 0);
                 index++;
             }
         }
@@ -64,9 +64,9 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].to = 8 * (i + direction) + j + 1;
                 moves[index].special = 0;
                 moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
-                moves[index].preEval = getPiecePrice(p2.type);
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P');
                 moves[index].preEval +=
-                        abs(getPositionModifierPawn(i + 2 * direction, j + 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                        getPositionModifierPawn(i + direction, j + 1, whiteTurn, 0) - getPositionModifierPawn(i, j, whiteTurn, 0);
                 index++;
             }
         }
@@ -86,9 +86,9 @@ int getPawnMoves(Piece board[BOARD_SIZE][BOARD_SIZE], Move moves[MAX_MOVE_ARRAY_
                 moves[index].to = 8 * (i + direction) + j - 1;
                 moves[index].special = 0;
                 moves[index].type = whiteTurn ? PAWN_W : PAWN_B;
-                moves[index].preEval = getPiecePrice(p2.type);
+                moves[index].preEval = getPiecePrice(p2.type) - getPiecePrice('P');
                 moves[index].preEval +=
-                        abs(getPositionModifierPawn(i + 2 * direction, j - 1, whiteTurn, 0)) - abs(getPositionModifierPawn(i, j, whiteTurn, 0));
+                        getPositionModifierPawn(i + direction, j - 1, whiteTurn, 0) - getPositionModifierPawn(i, j, whiteTurn, 0);
 
                 index++;
             }
@@ -108,7 +108,7 @@ int getKnightMoves(Board bitBoardBoard, Move moves[MAX_MOVE_ARRAY_SIZE], bool wh
         moves[index].to = x;
         moves[index].type = whiteTurn ? KNIGHT_W : KNIGHT_B;
         moves[index].special = 0;
-        preEvalWhite = abs(getPositionModifierKnight(x / 8ULL, x % 8ULL, whiteTurn, 0)) - abs(getPositionModifierKnight(i, j, whiteTurn, 0));
+        preEvalWhite = getPositionModifierKnight(x / 8ULL, x % 8ULL, whiteTurn, 0) - getPositionModifierKnight(i, j, whiteTurn, 0);
         moves[index].preEval = whiteTurn ? preEvalWhite : -preEvalWhite;
         index++;
     }
