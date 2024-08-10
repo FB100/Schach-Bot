@@ -1,0 +1,4 @@
+#ifndef VERSION2_TESTS_H
+#define VERSION2_TESTS_H
+
+#endif //VERSION2_TESTS_H

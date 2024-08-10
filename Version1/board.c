@@ -1,6 +1,7 @@
 #include "board.h"
 #include "zobrist_hashing.h"
 #include "repetition_table.h"
+#include "util.h"
 
 char captureTypeStack[CS_SIZE];
 bool captureColorStack[CS_SIZE];
@@ -84,36 +85,36 @@ void updateBitBoardBoard(Move move, Board *bitBoardBoard) {
 void updateBitBoardBoardPromotion(Move move, Board *bitBoardBoard) {
     switch (move.special) {
         case 4:
-            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->queen_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->queen_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
-            bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 4);
+            bitBoardBoard->pawn_W   ^= !(move.type) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->queen_W  ^= !(move.type) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B   ^= move.type ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->queen_B  ^= move.type ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->hash     ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
+            bitBoardBoard->hash     ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 4);
             break;
         case 5:
-            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->rook_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->rook_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
-            bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 3);
+            bitBoardBoard->pawn_W   ^= !(move.type) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->rook_W   ^= !(move.type) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B   ^= move.type ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->rook_B   ^= move.type ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->hash     ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
+            bitBoardBoard->hash     ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 3);
             break;
         case 6:
-            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->bishop_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->bishop_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
-            bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 2);
+            bitBoardBoard->pawn_W   ^= !(move.type) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->bishop_W ^= !(move.type) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B   ^= move.type ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->bishop_B ^= move.type ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->hash     ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
+            bitBoardBoard->hash     ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 2);
             break;
         case 7:
-            bitBoardBoard->pawn_W ^= !(move.type / 8) ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->knight_W ^= !(move.type / 8) ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->pawn_B ^= move.type / 8 ? 1ULL << move.from : 0ULL;
-            bitBoardBoard->knight_B ^= move.type / 8 ? 1ULL << move.to : 0ULL;
-            bitBoardBoard->hash ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
-            bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 1);
+            bitBoardBoard->pawn_W   ^= !(move.type) ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->knight_W ^= !(move.type) ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->pawn_B   ^= move.type ? 1ULL << move.from : 0ULL;
+            bitBoardBoard->knight_B ^= move.type ? 1ULL << move.to : 0ULL;
+            bitBoardBoard->hash     ^= getZobristTable(move.from / BOARD_SIZE, move.from % BOARD_SIZE, move.type);
+            bitBoardBoard->hash     ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, move.type + 1);
             break;
         default:
             break;
@@ -125,6 +126,11 @@ void makeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardBoa
     int whiteSize = 0;
 
     pushCaptureStack(board[move.to / 8][move.to % 8].type, board[move.to / 8][move.to % 8].white);
+    enum PIECES capturedPiece = charPieceToEnumPiece(board[move.to / 8][move.to % 8].type, board[move.to / 8][move.to % 8].white);
+    if(capturedPiece != -1){
+        bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, capturedPiece);
+    }
+
 
     switch (move.special) {
         case 0:
@@ -202,6 +208,11 @@ void unmakeMove(Move move, Piece board[BOARD_SIZE][BOARD_SIZE], Board *bitBoardB
     Piece capturedUnit;
     capturedUnit.type = popCaptureStack();
     capturedUnit.white = captureColorStack[captureStackCount];
+
+    enum PIECES capturedPiece = charPieceToEnumPiece(capturedUnit.type, capturedUnit.white);
+    if(capturedPiece != -1){
+        bitBoardBoard->hash ^= getZobristTable(move.to / BOARD_SIZE, move.to % BOARD_SIZE, capturedPiece);
+    }
 
     switch (move.special) {
         case 0:

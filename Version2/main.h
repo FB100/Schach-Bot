@@ -1,0 +1,4 @@
+#ifndef VERSION2_MAIN_H
+#define VERSION2_MAIN_H
+
+#endif //VERSION2_MAIN_H
