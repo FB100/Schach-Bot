@@ -14,4 +14,5 @@ add_executable(Version2
         main.h
         tests.c
         tests.h
+        structs.h
 )
