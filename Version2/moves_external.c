@@ -3,12 +3,10 @@
 #include "moves_external.h"
 
 // Hilfsfunktion um einen Squarenamen in einen internen Square umzuwandeln
-int squarename_to_square(const char *sq) {
+int squarename_to_square(const char *square) {
     // z.B. "g4" → File g, Rank 4
-    if (!isalpha(sq[0]) || !isdigit(sq[1])) return -1;
-    int file = sq[0] - 'a';
-    int rank = sq[1] - '1';
-    return rank * 8 + file;
+    if (!isalpha(square[0]) || !isdigit(square[1])) return -1;
+    return (square[1] - '1') * 8 + (square[0] - 'a');
 }
 
 uint8_t is_piece_white(enum PIECES piece) {
@@ -16,63 +14,63 @@ uint8_t is_piece_white(enum PIECES piece) {
     return false;
 }
 
-enum PIECES get_piece_on_square(Board *b, int square) {
+enum PIECES get_piece_on_square(Board *board, int square) {
     Bitboard mask = 1ULL << square;
-    if (b->pawn_W & mask) return PAWN_W;
-    if (b->knight_W & mask) return KNIGHT_W;
-    if (b->bishop_W & mask) return BISHOP_W;
-    if (b->rook_W & mask) return ROOK_W;
-    if (b->queen_W & mask) return QUEEN_W;
-    if (b->king_W & mask) return KING_W;
-    if (b->pawn_B & mask) return PAWN_B;
-    if (b->knight_B & mask) return KNIGHT_B;
-    if (b->bishop_B & mask) return BISHOP_B;
-    if (b->rook_B & mask) return ROOK_B;
-    if (b->queen_B & mask) return QUEEN_B;
-    if (b->king_B & mask) return KING_B;
+    if (board->pawn_W & mask) return PAWN_W;
+    if (board->knight_W & mask) return KNIGHT_W;
+    if (board->bishop_W & mask) return BISHOP_W;
+    if (board->rook_W & mask) return ROOK_W;
+    if (board->queen_W & mask) return QUEEN_W;
+    if (board->king_W & mask) return KING_W;
+    if (board->pawn_B & mask) return PAWN_B;
+    if (board->knight_B & mask) return KNIGHT_B;
+    if (board->bishop_B & mask) return BISHOP_B;
+    if (board->rook_B & mask) return ROOK_B;
+    if (board->queen_B & mask) return QUEEN_B;
+    if (board->king_B & mask) return KING_B;
     return -1;
 }
 
-void place_piece_at(Board *b, enum PIECES piece, int square) {
+void place_piece_at(Board *board, enum PIECES piece, int square) {
     Bitboard mask = 1ULL << square;
     switch (piece) {
         case PAWN_W:
-            b->pawn_W |= mask;
+            board->pawn_W |= mask;
             break;
         case KNIGHT_W:
-            b->knight_W |= mask;
+            board->knight_W |= mask;
             break;
         case BISHOP_W:
-            b->bishop_W |= mask;
+            board->bishop_W |= mask;
             break;
         case ROOK_W:
-            b->rook_W |= mask;
+            board->rook_W |= mask;
             break;
         case QUEEN_W:
-            b->queen_W |= mask;
+            board->queen_W |= mask;
             break;
         case KING_W:
-            b->king_W |= mask;
-            b->whiteKingSq = square;
+            board->king_W |= mask;
+            board->whiteKingSq = square;
             break;
         case PAWN_B:
-            b->pawn_B |= mask;
+            board->pawn_B |= mask;
             break;
         case KNIGHT_B:
-            b->knight_B |= mask;
+            board->knight_B |= mask;
             break;
         case BISHOP_B:
-            b->bishop_B |= mask;
+            board->bishop_B |= mask;
             break;
         case ROOK_B:
-            b->rook_B |= mask;
+            board->rook_B |= mask;
             break;
         case QUEEN_B:
-            b->queen_B |= mask;
+            board->queen_B |= mask;
             break;
         case KING_B:
-            b->king_B |= mask;
-            b->blackKingSq = square;
+            board->king_B |= mask;
+            board->blackKingSq = square;
             break;
     }
 }
@@ -212,7 +210,7 @@ void remove_all_chars(char *string, char characterToRemove) {
     *writePointer = '\0';
 }
 
-void apply_move_string(Board *b, char *moves) {
+void apply_move_string(Board *board, char *moves) {
 
     char move[6];
     int from, to;
@@ -221,27 +219,27 @@ void apply_move_string(Board *b, char *moves) {
 
     while (*moves) {
         if (strncmp(moves, "0-0", 3) == 0) {
-            from = b->turn ? b->whiteKingSq : b->blackKingSq;
-            to = b->turn ? 63 : 0;
-            move_piece_with_rules(b, from, to, 0);
+            from = board->turn ? board->whiteKingSq : board->blackKingSq;
+            to = board->turn ? 63 : 0;
+            move_piece_with_rules(board, from, to, 0);
         } else if (strncmp(moves, "0-0-0", 5) == 0) {
-            from = b->turn ? b->whiteKingSq : b->blackKingSq;
-            to = b->turn ? 4 : 60;
-            move_piece_with_rules(b, from, to, 0);
+            from = board->turn ? board->whiteKingSq : board->blackKingSq;
+            to = board->turn ? 4 : 60;
+            move_piece_with_rules(board, from, to, 0);
         } else {
 
             if (sscanf(moves, "%5s", move) != 1) break;
             from = squarename_to_square(move);
             to = squarename_to_square(move + 2);
             char promo = 0;
-            if (b->turn) {
+            if (board->turn) {
                 promo = move[4] ? tolower(move[4]) : 0;
             } else {
                 promo = move[4] ? toupper(move[4]) : 0;
             }
 
 
-            move_piece_with_rules(b, from, to, promo);
+            move_piece_with_rules(board, from, to, promo);
         }
         while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
         while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
