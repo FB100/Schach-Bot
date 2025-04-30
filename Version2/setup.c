@@ -1,63 +1,5 @@
 #include "setup.h"
 
-// Hilfsfunktion zum Setzen eines Bits im Bitboard
-void set_bit(Bitboard *board, int square) {
-    *board |= (1ULL << square);
-}
-
-// Hilfsfunktion zur Berechnung des Indexes eines Schachbrettfeldes
-int square_index(int rank, int file) {
-    return (rank * 8) + file;
-}
-
-// Hilfsfunktion, die anhand eines Chars das Bitboard updated
-void set_bit_by_char(Board *board, char c, int rank, int file) {
-    int square = square_index(rank, file);
-
-    switch (c) {
-        case 'P':
-            set_bit(&board->pawn_W, square);
-            break;
-        case 'N':
-            set_bit(&board->knight_W, square);
-            break;
-        case 'B':
-            set_bit(&board->bishop_W, square);
-            break;
-        case 'R':
-            set_bit(&board->rook_W, square);
-            break;
-        case 'Q':
-            set_bit(&board->queen_W, square);
-            break;
-        case 'K':
-            set_bit(&board->king_W, square);
-            board->whiteKingSq = square;
-            break;
-        case 'p':
-            set_bit(&board->pawn_B, square);
-            break;
-        case 'n':
-            set_bit(&board->knight_B, square);
-            break;
-        case 'b':
-            set_bit(&board->bishop_B, square);
-            break;
-        case 'r':
-            set_bit(&board->rook_B, square);
-            break;
-        case 'q':
-            set_bit(&board->queen_B, square);
-            break;
-        case 'k':
-            set_bit(&board->king_B, square);
-            board->blackKingSq = square;
-            break;
-        default:
-            break;
-    }
-}
-
 void calculate_occupancy(Board *board) {
     board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W |
                             board->rook_W | board->queen_W | board->king_W;
@@ -153,7 +95,7 @@ void set_position_from_FEN(Board *board, const char *fen) {
     if (*fen != '-') {
         file = fen[0] - 'a';
         rank = fen[1] - '1';
-        board->epSquare = square_index(rank, file);
+        board->epSquare = square_from_rank_and_file(rank, file);
     } else {
         board->epSquare = -1;
     }
@@ -189,7 +131,7 @@ void set_position(Board *board, const char *input) {
         return;
     }
     position_input_to_moves(input, moves, max_len);
-    //TODO Move the pieces
+    apply_move_string(board, moves);
     free(moves);
 
 
