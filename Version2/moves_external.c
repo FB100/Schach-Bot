@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "moves_external.h"
 
 // Hilfsfunktion um einen Squarenamen in einen internen Square umzuwandeln
@@ -202,17 +203,39 @@ void move_piece_with_rules(Board *board, int from, int to, char promo) {
     board->turn ^= 1;
 }
 
-void apply_move_string(Board *b, const char *moves) {
+void remove_all_chars(char *string, char characterToRemove) {
+    char *readPointer = string, *writePointer = string;
+    while (*readPointer) {
+        *writePointer = *readPointer++;
+        writePointer += (*writePointer != characterToRemove);
+    }
+    *writePointer = '\0';
+}
+
+void apply_move_string(Board *b, char *moves) {
+
     char move[6];
+    int from, to;
+    remove_all_chars(moves, 'x');
+
     while (*moves) {
-        if (sscanf(moves, "%5s", move) != 1) break;
+        if (strncmp(moves, "0-0", 3) == 0) {
+            from = b->turn ? b->whiteKingSq : b->blackKingSq;
+            to = b->turn ? 63 : 0;
+            move_piece_with_rules(b, from, to, 0);
+        } else if (strncmp(moves, "0-0-0", 5) == 0) {
+            from = b->turn ? b->whiteKingSq : b->blackKingSq;
+            to = b->turn ? 4 : 60;
+            move_piece_with_rules(b, from, to, 0);
+        } else {
 
-        int from = squarename_to_square(move);
-        int to = squarename_to_square(move + 2);
-        char promo = move[4] ? move[4] : 0;
+            if (sscanf(moves, "%5s", move) != 1) break;
+            from = squarename_to_square(move);
+            to = squarename_to_square(move + 2);
+            char promo = move[4] ? move[4] : 0;
 
-        move_piece_with_rules(b, from, to, promo);
-
+            move_piece_with_rules(b, from, to, promo);
+        }
         while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
         while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
     }

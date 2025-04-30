@@ -134,6 +134,6 @@ void set_position(Board *board, const char *input) {
     apply_move_string(board, moves);
     free(moves);
 
-
+    calculate_occupancy(board);
     // TODO Zobrist Hash
 }
