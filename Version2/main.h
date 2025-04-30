@@ -7,6 +7,6 @@
 
 #include "structs.h"
 #include "setup.h"
-
+#include "tests.h"
 
 #endif //VERSION2_MAIN_H

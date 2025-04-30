@@ -44,7 +44,7 @@ void position_input_to_moves(const char *input, char *moves_out, uint16_t max_le
     moves_out[len] = '\0';
 }
 
-// Funktion zum Konvertieren eines FEN-Zeichens in ein Bitboard
+// Funktion zum Konvertieren eines FEN-Zeichens in ein Bitboard Board
 void set_position_from_FEN(Board *board, const char *fen) {
     memset(board, 0, sizeof(Board)); // Initialisiert das Board mit 0
 

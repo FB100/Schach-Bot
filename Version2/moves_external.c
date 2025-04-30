@@ -217,6 +217,7 @@ void apply_move_string(Board *b, char *moves) {
     char move[6];
     int from, to;
     remove_all_chars(moves, 'x');
+    remove_all_chars(moves, '+');
 
     while (*moves) {
         if (strncmp(moves, "0-0", 3) == 0) {
@@ -232,7 +233,13 @@ void apply_move_string(Board *b, char *moves) {
             if (sscanf(moves, "%5s", move) != 1) break;
             from = squarename_to_square(move);
             to = squarename_to_square(move + 2);
-            char promo = move[4] ? move[4] : 0;
+            char promo = 0;
+            if (b->turn) {
+                promo = move[4] ? tolower(move[4]) : 0;
+            } else {
+                promo = move[4] ? toupper(move[4]) : 0;
+            }
+
 
             move_piece_with_rules(b, from, to, promo);
         }

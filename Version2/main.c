@@ -37,6 +37,12 @@ void uci_loop() {
             //TODO search_position();
         } else if (strcmp(input, "quit") == 0) {
             break;
+        } else if (strcmp(input, "test") == 0) {
+            int failed = test_main();
+            if (failed) {
+                printf("Tests fehlgeschlagen.\n");
+            }
+            return;
         }
     }
 }
