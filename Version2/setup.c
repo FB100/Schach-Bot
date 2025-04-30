@@ -10,7 +10,7 @@ void calculate_occupancy(Board *board) {
 
 // Filtert einen Fen string aus einem UCI Position input
 // Input format: position [fen <fenstring> | startpos ] moves <move1> .... <movei>
-void position_input_to_fen(const char *input, char *fen_out, uint8_t max_len) {
+void position_input_to_fen(const char *input, char *fen_out, uint16_t max_len) {
     const char *start = strstr(input, "position fen ");
     if (!start) {
         fen_out[0] = '\0'; // keine Züge gefunden
@@ -29,7 +29,7 @@ void position_input_to_fen(const char *input, char *fen_out, uint8_t max_len) {
 
 // Filtert die moves aus einem UCI Position input
 // Input format: position [fen <fenstring> | startpos ] moves <move1> .... <movei>
-void position_input_to_moves(const char *input, char *moves_out, size_t max_len) {
+void position_input_to_moves(const char *input, char *moves_out, uint16_t max_len) {
     const char *start = strstr(input, "moves ");
     if (!start) {
         moves_out[0] = '\0'; // keine Züge gefunden
@@ -111,10 +111,10 @@ void set_position_from_FEN(Board *board, const char *fen) {
 }
 
 void set_position(Board *board, const char *input) {
+    uint16_t max_len = strlen(input);
     if (strncmp(input + strlen("position "), "startpos", 8) == 0) {
         set_position_from_FEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     } else {
-        uint8_t max_len = strlen(input);
         char *fen = malloc(max_len);
         if (!fen) {
             fprintf(stderr, "Speicher konnte nicht allokiert werden\n");
@@ -124,7 +124,6 @@ void set_position(Board *board, const char *input) {
         set_position_from_FEN(board, fen);
         free(fen);
     }
-    uint8_t max_len = strlen(input);
     char *moves = malloc(max_len);
     if (!moves) {
         fprintf(stderr, "Speicher konnte nicht allokiert werden\n");
