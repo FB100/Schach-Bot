@@ -33,7 +33,8 @@ typedef struct {
     Bitboard occupancyWhite;
     Bitboard occupancyBlack;
     uint64_t hash; //Zobrist hash
-    Bitboard attacks; // The attack mask of the other side
+    Bitboard attacksWhite; // The attack mask of the other side
+    Bitboard attacksBlack; // The attack mask of the other side
 } Board;
 
 

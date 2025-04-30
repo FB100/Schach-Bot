@@ -163,7 +163,8 @@ void set_position_from_FEN(Board *board, const char *fen) {
     board->hash = 0;
 
     // TODO Attackbitboard for legal move checking
-    board->attacks = 0;
+    board->attacksWhite = 0;
+    board->attacksBlack = 0;
 
 }
 
