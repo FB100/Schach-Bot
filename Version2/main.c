@@ -27,14 +27,17 @@ void uci_loop() {
 
         if (strcmp(input, "uci") == 0) {
             printf("id name FabiBot\n");
-            printf("id author Fabian Böhm\n");
+            printf("id author Fabian Boehm\n");
             printf("uciok\n");
+            fflush(stdout);
         } else if (strcmp(input, "isready") == 0) {
             printf("readyok\n");
+            fflush(stdout);
         } else if (strncmp(input, "position", 8) == 0) {
-            set_position(board,input);
+            set_position(board, input);
         } else if (strncmp(input, "go", 2) == 0) {
             //TODO search_position();
+            fflush(stdout);
         } else if (strcmp(input, "quit") == 0) {
             break;
         } else if (strcmp(input, "test") == 0) {
@@ -42,7 +45,7 @@ void uci_loop() {
             if (failed) {
                 printf("Tests fehlgeschlagen.\n");
             }
-            return;
+            break;
         }
     }
 }

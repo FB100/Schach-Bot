@@ -27,8 +27,8 @@ typedef struct {
     int turn;
     int castling;
     int epSquare; //En Passant Square
-    u_short whiteKingSq;
-    u_short blackKingSq;
+    uint16_t whiteKingSq;
+    uint16_t blackKingSq;
     Bitboard occupancy;
     Bitboard occupancyWhite;
     Bitboard occupancyBlack;
