@@ -47,7 +47,7 @@ void uci_loop() {
             if (failed) {
                 printf("Tests fehlgeschlagen.\n");
             }
-            break;
+            fflush(stdout);
         }
     }
 }

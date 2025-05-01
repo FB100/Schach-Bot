@@ -1,10 +1,10 @@
 #include "tests.h"
 
-// Test-Helfer: Prüft ob Figur auf bestimmtem Feld steht
+// Test-Helfer: Prüft, ob Figur auf bestimmtem Feld steht
 int is_piece_on_square(Bitboard piece_bb, const char *square) {
     int index = (square[1] - '1') * 8 + (square[0] - 'a');
     if (index < 0) return 0;
-    return (piece_bb >> index) & 1ULL;
+    return ((piece_bb >> index) & 1ULL) == 1;
 }
 
 
@@ -195,8 +195,6 @@ void test_apply_move_string() {
 }
 
 
-
-
 int test_main() {
     // setup
     printf("Test setup:\n");
@@ -204,6 +202,7 @@ int test_main() {
     test_position_input_to_moves();
     test_set_position_from_FEN();
     test_set_position();
+
     // moves_external
     printf("Test moves_external:\n");
     test_apply_move_string();

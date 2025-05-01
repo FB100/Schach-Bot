@@ -27,7 +27,7 @@ void position_input_to_fen(const char *input, char *fen_out, uint16_t max_len) {
     fen_out[len] = '\0';
 }
 
-// Filtert die moves aus einem UCI Position input
+// Filtert die moves aus einem UCI Position input.
 // Input format: position [fen <fenstring> | startpos ] moves <move1> .... <movei>
 void position_input_to_moves(const char *input, char *moves_out, uint16_t max_len) {
     const char *start = strstr(input, "moves ");

@@ -2,7 +2,7 @@
 #include <string.h>
 #include "moves_external.h"
 
-// Hilfsfunktion um einen Squarenamen in einen internen Square umzuwandeln
+// Hilfsfunktion, um einen Square-namen in einen internen Square umzuwandeln
 int squarename_to_square(const char *square) {
     // z.B. "g4" → File g, Rank 4
     if (!isalpha(square[0]) || !isdigit(square[1])) return -1;
@@ -97,7 +97,7 @@ void set_bit(Bitboard *board, int square) {
     *board |= (1ULL << square);
 }
 
-// Hilfsfunktion zur Berechnung des Indexes eines Schachbrettfeldes
+// Hilfsfunktion zur Berechnung des Index eines Schachbrettfeldes
 int square_from_rank_and_file(int rank, int file) {
     return (rank * 8) + file;
 }
@@ -174,8 +174,8 @@ void move_piece_with_rules(Board *board, int from, int to, char promo) {
         place_piece_at(board, rook, rook_to);
     }
 
-    // Normale Bewegung (inkl. Schlagen)
-    remove_piece_at(board, to);  // Gegner evtl. schlagen
+    // Normale Bewegung (inklusive Schlagen)
+    remove_piece_at(board, to);  // Gegner eventuell schlagen
     remove_piece_at(board, from);
 
     // Umwandlung
@@ -214,7 +214,7 @@ void remove_all_chars(char *string, char characterToRemove) {
 void apply_move_string(Board *board, char *moves) {
 
     char move[6];
-    uint64_t from, to;
+    int from, to;
     remove_all_chars(moves, 'x');
     remove_all_chars(moves, '+');
 
@@ -223,14 +223,14 @@ void apply_move_string(Board *board, char *moves) {
             from = board->turn ? board->blackKingSq : board->whiteKingSq;
             to = board->turn ? 58 : 3;
             move_piece_with_rules(board, from, to, 0);
-            while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
+            while (*moves && !isspace(*moves)) ++moves; // bearbeiteten Move überspringen
             while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
             continue;
         } else if (strncmp(moves, "0-0", 3) == 0) {
             from = board->turn ? board->blackKingSq : board->whiteKingSq;
             to = board->turn ? 62 : 6;
             move_piece_with_rules(board, from, to, 0);
-            while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
+            while (*moves && !isspace(*moves)) ++moves; // bearbeiteten Move überspringen
             while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
             continue;
         }
@@ -245,7 +245,7 @@ void apply_move_string(Board *board, char *moves) {
             promo = move[4] ? toupper(move[4]) : 0;
         }
         move_piece_with_rules(board, from, to, promo);
-        while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
+        while (*moves && !isspace(*moves)) ++moves; // bearbeiteten Move überspringen
         while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
     }
 }
