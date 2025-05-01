@@ -204,7 +204,8 @@ void move_piece_with_rules(Board *board, int from, int to, char promo) {
 void remove_all_chars(char *string, char characterToRemove) {
     char *readPointer = string, *writePointer = string;
     while (*readPointer) {
-        *writePointer = *readPointer++;
+        *writePointer = *readPointer;
+        readPointer++;
         writePointer += (*writePointer != characterToRemove);
     }
     *writePointer = '\0';
@@ -213,34 +214,37 @@ void remove_all_chars(char *string, char characterToRemove) {
 void apply_move_string(Board *board, char *moves) {
 
     char move[6];
-    int from, to;
+    uint64_t from, to;
     remove_all_chars(moves, 'x');
     remove_all_chars(moves, '+');
 
     while (*moves) {
-        if (strncmp(moves, "0-0", 3) == 0) {
-            from = board->turn ? board->whiteKingSq : board->blackKingSq;
-            to = board->turn ? 63 : 0;
+        if (strncmp(moves, "0-0-0", 5) == 0) {
+            from = board->turn ? board->blackKingSq : board->whiteKingSq;
+            to = board->turn ? 58 : 3;
             move_piece_with_rules(board, from, to, 0);
-        } else if (strncmp(moves, "0-0-0", 5) == 0) {
-            from = board->turn ? board->whiteKingSq : board->blackKingSq;
-            to = board->turn ? 4 : 60;
+            while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
+            while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
+            continue;
+        } else if (strncmp(moves, "0-0", 3) == 0) {
+            from = board->turn ? board->blackKingSq : board->whiteKingSq;
+            to = board->turn ? 62 : 6;
             move_piece_with_rules(board, from, to, 0);
-        } else {
-
-            if (sscanf(moves, "%5s", move) != 1) break;
-            from = squarename_to_square(move);
-            to = squarename_to_square(move + 2);
-            char promo = 0;
-            if (board->turn) {
-                promo = move[4] ? tolower(move[4]) : 0;
-            } else {
-                promo = move[4] ? toupper(move[4]) : 0;
-            }
-
-
-            move_piece_with_rules(board, from, to, promo);
+            while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
+            while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
+            continue;
         }
+
+        if (sscanf(moves, "%5s", move) != 1) break;
+        from = squarename_to_square(move);
+        to = squarename_to_square(move + 2);
+        char promo = 0;
+        if (board->turn) {
+            promo = move[4] ? tolower(move[4]) : 0;
+        } else {
+            promo = move[4] ? toupper(move[4]) : 0;
+        }
+        move_piece_with_rules(board, from, to, promo);
         while (*moves && !isspace(*moves)) ++moves; // bearbeiteten move überspringen
         while (*moves && isspace(*moves)) ++moves; // Lehrzeichen überspringen
     }

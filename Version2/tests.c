@@ -148,6 +148,53 @@ void test_set_position() {
     printf(" ✓ set_position bestanden.\n");
 }
 
+void test_apply_move_string() {
+    Board board;
+    memset(&board, 0, sizeof(Board));
+
+    // Test 1: Einfache Züge
+    set_position_from_FEN(&board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    char moves1[] = "e2e4 e7e5";
+    apply_move_string(&board, moves1);
+    assert(is_piece_on_square(board.pawn_W, "e4"));
+    assert(is_piece_on_square(board.pawn_B, "e5"));
+
+    // Test 2: Schlagzug mit 'x' und Schachzeichen '+'
+    set_position_from_FEN(&board, "8/8/8/3p4/4P3/8/8/8 w - - 0 1");
+    char moves2[] = "e4xd5+";
+    apply_move_string(&board, moves2);
+    assert(is_piece_on_square(board.pawn_W, "d5"));
+    assert(!is_piece_on_square(board.pawn_B, "d5"));
+
+    // Test 3: Rochade kurz (weiß)
+    set_position_from_FEN(&board, "rnbqk2r/pppppppp/5n2/8/8/5N2/PPPPPPPP/RNBQK2R w KQkq - 0 1");
+    board.whiteKingSq = squarename_to_square("e1");
+    char moves3[] = "0-0";
+    apply_move_string(&board, moves3);
+    assert(is_piece_on_square(board.king_W, "g1"));
+    assert(is_piece_on_square(board.rook_W, "f1"));
+
+    // Test 4: Rochade lang (Schwarz)
+    set_position_from_FEN(&board, "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+    board.turn = 1;
+    board.blackKingSq = squarename_to_square("e8");
+    char moves4[] = "0-0-0";
+    apply_move_string(&board, moves4);
+    assert(is_piece_on_square(board.king_B, "c8"));
+    assert(is_piece_on_square(board.rook_B, "d8"));
+
+    // Test 5: Umwandlung
+    set_position_from_FEN(&board, "8/P7/8/8/8/8/8/8 w - - 0 1");
+    char moves5[] = "a7a8q";
+    apply_move_string(&board, moves5);
+    assert(is_piece_on_square(board.queen_W, "a8"));
+    assert(!is_piece_on_square(board.pawn_W, "a7"));
+
+
+    printf(" ✓ apply_move_string bestanden.\n");
+}
+
+
 
 
 int test_main() {
@@ -159,7 +206,7 @@ int test_main() {
     test_set_position();
     // moves_external
     printf("Test moves_external:\n");
-
+    test_apply_move_string();
 
 
     return 0;

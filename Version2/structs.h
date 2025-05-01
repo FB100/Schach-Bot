@@ -9,6 +9,7 @@ enum PIECES {
     PAWN_B, KNIGHT_B, BISHOP_B, ROOK_B, QUEEN_B, KING_B
 };
 
+//Figur auf a1 = 0, Figur auf b1 = 1, usw
 typedef uint64_t Bitboard;
 
 typedef struct {

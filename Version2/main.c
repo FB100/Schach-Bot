@@ -11,6 +11,7 @@ int main() {
         return 1;
     }
     uci_loop();
+    free(board);
     return 0;
 }
 
@@ -37,6 +38,7 @@ void uci_loop() {
             set_position(board, input);
         } else if (strncmp(input, "go", 2) == 0) {
             //TODO search_position();
+            printf("TODO\n");
             fflush(stdout);
         } else if (strcmp(input, "quit") == 0) {
             break;
