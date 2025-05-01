@@ -140,7 +140,7 @@ void test_set_position() {
     assert(is_piece_on_square(board.pawn_W, "d5"));
     assert(!is_piece_on_square(board.pawn_B, "d5")); // Schwarzer Bauer wurde geschlagen
 
-    // Test 8: Bauernumwandlung (z. B. Dame)
+    // Test 8: Bauernumwandlung
     set_position(&board, "position startpos moves a2a4 h7h5 a4a5 h5h4 a5a6 h4h3 a6b7 h3g2 b7a8n g2h1");
     assert(is_piece_on_square(board.knight_W, "a8"));
     assert(is_piece_on_square(board.queen_B, "h1"));
