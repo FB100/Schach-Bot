@@ -10,7 +10,7 @@ void apply_move_string(Board *board, char *moves);
 
 void set_bit_by_char(Board *board, char c, int rank, int file);
 
-int square_from_rank_and_file(int rank, int file);
+uint8_t square_from_rank_and_file(int rank, int file);
 
 int squarename_to_square(const char *square);
 

@@ -93,18 +93,18 @@ void remove_piece_at(Board *board, int square) {
 
 
 // Hilfsfunktion zum Setzen eines Bits im Bitboard
-void set_bit(Bitboard *board, int square) {
+void set_bit(Bitboard *board, uint8_t square) {
     *board |= (1ULL << square);
 }
 
 // Hilfsfunktion zur Berechnung des Index eines Schachbrettfeldes
-int square_from_rank_and_file(int rank, int file) {
+uint8_t square_from_rank_and_file(int rank, int file) {
     return (rank * 8) + file;
 }
 
 // Hilfsfunktion, die anhand eines Chars das Bitboard updated
 void set_bit_by_char(Board *board, char c, int rank, int file) {
-    int square = square_from_rank_and_file(rank, file);
+    uint8_t square = square_from_rank_and_file(rank, file);
 
     switch (c) {
         case 'P':

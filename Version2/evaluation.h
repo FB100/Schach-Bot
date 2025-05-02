@@ -1,6 +1,7 @@
 #ifndef VERSION2_EVALUATION_H
 #define VERSION2_EVALUATION_H
 
-//TODO try iterative Alpha Beta
+void get_best_move();
+
 
 #endif //VERSION2_EVALUATION_H

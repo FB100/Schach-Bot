@@ -80,7 +80,7 @@ void test_set_position_from_FEN() {
     assert(board.king_B == 0x1000000000000000ULL);
     assert(board.turn == 0); // w
     assert(board.castling == 0xF); // KQkq (alle Rechte gesetzt)
-    assert(board.epSquare == -1); // kein En Passant
+    assert(board.epSquare == (uint8_t)-1); // kein En Passant
 
     // Test 2: En Passant
     memset(&board, 0, sizeof(Board));
