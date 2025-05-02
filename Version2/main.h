@@ -8,5 +8,7 @@
 #include "structs.h"
 #include "setup.h"
 #include "tests.h"
+#include "evaluation.h"
+#include "pregenerate.h"
 
 #endif //VERSION2_MAIN_H

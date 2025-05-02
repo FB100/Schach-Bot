@@ -19,4 +19,6 @@ add_executable(Version2
         setup.h
         moves_external.c
         moves_external.h
+        pregenerate.h
+        pregenerate.c
 )

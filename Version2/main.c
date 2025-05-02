@@ -1,6 +1,7 @@
 #include "main.h"
 
 void uci_loop();
+void uci_play_move(Move move);
 
 Board *board;
 
@@ -37,8 +38,7 @@ void uci_loop() {
         } else if (strncmp(input, "position", 8) == 0) {
             set_position(board, input);
         } else if (strncmp(input, "go", 2) == 0) {
-            //TODO get_best_move();
-            printf("TODO\n");
+            uci_play_move(get_best_move(board, 4));
             fflush(stdout);
         } else if (strcmp(input, "quit") == 0) {
             break;
@@ -48,8 +48,16 @@ void uci_loop() {
                 printf("Tests fehlgeschlagen.\n");
             }
             fflush(stdout);
+        } else if (strcmp(input, "pregen") == 0) {
+            pregenerate_everything();
+            fflush(stdout);
         }
+
     }
+}
+
+void uci_play_move(Move move) {
+    printf("TODO\n");
 }
 
 

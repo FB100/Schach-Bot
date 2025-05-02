@@ -73,5 +73,7 @@ enum PromoPiece {
     PROMO_Q = 4
 };
 
+#define MAX_MOVES 219
+#define MAX_CAPTURE_DEPTH 10
 
 #endif //VERSION2_STRUCTS_H
