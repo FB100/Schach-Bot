@@ -1,10 +1,27 @@
 #include "tests.h"
 
-// Test-Helfer: Prüft, ob Figur auf bestimmtem Feld steht
+// Hilfsfunktion: Prüft, ob Figur auf bestimmtem Feld steht
 int is_piece_on_square(Bitboard piece_bb, const char *square) {
     int index = (square[1] - '1') * 8 + (square[0] - 'a');
     if (index < 0) return 0;
     return ((piece_bb >> index) & 1ULL) == 1;
+}
+
+// Hilfsfunktion: Setzt ein einzelnes Bit im Bitboard
+Bitboard square_to_bit(int square) {
+    return 1ULL << square;
+}
+
+// Hilfsfunktion: Gibt zurück, ob ein Move in der Liste existiert
+int move_exists(Move *moves, int count, int from, int to, int capture) {
+    for (int i = 0; i < count; ++i) {
+        if (MOVE_FROM(moves[i]) == from &&
+            MOVE_TO(moves[i]) == to &&
+            MOVE_IS_CAPTURE(moves[i]) == capture) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 
@@ -80,7 +97,7 @@ void test_set_position_from_FEN() {
     assert(board.king_B == 0x1000000000000000ULL);
     assert(board.turn == 0); // w
     assert(board.castling == 0xF); // KQkq (alle Rechte gesetzt)
-    assert(board.epSquare == (uint8_t)-1); // kein En Passant
+    assert(board.epSquare == (uint8_t) -1); // kein En Passant
 
     // Test 2: En Passant
     memset(&board, 0, sizeof(Board));
@@ -194,6 +211,68 @@ void test_apply_move_string() {
     printf(" ✓ apply_move_string bestanden.\n");
 }
 
+void test_generate_knight_moves() {
+    Board board;
+    memset(&board, 0, sizeof(Board));
+
+    // Weißer Springer auf d4 (Feld 27)
+    board.knight_W = square_to_bit(27); // d4
+    board.occupancyWhite = board.knight_W;
+    board.occupancyBlack = 0;
+    board.occupancy = board.occupancyWhite;
+    board.turn = 0; // Weiß am Zug
+
+    Move moves[32];
+    int count = 0;
+
+    generate_knight_moves(&board, moves, &count);
+
+    // Erwartete Ziel-Felder von d4
+    int expected_targets[] = {10, 12, 17, 21, 33, 37, 42, 44};
+    int expected_count = sizeof(expected_targets) / sizeof(int);
+    assert(count == expected_count);
+
+    for (int i = 0; i < expected_count; ++i) {
+        assert(move_exists(moves, count, 27, expected_targets[i], 0));
+    }
+
+    // Test: Springer schlägt eine schwarze Figur
+    memset(&board, 0, sizeof(Board));
+    board.knight_W = square_to_bit(27); // d4
+    board.pawn_B = square_to_bit(33);   // e6
+    board.occupancyWhite = board.knight_W;
+    board.occupancyBlack = board.pawn_B;
+    board.occupancy = board.occupancyWhite | board.occupancyBlack;
+    board.turn = 0;
+
+    count = 0;
+    generate_knight_moves(&board, moves, &count);
+
+    assert(move_exists(moves, count, 27, 33, 1)); // Capture auf e6
+    assert(count == 8); // 7 normale Züge + 1 Capture
+
+    // Test: eigener Bauer blockiert Springer-Ziel
+    memset(&board, 0, sizeof(Board));
+    board.knight_W = square_to_bit(27); // d4
+    board.pawn_W = square_to_bit(33);   // e6 (eigener Bauer blockiert)
+    board.occupancyWhite = board.knight_W | board.pawn_W;
+    board.occupancyBlack = 0;
+    board.occupancy = board.occupancyWhite;
+    board.turn = 0;
+
+    count = 0;
+    generate_knight_moves(&board, moves, &count);
+
+    // d4->e6 (33) sollte NICHT enthalten sein
+    assert(!move_exists(moves, count, 27, 33, 0));
+    assert(!move_exists(moves, count, 27, 33, 1));
+
+    // Es sollten nur 7 statt 8 Züge vorhanden sein
+    assert(count == 7);
+
+    printf(" ✓ generate_knight_moves bestanden.\n");
+}
+
 
 int test_main() {
     // setup
@@ -206,6 +285,10 @@ int test_main() {
     // moves_external
     printf("Test moves_external:\n");
     test_apply_move_string();
+
+    // move_generation:
+    printf("Test move_generation:\n");
+    test_generate_knight_moves();
 
 
     return 0;

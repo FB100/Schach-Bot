@@ -2,8 +2,6 @@
 
 void generate_pawn_moves(Board *board, Move *moves, int *count);
 
-void generate_knight_moves(Board *board, Move *moves, int *count);
-
 void generate_bishop_moves(Board *board, Move *moves, int *count);
 
 void generate_rook_moves(Board *board, Move *moves, int *count);
@@ -213,7 +211,6 @@ void generate_knight_moves(Board *board, Move *moves, int *count){
 
     while (knights) {
         int from = __builtin_ctzll(knights);
-        Bitboard from_bb = 1ULL << from;
         Bitboard attacks = knight_attack_table[from] & ~own_occ;
 
         while (attacks) {

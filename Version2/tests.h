@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #include "setup.h"
+#include "generation.h"
 
 int test_main();
 
