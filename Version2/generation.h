@@ -5,9 +5,20 @@
 #include "pregenerate.h"
 
 int generate_moves(Board *board, Move *legal_moves);
+
 void make_move(Board *board, Move move);
 
 //For Testing
 void generate_knight_moves(Board *board, Move *moves, int *count);
+
+void generate_pawn_moves(Board *board, Move *moves, int *count);
+
+void generate_bishop_moves(Board *board, Move *moves, int *count);
+
+void generate_rook_moves(Board *board, Move *moves, int *count);
+
+void generate_queen_moves(Board *board, Move *moves, int *count);
+
+void generate_king_moves(Board *board, Move *moves, int *count);
 
 #endif //VERSION2_GENERATION_H

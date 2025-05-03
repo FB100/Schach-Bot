@@ -13,7 +13,7 @@ Bitboard square_to_bit(int square) {
 }
 
 // Hilfsfunktion: Gibt zurück, ob ein Move in der Liste existiert
-int move_exists(Move *moves, int count, int from, int to, int capture) {
+int move_exists(const Move *moves, int count, int from, int to, int capture) {
     for (int i = 0; i < count; ++i) {
         if (MOVE_FROM(moves[i]) == from &&
             MOVE_TO(moves[i]) == to &&

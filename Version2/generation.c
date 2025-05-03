@@ -1,15 +1,5 @@
 #include "generation.h"
 
-void generate_pawn_moves(Board *board, Move *moves, int *count);
-
-void generate_bishop_moves(Board *board, Move *moves, int *count);
-
-void generate_rook_moves(Board *board, Move *moves, int *count);
-
-void generate_queen_moves(Board *board, Move *moves, int *count);
-
-void generate_king_moves(Board *board, Move *moves, int *count);
-
 
 int generate_moves(Board *board, Move *legal_moves) {
     Move pseudo_moves[MAX_MOVES];
@@ -199,11 +189,11 @@ void make_move(Board *board, Move move) {
 }
 
 
-void generate_pawn_moves(Board *board, Move *moves, int *count){
+void generate_pawn_moves(Board *board, Move *moves, int *count) {
     return;
 }
 
-void generate_knight_moves(Board *board, Move *moves, int *count){
+void generate_knight_moves(Board *board, Move *moves, int *count) {
     int us = board->turn;
     Bitboard knights = us ? board->knight_B : board->knight_W;
     Bitboard own_occ = us ? board->occupancyBlack : board->occupancyWhite;
@@ -228,18 +218,18 @@ void generate_knight_moves(Board *board, Move *moves, int *count){
     }
 }
 
-void generate_bishop_moves(Board *board, Move *moves, int *count){
+void generate_bishop_moves(Board *board, Move *moves, int *count) {
     return;
 }
 
-void generate_rook_moves(Board *board, Move *moves, int *count){
+void generate_rook_moves(Board *board, Move *moves, int *count) {
     return;
 }
 
-void generate_queen_moves(Board *board, Move *moves, int *count){
+void generate_queen_moves(Board *board, Move *moves, int *count) {
     return;
 }
 
-void generate_king_moves(Board *board, Move *moves, int *count){
+void generate_king_moves(Board *board, Move *moves, int *count) {
     return;
 }
