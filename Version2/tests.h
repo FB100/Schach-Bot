@@ -2,8 +2,6 @@
 #define VERSION2_TESTS_H
 
 #include <string.h>
-#include <stdint.h>
-#include <stdio.h>
 #include <assert.h>
 
 #include "setup.h"

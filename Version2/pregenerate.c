@@ -23,9 +23,9 @@ Bitboard knight_attacks_from(int sq) {
 }
 
 void generate_knight_attack_table() {
-    printf("Bitboard knight_attacks_from[64] = {\n");
+    printf("uint64_t knight_attack_table[64] = {\n");
     for (int sq = 0; sq < 64; sq++) {
-        printf("%lluULL, ", knight_attacks_from(sq));
+        printf("%"PRIu64"ULL, ", knight_attacks_from(sq));
     }
     printf("\n};\n\n");
 }

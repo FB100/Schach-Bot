@@ -2,7 +2,6 @@
 #define VERSION2_PY_PREGENERATED_H
 
 #include <stdint.h>
-#include <stdio.h>
 
 #include "structs.h"
 
