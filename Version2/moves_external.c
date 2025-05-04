@@ -1,18 +1,4 @@
-#include <stdio.h>
-#include <string.h>
 #include "moves_external.h"
-
-// Hilfsfunktion, um einen Square-namen in einen internen Square umzuwandeln
-int squarename_to_square(const char *square) {
-    // z.B. "g4" → File g, Rank 4
-    if (!isalpha(square[0]) || !isdigit(square[1])) return -1;
-    return (square[1] - '1') * 8 + (square[0] - 'a');
-}
-
-uint8_t is_piece_white(enum PIECES piece) {
-    if (piece <= KING_W) return true;
-    return false;
-}
 
 enum PIECES get_piece_on_square(Board *board, int square) {
     Bitboard mask = 1ULL << square;
@@ -236,8 +222,8 @@ void apply_move_string(Board *board, char *moves) {
         }
 
         if (sscanf(moves, "%5s", move) != 1) break;
-        from = squarename_to_square(move);
-        to = squarename_to_square(move + 2);
+        from = string_to_square(move);
+        to = string_to_square(move + 2);
         char promo = 0;
         if (board->turn) {
             promo = move[4] ? tolower(move[4]) : 0;

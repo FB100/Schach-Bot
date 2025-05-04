@@ -21,4 +21,6 @@ add_executable(Version2
         moves_external.h
         pregenerate.h
         pregenerate.c
+        util_board.c
+        util_board.h
 )

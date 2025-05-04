@@ -4,6 +4,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "structs.h"
+#include "util_board.h"
 #include "setup.h"
 #include "generation.h"
 

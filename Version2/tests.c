@@ -1,28 +1,6 @@
 #include "tests.h"
 
-// Hilfsfunktion: Prüft, ob Figur auf bestimmtem Feld steht
-int is_piece_on_square(Bitboard piece_bb, const char *square) {
-    int index = (square[1] - '1') * 8 + (square[0] - 'a');
-    if (index < 0) return 0;
-    return ((piece_bb >> index) & 1ULL) == 1;
-}
 
-// Hilfsfunktion: Setzt ein einzelnes Bit im Bitboard
-Bitboard square_to_bit(int square) {
-    return 1ULL << square;
-}
-
-// Hilfsfunktion: Gibt zurück, ob ein Move in der Liste existiert
-int move_exists(const Move *moves, int count, int from, int to, int capture) {
-    for (int i = 0; i < count; ++i) {
-        if (MOVE_FROM(moves[i]) == from &&
-            MOVE_TO(moves[i]) == to &&
-            MOVE_IS_CAPTURE(moves[i]) == capture) {
-            return 1;
-        }
-    }
-    return 0;
-}
 
 
 void test_position_input_to_fen() {
@@ -185,7 +163,7 @@ void test_apply_move_string() {
 
     // Test 3: Rochade kurz (weiß)
     set_position_from_FEN(&board, "rnbqk2r/pppppppp/5n2/8/8/5N2/PPPPPPPP/RNBQK2R w KQkq - 0 1");
-    board.whiteKingSq = squarename_to_square("e1");
+    board.whiteKingSq = string_to_square("e1");
     char moves3[] = "0-0";
     apply_move_string(&board, moves3);
     assert(is_piece_on_square(board.king_W, "g1"));
@@ -194,7 +172,7 @@ void test_apply_move_string() {
     // Test 4: Rochade lang (Schwarz)
     set_position_from_FEN(&board, "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
     board.turn = 1;
-    board.blackKingSq = squarename_to_square("e8");
+    board.blackKingSq = string_to_square("e8");
     char moves4[] = "0-0-0";
     apply_move_string(&board, moves4);
     assert(is_piece_on_square(board.king_B, "c8"));

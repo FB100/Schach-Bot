@@ -57,7 +57,21 @@ void uci_loop() {
 }
 
 void uci_play_move(Move move) {
-    printf("TODO\n");
+    char from_str[3], to_str[3];
+    square_to_string(MOVE_FROM(move), from_str);
+    square_to_string(MOVE_TO(move), to_str);
+
+    printf("%s%s", from_str, to_str);
+
+    int promo = MOVE_PROMO(move);
+    if (promo != 0) {
+        char pchar = promo_to_char(promo);
+        if (pchar != '\0') {
+            putchar(pchar);
+        }
+    }
+
+    putchar('\n'); // End the UCI command with newline
 }
 
 
