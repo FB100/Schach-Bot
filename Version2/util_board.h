@@ -8,7 +8,7 @@
 #include "structs.h"
 
 
-void square_to_string(int square, char *out);
+void square_to_string(uint8_t square, char *out);
 
 int string_to_square(const char *string);
 

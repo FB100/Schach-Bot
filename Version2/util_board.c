@@ -2,9 +2,9 @@
 
 
 // Hilfsfunktion: Konvertiert Feld-Index in String
-void square_to_string(int square, char *out) {
-    int file = square % 8;
-    int rank = square / 8;
+void square_to_string(uint8_t square, char *out) {
+    uint8_t file = square % 8;
+    uint8_t rank = square / 8;
     out[0] = 'a' + file;
     out[1] = '1' + rank;
     out[2] = '\0';
@@ -57,7 +57,7 @@ int move_exists(const Move *moves, int count, int from, int to, int capture) {
     return 0;
 }
 
-
+// Hilfsfunktion: Gibt an, ob ein Piece Weiß ist
 uint8_t is_piece_white(enum PIECES piece) {
     if (piece <= KING_W) return true;
     return false;
