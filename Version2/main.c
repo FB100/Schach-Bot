@@ -61,7 +61,7 @@ void uci_play_move(Move move) {
     square_to_string(MOVE_FROM(move), from_str);
     square_to_string(MOVE_TO(move), to_str);
 
-    printf("%s%s", from_str, to_str);
+    printf("bestmove %s%s", from_str, to_str);
 
     int promo = MOVE_PROMO(move);
     if (promo != 0) {

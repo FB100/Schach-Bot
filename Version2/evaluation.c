@@ -10,7 +10,7 @@ Move get_best_move(Board *board, uint8_t depth) {
 
     Move bestMove = 0;
     Move *moves = malloc(sizeof(Move) * MAX_MOVES);
-    int moves_size = generate_moves(board, moves) + 1;
+    int moves_size = generate_moves(board, moves);
     moves = realloc(moves, sizeof(Move) * moves_size);
     if(moves == NULL || moves_size == 0){
         return 0;
