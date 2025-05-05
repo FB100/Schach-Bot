@@ -1,5 +1,6 @@
 #include "generation.h"
 
+void update_attackmaps(Board *board);;
 
 int generate_moves(Board *board, Move *legal_moves) {
     Move pseudo_moves[MAX_MOVES];
@@ -185,6 +186,8 @@ void make_move(Board *board, Move move) {
     // 10. Spielerwechsel
     board->turn ^= 1;
 
+    update_attackmaps(board);
+
     // 11. Zobrist Hash, Attack Maps etc. → separat aktualisieren
 }
 
@@ -194,10 +197,9 @@ void generate_pawn_moves(Board *board, Move *moves, int *count) {
 }
 
 void generate_knight_moves(Board *board, Move *moves, int *count) {
-    int us = board->turn;
-    Bitboard knights = us ? board->knight_B : board->knight_W;
-    Bitboard own_occ = us ? board->occupancyBlack : board->occupancyWhite;
-    Bitboard opp_occ = us ? board->occupancyWhite : board->occupancyBlack;
+    Bitboard knights = board->turn ? board->knight_B : board->knight_W;
+    Bitboard own_occ = board->turn ? board->occupancyBlack : board->occupancyWhite;
+    Bitboard opp_occ = board->turn ? board->occupancyWhite : board->occupancyBlack;
 
     while (knights) {
         int from = __builtin_ctzll(knights);
@@ -231,5 +233,77 @@ void generate_queen_moves(Board *board, Move *moves, int *count) {
 }
 
 void generate_king_moves(Board *board, Move *moves, int *count) {
-    return;
+    Bitboard king = board->turn ? board->king_B : board->king_W;
+    Bitboard own_occ = board->turn ? board->occupancyBlack : board->occupancyWhite;
+    Bitboard opp_occ = board->turn ? board->occupancyWhite : board->occupancyBlack;
+
+    int from = __builtin_ctzll(king);
+    Bitboard attacks = king_attack_table[from] & ~own_occ;
+
+    while (attacks) {
+        int to = __builtin_ctzll(attacks);
+        Bitboard to_bb = 1ULL << to;
+
+        int is_capture = (to_bb & opp_occ) != 0;
+        moves[*count] = ENCODE_MOVE(from, to, 0, is_capture, 0, 0); // type 2 = knight
+        (*count)++;
+
+        attacks &= attacks - 1;
+    }
 }
+
+Bitboard calculate_pawn_attacks(Bitboard pawns, uint8_t is_white) {
+    return 0;
+}
+
+Bitboard calculate_knight_attacks(Bitboard knights) {
+    Bitboard attacks = 0ULL;
+    while (knights) {
+        int from = __builtin_ctzll(knights);
+        attacks |= knight_attack_table[from];
+        knights &= knights - 1;
+    }
+    return attacks;
+}
+
+Bitboard calculate_bishop_attacks(Board *board, Bitboard bishops) {
+    return 0;
+}
+
+Bitboard calculate_rook_attacks(Board *board, Bitboard rooks) {
+    return 0;
+}
+
+Bitboard calculate_queen_attacks(Board *board, Bitboard queens) {
+    return 0;
+}
+
+Bitboard calculate_king_attacks(Bitboard king) {
+    Bitboard attacks = 0ULL;
+    int from = __builtin_ctzll(king);
+    attacks |= knight_attack_table[from];
+    return attacks;
+}
+
+
+void update_attackmaps(Board *board) {
+    board->attacksWhite = 0ULL;
+    board->attacksBlack = 0ULL;
+
+    // Weiß
+    board->attacksWhite |= calculate_pawn_attacks(board->pawn_W, 0);
+    board->attacksWhite |= calculate_knight_attacks(board->knight_W);
+    board->attacksWhite |= calculate_bishop_attacks(board, board->bishop_W);
+    board->attacksWhite |= calculate_rook_attacks(board, board->rook_W);
+    board->attacksWhite |= calculate_queen_attacks(board, board->queen_W);
+    board->attacksWhite |= calculate_king_attacks(board->king_W);
+
+    // Schwarz
+    board->attacksBlack |= calculate_pawn_attacks(board->pawn_B, 1);
+    board->attacksBlack |= calculate_knight_attacks(board->knight_B);
+    board->attacksBlack |= calculate_bishop_attacks(board, board->bishop_B);
+    board->attacksBlack |= calculate_rook_attacks(board, board->rook_B);
+    board->attacksBlack |= calculate_queen_attacks(board, board->queen_B);
+    board->attacksBlack |= calculate_king_attacks(board->king_B);
+}
+
