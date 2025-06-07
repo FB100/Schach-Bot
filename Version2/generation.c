@@ -176,9 +176,174 @@ void make_move(Board *board, Move move) {
     // 11. Zobrist Hash, Attack Maps etc. → separat aktualisieren
 }
 
-
 void generate_pawn_moves(Board *board, Move *moves, int *count) {
-    return;
+    Bitboard pawns;
+    Bitboard empty_squares = ~board->occupancy;
+
+    if (board->turn) {
+        // Weiße Bauern
+        pawns = board->pawn_W;
+
+        // 1. Einzelzüge nach vorne
+        Bitboard single_push = (pawns << 8) & empty_squares;
+        Bitboard double_push = ((single_push & RANK_3) << 8) & empty_squares;
+
+        // Normale Einzelzüge + Promotion
+        while (single_push) {
+            int to = __builtin_ctzll(single_push);
+            int from = to - 8;
+            if ((1ULL << to) & RANK_8) {
+                // Promotion
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 0, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
+            }
+            single_push &= single_push - 1;
+        }
+
+        // Doppelschritt
+        Bitboard double_push_copy = double_push;
+        while (double_push_copy) {
+            int to = __builtin_ctzll(double_push_copy);
+            int from = to - 16;
+            moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
+            double_push_copy &= double_push_copy - 1;
+        }
+
+        // 2. Schlagzüge
+        // Links oben
+        Bitboard left_attacks = (pawns & ~FILE_A) << 7 & board->occupancyBlack;
+        // Rechts oben
+        Bitboard right_attacks = (pawns & ~FILE_H) << 9 & board->occupancyBlack;
+
+        Bitboard left_copy = left_attacks;
+        while (left_copy) {
+            int to = __builtin_ctzll(left_copy);
+            int from = to - 7;
+            if ((1ULL << to) & RANK_8) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
+            }
+            left_copy &= left_copy - 1;
+        }
+
+        Bitboard right_copy = right_attacks;
+        while (right_copy) {
+            int to = __builtin_ctzll(right_copy);
+            int from = to - 9;
+            if ((1ULL << to) & RANK_8) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
+            }
+            right_copy &= right_copy - 1;
+        }
+
+        // En Passant
+        if (board->epSquare != 0xFF) {
+            Bitboard epSquareBB = 1ULL << board->epSquare;
+            Bitboard epLeft = (pawns & ~FILE_A) << 7;
+            Bitboard epRight = (pawns & ~FILE_H) << 9;
+            if (epLeft & epSquareBB) {
+                int from = board->epSquare - 7;
+                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
+            }
+            if (epRight & epSquareBB) {
+                int from = board->epSquare - 9;
+                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
+            }
+        }
+
+    } else {
+        // Schwarze Bauern
+        pawns = board->pawn_B;
+
+        // 1. Einzelzüge nach vorne
+        Bitboard single_push = (pawns >> 8) & empty_squares;
+        Bitboard double_push = ((single_push & RANK_6) >> 8) & empty_squares;
+
+        while (single_push) {
+            int to = __builtin_ctzll(single_push);
+            int from = to + 8;
+            if ((1ULL << to) & RANK_1) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 0, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
+            }
+            single_push &= single_push - 1;
+        }
+
+        // Doppelschritt
+        Bitboard double_push_copy = double_push;
+        while (double_push_copy) {
+            int to = __builtin_ctzll(double_push_copy);
+            int from = to + 16;
+            moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
+            double_push_copy &= double_push_copy - 1;
+        }
+
+        // 2. Schlagzüge
+        Bitboard left_attacks = (pawns & ~FILE_A) >> 9 & board->occupancyWhite;
+        Bitboard right_attacks = (pawns & ~FILE_H) >> 7 & board->occupancyWhite;
+
+        Bitboard left_copy = left_attacks;
+        while (left_copy) {
+            int to = __builtin_ctzll(left_copy);
+            int from = to + 9;
+            if ((1ULL << to) & RANK_1) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
+            }
+            left_copy &= left_copy - 1;
+        }
+
+        Bitboard right_copy = right_attacks;
+        while (right_copy) {
+            int to = __builtin_ctzll(right_copy);
+            int from = to + 7;
+            if ((1ULL << to) & RANK_1) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
+            }
+            right_copy &= right_copy - 1;
+        }
+
+        // En Passant
+        if (board->epSquare != 0xFF) {
+            Bitboard epSquareBB = 1ULL << board->epSquare;
+            Bitboard epLeft = (pawns & ~FILE_A) >> 9;
+            Bitboard epRight = (pawns & ~FILE_H) >> 7;
+            if (epLeft & epSquareBB) {
+                int from = board->epSquare + 9;
+                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
+            }
+            if (epRight & epSquareBB) {
+                int from = board->epSquare + 7;
+                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
+            }
+        }
+    }
 }
 
 void generate_knight_moves(Board *board, Move *moves, int *count) {
@@ -243,12 +408,12 @@ Bitboard calculate_pawn_attacks(Bitboard pawns, uint8_t is_white) {
     if (is_white) {
         // Weiß: Angriffe nach Nordwest (shift 7) und Nordost (shift 9)
         // aber keine Angriffe von der H-Linie nach rechts (kein Overflow)
-        attacks |= (pawns & ~0x0101010101010101ULL) << 7; // keine Angriffe von Spalte A nach links
-        attacks |= (pawns & ~0x8080808080808080ULL) << 9; // keine Angriffe von Spalte H nach rechts
+        attacks |= (pawns & ~FILE_A) << 7; // keine Angriffe von Spalte A nach links
+        attacks |= (pawns & ~FILE_H) << 9; // keine Angriffe von Spalte H nach rechts
     } else {
         // Schwarz: Angriffe nach Südwest (shift 9) und Südost (shift 7)
-        attacks |= (pawns & ~0x0101010101010101ULL) >> 9; // keine Angriffe von Spalte A nach links
-        attacks |= (pawns & ~0x8080808080808080ULL) >> 7; // keine Angriffe von Spalte H nach rechts
+        attacks |= (pawns & ~FILE_A) >> 9; // keine Angriffe von Spalte A nach links
+        attacks |= (pawns & ~FILE_H) >> 7; // keine Angriffe von Spalte H nach rechts
     }
 
     return attacks;

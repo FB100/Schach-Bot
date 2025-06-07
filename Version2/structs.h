@@ -39,6 +39,21 @@ typedef struct {
     Bitboard attacksBlack; // The attack mask of the other side
 } Board;
 
+// Masken Zeile
+#define RANK_1 0x00000000000000FFULL
+#define RANK_2 0x000000000000FF00ULL
+#define RANK_3 0x0000000000FF0000ULL
+#define RANK_4 0x00000000FF000000ULL
+#define RANK_5 0x000000FF00000000ULL
+#define RANK_6 0x0000FF0000000000ULL
+#define RANK_7 0x00FF000000000000ULL
+#define RANK_8 0xFF00000000000000ULL
+
+// Masken Rang
+#define FILE_A 0x0101010101010101ULL
+#define FILE_H 0x8080808080808080ULL
+
+
 /**
  * | Bits  | Field     | Description                                     |
  * | ----- | --------- | ----------------------------------------------- |
