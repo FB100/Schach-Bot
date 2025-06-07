@@ -187,7 +187,7 @@ void generate_knight_moves(Board *board, Move *moves, int *count) {
     Bitboard opp_occ = board->turn ? board->occupancyWhite : board->occupancyBlack;
 
     while (knights) {
-        int from = __builtin_ctzll(knights);
+        int from = __builtin_ctzll(knights); // Pop Least significant bit
         Bitboard attacks = knight_attack_table[from] & ~own_occ;
 
         while (attacks) {
@@ -222,7 +222,7 @@ void generate_king_moves(Board *board, Move *moves, int *count) {
     Bitboard own_occ = board->turn ? board->occupancyBlack : board->occupancyWhite;
     Bitboard opp_occ = board->turn ? board->occupancyWhite : board->occupancyBlack;
 
-    int from = __builtin_ctzll(king);
+    int from = __builtin_ctzll(king); // Pop Least significant bit
     Bitboard attacks = king_attack_table[from] & ~own_occ;
 
     while (attacks) {
@@ -238,13 +238,26 @@ void generate_king_moves(Board *board, Move *moves, int *count) {
 }
 
 Bitboard calculate_pawn_attacks(Bitboard pawns, uint8_t is_white) {
-    return 0;
+    Bitboard attacks = 0ULL;
+
+    if (is_white) {
+        // Weiß: Angriffe nach Nordwest (shift 7) und Nordost (shift 9)
+        // aber keine Angriffe von der H-Linie nach rechts (kein Overflow)
+        attacks |= (pawns & ~0x0101010101010101ULL) << 7; // keine Angriffe von Spalte A nach links
+        attacks |= (pawns & ~0x8080808080808080ULL) << 9; // keine Angriffe von Spalte H nach rechts
+    } else {
+        // Schwarz: Angriffe nach Südwest (shift 9) und Südost (shift 7)
+        attacks |= (pawns & ~0x0101010101010101ULL) >> 9; // keine Angriffe von Spalte A nach links
+        attacks |= (pawns & ~0x8080808080808080ULL) >> 7; // keine Angriffe von Spalte H nach rechts
+    }
+
+    return attacks;
 }
 
 Bitboard calculate_knight_attacks(Bitboard knights) {
     Bitboard attacks = 0ULL;
     while (knights) {
-        int from = __builtin_ctzll(knights);
+        int from = __builtin_ctzll(knights);  // Pop Least significant bit
         attacks |= knight_attack_table[from];
         knights &= knights - 1;
     }
@@ -265,7 +278,7 @@ Bitboard calculate_queen_attacks(Board *board, Bitboard queens) {
 
 Bitboard calculate_king_attacks(Bitboard king) {
     Bitboard attacks = 0ULL;
-    int from = __builtin_ctzll(king);
+    int from = __builtin_ctzll(king); // Pop Least significant bit
     attacks |= king_attack_table[from];
     return attacks;
 }
