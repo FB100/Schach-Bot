@@ -181,6 +181,86 @@ void generate_pawn_moves(Board *board, Move *moves, int *count) {
     Bitboard empty_squares = ~board->occupancy;
 
     if (board->turn) {
+        // Schwarze Bauern
+        pawns = board->pawn_B;
+
+        // 1. Einzelzüge nach vorne
+        Bitboard single_push = (pawns >> 8) & empty_squares;
+        Bitboard double_push = ((single_push & RANK_6) >> 8) & empty_squares;
+
+        // Normale Einzelzüge + Promotion
+        while (single_push) {
+            int to = __builtin_ctzll(single_push);
+            int from = to + 8;
+            if ((1ULL << to) & RANK_1) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 0, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 0, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
+            }
+            single_push &= single_push - 1;
+        }
+
+        // Doppelschritt
+        Bitboard double_push_copy = double_push;
+        while (double_push_copy) {
+            int to = __builtin_ctzll(double_push_copy);
+            int from = to + 16;
+            moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
+            double_push_copy &= double_push_copy - 1;
+        }
+
+        // 2. Schlagzüge
+        Bitboard left_attacks = (pawns & ~FILE_A) >> 9 & board->occupancyWhite;
+        Bitboard right_attacks = (pawns & ~FILE_H) >> 7 & board->occupancyWhite;
+
+        Bitboard left_copy = left_attacks;
+        while (left_copy) {
+            int to = __builtin_ctzll(left_copy);
+            int from = to + 9;
+            if ((1ULL << to) & RANK_1) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
+            }
+            left_copy &= left_copy - 1;
+        }
+
+        Bitboard right_copy = right_attacks;
+        while (right_copy) {
+            int to = __builtin_ctzll(right_copy);
+            int from = to + 7;
+            if ((1ULL << to) & RANK_1) {
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
+                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
+            } else {
+                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
+            }
+            right_copy &= right_copy - 1;
+        }
+
+        // En Passant
+        if (board->epSquare != 0xFF) {
+            Bitboard epSquareBB = 1ULL << board->epSquare;
+            Bitboard epLeft = (pawns & ~FILE_A) >> 9;
+            Bitboard epRight = (pawns & ~FILE_H) >> 7;
+            if (epLeft & epSquareBB) {
+                int from = board->epSquare + 9;
+                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
+            }
+            if (epRight & epSquareBB) {
+                int from = board->epSquare + 7;
+                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
+            }
+        }
+    } else {
         // Weiße Bauern
         pawns = board->pawn_W;
 
@@ -260,86 +340,6 @@ void generate_pawn_moves(Board *board, Move *moves, int *count) {
             }
             if (epRight & epSquareBB) {
                 int from = board->epSquare - 9;
-                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
-            }
-        }
-
-    } else {
-        // Schwarze Bauern
-        pawns = board->pawn_B;
-
-        // 1. Einzelzüge nach vorne
-        Bitboard single_push = (pawns >> 8) & empty_squares;
-        Bitboard double_push = ((single_push & RANK_6) >> 8) & empty_squares;
-
-        while (single_push) {
-            int to = __builtin_ctzll(single_push);
-            int from = to + 8;
-            if ((1ULL << to) & RANK_1) {
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 0, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 0, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 0, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 0, 0, 0);
-            } else {
-                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
-            }
-            single_push &= single_push - 1;
-        }
-
-        // Doppelschritt
-        Bitboard double_push_copy = double_push;
-        while (double_push_copy) {
-            int to = __builtin_ctzll(double_push_copy);
-            int from = to + 16;
-            moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 0, 0, 0);
-            double_push_copy &= double_push_copy - 1;
-        }
-
-        // 2. Schlagzüge
-        Bitboard left_attacks = (pawns & ~FILE_A) >> 9 & board->occupancyWhite;
-        Bitboard right_attacks = (pawns & ~FILE_H) >> 7 & board->occupancyWhite;
-
-        Bitboard left_copy = left_attacks;
-        while (left_copy) {
-            int to = __builtin_ctzll(left_copy);
-            int from = to + 9;
-            if ((1ULL << to) & RANK_1) {
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
-            } else {
-                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
-            }
-            left_copy &= left_copy - 1;
-        }
-
-        Bitboard right_copy = right_attacks;
-        while (right_copy) {
-            int to = __builtin_ctzll(right_copy);
-            int from = to + 7;
-            if ((1ULL << to) & RANK_1) {
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_Q, 1, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_R, 1, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_B, 1, 0, 0);
-                moves[(*count)++] = ENCODE_MOVE(from, to, PROMO_N, 1, 0, 0);
-            } else {
-                moves[(*count)++] = ENCODE_MOVE(from, to, NO_PROMO, 1, 0, 0);
-            }
-            right_copy &= right_copy - 1;
-        }
-
-        // En Passant
-        if (board->epSquare != 0xFF) {
-            Bitboard epSquareBB = 1ULL << board->epSquare;
-            Bitboard epLeft = (pawns & ~FILE_A) >> 9;
-            Bitboard epRight = (pawns & ~FILE_H) >> 7;
-            if (epLeft & epSquareBB) {
-                int from = board->epSquare + 9;
-                moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
-            }
-            if (epRight & epSquareBB) {
-                int from = board->epSquare + 7;
                 moves[(*count)++] = ENCODE_MOVE(from, board->epSquare, NO_PROMO, 1, 1, 0);
             }
         }
