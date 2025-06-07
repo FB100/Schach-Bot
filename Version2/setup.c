@@ -1,11 +1,5 @@
 #include "setup.h"
 
-void calculate_occupancy(Board *board) {
-    board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W | board->rook_W | board->queen_W | board->king_W;
-    board->occupancyBlack = board->pawn_B | board->knight_B | board->bishop_B | board->rook_B | board->queen_B | board->king_B;
-    board->occupancy = board->occupancyWhite | board->occupancyBlack;
-}
-
 // Filtert einen Fen string aus einem UCI Position input
 // Input format: position [fen <fenstring> | startpos ] moves <move1> .... <movei>
 void position_input_to_fen(const char *input, char *fen_out, uint16_t max_len) {
@@ -99,13 +93,10 @@ void set_position_from_FEN(Board *board, const char *fen) {
     }
 
     calculate_occupancy(board);
+    update_attackmaps(board);
 
+    // TODO Zobrist Hash
     board->hash = 0;
-
-    // TODO Attackbitboard for legal move checking
-    board->attacksWhite = 0;
-    board->attacksBlack = 0;
-
 }
 
 void set_position(Board *board, const char *input) {

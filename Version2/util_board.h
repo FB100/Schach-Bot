@@ -7,6 +7,7 @@
 
 #include "structs.h"
 
+void calculate_occupancy(Board *board);
 
 void square_to_string(uint8_t square, char *out);
 

@@ -1,5 +1,10 @@
 #include "util_board.h"
 
+void calculate_occupancy(Board *board) {
+    board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W | board->rook_W | board->queen_W | board->king_W;
+    board->occupancyBlack = board->pawn_B | board->knight_B | board->bishop_B | board->rook_B | board->queen_B | board->king_B;
+    board->occupancy = board->occupancyWhite | board->occupancyBlack;
+}
 
 // Hilfsfunktion: Konvertiert Feld-Index in String
 void square_to_string(uint8_t square, char *out) {

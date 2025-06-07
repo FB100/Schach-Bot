@@ -161,19 +161,12 @@ void make_move(Board *board, Move move) {
             board->blackKingSq = to;
     }
 
-    // 9. Belegung aktualisieren
-    board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W | board->rook_W | board->queen_W | board->king_W;
-
-    board->occupancyBlack = board->pawn_B | board->knight_B | board->bishop_B | board->rook_B | board->queen_B | board->king_B;
-
-    board->occupancy = board->occupancyWhite | board->occupancyBlack;
-
     // 10. Spielerwechsel
     board->turn ^= 1;
 
     update_attackmaps(board);
-
-    // 11. Zobrist Hash, Attack Maps etc. → separat aktualisieren
+    calculate_occupancy(board);
+    // TODO Zobrist Hash
 }
 
 void generate_pawn_moves(Board *board, Move *moves, int *count) {
