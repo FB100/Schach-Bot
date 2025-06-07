@@ -62,3 +62,92 @@ uint8_t is_piece_white(enum PIECES piece) {
     if (piece <= KING_W) return true;
     return false;
 }
+
+// Hilfsfunktion: Castling-Rechte als String (z.B. KQkq)
+void print_castling_rights(int castling) {
+    printf("Castling Rights: ");
+    if (castling == 0) {
+        printf("-");
+    } else {
+        if (castling & 0x8) printf("K");
+        if (castling & 0x4) printf("Q");
+        if (castling & 0x2) printf("k");
+        if (castling & 0x1) printf("q");
+    }
+    printf("\n");
+}
+
+// Hilfsfunktion: Bitboard als Brett drucken
+void print_bitboard(Bitboard bb) {
+    printf("  +-----------------+\n");
+    for (int rank = 7; rank >= 0; --rank) {
+        printf("%d | ", rank + 1);
+        for (int file = 0; file < 8; ++file) {
+            int sq = rank * 8 + file;
+            printf("%c ", (bb & (1ULL << sq)) ? 'X' : '.');
+        }
+        printf("|\n");
+    }
+    printf("  +-----------------+\n");
+    printf("    a b c d e f g h\n");
+}
+
+void printBoard(const Board* board) {
+
+    printf("\nCurrent Board:\n");
+    printf("  +-----------------+\n");
+    for (int rank = 7; rank >= 0; --rank) {
+        printf("%d | ", rank + 1);
+        for (int file = 0; file < 8; ++file) {
+            int sq = rank * 8 + file;
+            Bitboard square = 1ULL << sq;
+
+            if (board->pawn_W & square) printf("P ");
+            else if (board->knight_W & square) printf("N ");
+            else if (board->bishop_W & square) printf("B ");
+            else if (board->rook_W & square) printf("R ");
+            else if (board->queen_W & square) printf("Q ");
+            else if (board->king_W & square) printf("K ");
+            else if (board->pawn_B & square) printf("p ");
+            else if (board->knight_B & square) printf("n ");
+            else if (board->bishop_B & square) printf("b ");
+            else if (board->rook_B & square) printf("r ");
+            else if (board->queen_B & square) printf("q ");
+            else if (board->king_B & square) printf("k ");
+            else printf(". ");
+        }
+        printf("|\n");
+    }
+    printf("  +-----------------+\n");
+    printf("    a b c d e f g h\n\n");
+
+    // Meta Info
+    printf("Turn: %s\n", board->turn == 0 ? "White" : "Black");
+    print_castling_rights(board->castling);
+
+    if (board->epSquare >= 0 && board->epSquare < 64) {
+        int file = board->epSquare % 8;
+        int rank = board->epSquare / 8;
+        printf("En Passant Square: %c%d\n", 'a' + file, rank + 1);
+    } else {
+        printf("En Passant Square: -\n");
+    }
+
+    printf("White King Square: %c%d\n", 'a' + (board->whiteKingSq % 8), (board->whiteKingSq / 8) + 1);
+    printf("Black King Square: %c%d\n", 'a' + (board->blackKingSq % 8), (board->blackKingSq / 8) + 1);
+
+    printf("Zobrist Hash: 0x%016llx\n\n", board->hash);
+
+    // Bitboards
+    printf("Occupancy:\n");
+    print_bitboard(board->occupancy);
+    printf("\nOccupancy White:\n");
+    print_bitboard(board->occupancyWhite);
+    printf("\nOccupancy Black:\n");
+    print_bitboard(board->occupancyBlack);
+
+    printf("\nWhite Attacks:\n");
+    print_bitboard(board->attacksWhite);
+    printf("\nBlack Attacks:\n");
+    print_bitboard(board->attacksBlack);
+}

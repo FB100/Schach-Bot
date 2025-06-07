@@ -38,7 +38,7 @@ void uci_loop() {
         } else if (strncmp(input, "position", 8) == 0) {
             set_position(board, input);
         } else if (strncmp(input, "go", 2) == 0) {
-            uci_play_move(get_best_move(board, 4));
+            uci_play_move(get_best_move(board, 1));
             fflush(stdout);
         } else if (strcmp(input, "quit") == 0) {
             break;

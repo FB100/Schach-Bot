@@ -1,6 +1,5 @@
 #include "generation.h"
 
-void update_attackmaps(Board *board);;
 
 int generate_moves(Board *board, Move *legal_moves) {
     Move pseudo_moves[MAX_MOVES];
@@ -21,7 +20,7 @@ int generate_moves(Board *board, Move *legal_moves) {
         Board temp = *board;
         make_move(&temp, pseudo_moves[i]);
 
-        uint64_t is_king_in_check = temp.turn ? temp.whiteKingSq & temp.attacksBlack : temp.blackKingSq & temp.attacksWhite;
+        uint64_t is_king_in_check = temp.turn ? temp.king_W & temp.attacksBlack : temp.king_B & temp.attacksWhite;
 
         if (!is_king_in_check) {
             legal_moves[legal_count++] = pseudo_moves[i];
@@ -245,7 +244,7 @@ void generate_king_moves(Board *board, Move *moves, int *count) {
         Bitboard to_bb = 1ULL << to;
 
         int is_capture = (to_bb & opp_occ) != 0;
-        moves[*count] = ENCODE_MOVE(from, to, 0, is_capture, 0, 0); // type 2 = knight
+        moves[*count] = ENCODE_MOVE(from, to, 0, is_capture, 0, 0);
         (*count)++;
 
         attacks &= attacks - 1;
@@ -281,7 +280,7 @@ Bitboard calculate_queen_attacks(Board *board, Bitboard queens) {
 Bitboard calculate_king_attacks(Bitboard king) {
     Bitboard attacks = 0ULL;
     int from = __builtin_ctzll(king);
-    attacks |= knight_attack_table[from];
+    attacks |= king_attack_table[from];
     return attacks;
 }
 

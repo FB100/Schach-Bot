@@ -22,4 +22,6 @@ int move_exists(const Move *moves, int count, int from, int to, int capture);
 
 uint8_t is_piece_white(enum PIECES piece);
 
+void printBoard(const Board* board);
+
 #endif //TEST_BOT_PY_UTIL_BOARD_H

@@ -6,6 +6,7 @@
 
 #include "structs.h"
 #include "moves_external.h"
+#include "generation.h"
 
 void set_position(Board *board, const char *fen);
 

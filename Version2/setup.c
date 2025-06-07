@@ -134,5 +134,6 @@ void set_position(Board *board, const char *input) {
     free(moves);
 
     calculate_occupancy(board);
+    update_attackmaps(board);
     // TODO Zobrist Hash
 }
