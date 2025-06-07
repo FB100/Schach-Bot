@@ -1,6 +1,7 @@
 #include "main.h"
 
 void uci_loop();
+
 void uci_play_move(Move move);
 
 Board *board;

@@ -46,14 +46,9 @@ void make_move(Board *board, Move move) {
     int is_white = board->turn == 0;
 
     // 1. Figur und Ziel identifizieren
-    Bitboard *pieces[] = {
-            is_white ? &board->pawn_W : &board->pawn_B,
-            is_white ? &board->knight_W : &board->knight_B,
-            is_white ? &board->bishop_W : &board->bishop_B,
-            is_white ? &board->rook_W : &board->rook_B,
-            is_white ? &board->queen_W : &board->queen_B,
-            is_white ? &board->king_W : &board->king_B
-    };
+    Bitboard *pieces[] = {is_white ? &board->pawn_W : &board->pawn_B, is_white ? &board->knight_W : &board->knight_B,
+                          is_white ? &board->bishop_W : &board->bishop_B, is_white ? &board->rook_W : &board->rook_B,
+                          is_white ? &board->queen_W : &board->queen_B, is_white ? &board->king_W : &board->king_B};
 
     int moved_piece = -1;
     for (int i = 0; i < 6; i++) {
@@ -66,14 +61,9 @@ void make_move(Board *board, Move move) {
 
     // 2. Gegnerische Figur schlagen (außer En Passant)
     if (is_capture && !is_ep) {
-        Bitboard *targets[] = {
-                is_white ? &board->pawn_B : &board->pawn_W,
-                is_white ? &board->knight_B : &board->knight_W,
-                is_white ? &board->bishop_B : &board->bishop_W,
-                is_white ? &board->rook_B : &board->rook_W,
-                is_white ? &board->queen_B : &board->queen_W,
-                is_white ? &board->king_B : &board->king_W
-        };
+        Bitboard *targets[] = {is_white ? &board->pawn_B : &board->pawn_W, is_white ? &board->knight_B : &board->knight_W,
+                               is_white ? &board->bishop_B : &board->bishop_W, is_white ? &board->rook_B : &board->rook_W,
+                               is_white ? &board->queen_B : &board->queen_W, is_white ? &board->king_B : &board->king_W};
 
         for (int i = 0; i < 6; i++) {
             if (*targets[i] & to_bb) {
@@ -172,13 +162,9 @@ void make_move(Board *board, Move move) {
     }
 
     // 9. Belegung aktualisieren
-    board->occupancyWhite =
-            board->pawn_W | board->knight_W | board->bishop_W |
-            board->rook_W | board->queen_W | board->king_W;
+    board->occupancyWhite = board->pawn_W | board->knight_W | board->bishop_W | board->rook_W | board->queen_W | board->king_W;
 
-    board->occupancyBlack =
-            board->pawn_B | board->knight_B | board->bishop_B |
-            board->rook_B | board->queen_B | board->king_B;
+    board->occupancyBlack = board->pawn_B | board->knight_B | board->bishop_B | board->rook_B | board->queen_B | board->king_B;
 
     board->occupancy = board->occupancyWhite | board->occupancyBlack;
 

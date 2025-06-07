@@ -48,9 +48,7 @@ Bitboard square_to_bit(int square) {
 // Hilfsfunktion: Gibt zurück, ob ein Move in der Liste existiert
 int move_exists(const Move *moves, int count, int from, int to, int capture) {
     for (int i = 0; i < count; ++i) {
-        if (MOVE_FROM(moves[i]) == from &&
-            MOVE_TO(moves[i]) == to &&
-            MOVE_IS_CAPTURE(moves[i]) == capture) {
+        if (MOVE_FROM(moves[i]) == from && MOVE_TO(moves[i]) == to && MOVE_IS_CAPTURE(moves[i]) == capture) {
             return 1;
         }
     }
@@ -92,7 +90,7 @@ void print_bitboard(Bitboard bb) {
     printf("    a b c d e f g h\n");
 }
 
-void printBoard(const Board* board) {
+void printBoard(const Board *board) {
 
     printf("\nCurrent Board:\n");
     printf("  +-----------------+\n");

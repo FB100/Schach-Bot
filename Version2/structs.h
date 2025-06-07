@@ -7,8 +7,7 @@
 #include <stdio.h>
 
 enum PIECES {
-    PAWN_W, KNIGHT_W, BISHOP_W, ROOK_W, QUEEN_W, KING_W,
-    PAWN_B, KNIGHT_B, BISHOP_B, ROOK_B, QUEEN_B, KING_B
+    PAWN_W, KNIGHT_W, BISHOP_W, ROOK_W, QUEEN_W, KING_W, PAWN_B, KNIGHT_B, BISHOP_B, ROOK_B, QUEEN_B, KING_B
 };
 
 //Figur auf a1 = 0, Figur auf b1 = 1, usw
@@ -68,11 +67,7 @@ typedef uint32_t Move;
      ((ep & 1) << 16) | ((castle & 1) << 17))
 
 enum PromoPiece {
-    NO_PROMO = 0,
-    PROMO_N = 1,
-    PROMO_B = 2,
-    PROMO_R = 3,
-    PROMO_Q = 4
+    NO_PROMO = 0, PROMO_N = 1, PROMO_B = 2, PROMO_R = 3, PROMO_Q = 4
 };
 
 #define MAX_MOVES 219

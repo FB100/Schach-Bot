@@ -1,13 +1,12 @@
 #include "tests.h"
 
 
-
-
 void test_position_input_to_fen() {
     char fen[256];
 
     // Test 1: Gültiger FEN mit Zügen
-    position_input_to_fen("position fen rnbqkbnr/ppp2ppp/4p3/8/3p4/5N2/PPP1PPPP/RNBQKB1R w KQkq d3 0 4 moves e2e4 e7e5", fen, sizeof(fen));
+    position_input_to_fen("position fen rnbqkbnr/ppp2ppp/4p3/8/3p4/5N2/PPP1PPPP/RNBQKB1R w KQkq d3 0 4 moves e2e4 e7e5", fen,
+                          sizeof(fen));
     assert(strcmp(fen, "rnbqkbnr/ppp2ppp/4p3/8/3p4/5N2/PPP1PPPP/RNBQKB1R w KQkq d3 0 4") == 0);
 
     // Test 2: Gültiger FEN ohne Züge
@@ -37,7 +36,8 @@ void test_position_input_to_moves() {
     assert(strcmp(moves, "e2e4 e7e5 g1f3") == 0);
 
     // Test 2: Gültiger FEN mit Zügen
-    position_input_to_moves("position fen rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1 moves e7e5", moves, sizeof(moves));
+    position_input_to_moves("position fen rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1 moves e7e5", moves,
+                            sizeof(moves));
     assert(strcmp(moves, "e7e5") == 0);
 
     // Test 3: Gültiger FEN ohne moves
